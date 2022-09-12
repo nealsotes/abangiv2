@@ -115,13 +115,13 @@ namespace AbangiAPI.Services
                 user.Email = userParam.Email;
             }
             // update user properties if provided
-            if(!string.IsNullOrWhiteSpace(userParam.Name))
+            if(!string.IsNullOrWhiteSpace(userParam.FullName))
             {
-                user.Name = userParam.Name;
+                user.FullName = userParam.FullName;
             }
-            if(!string.IsNullOrWhiteSpace(userParam.Phone))
+            if(!string.IsNullOrWhiteSpace(userParam.Contact))
             {
-                user.Phone = userParam.Phone;
+                user.Contact = userParam.Contact;
             }
             if(!string.IsNullOrWhiteSpace(userParam.Address))
             {

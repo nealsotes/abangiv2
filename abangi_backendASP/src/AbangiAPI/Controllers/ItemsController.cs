@@ -25,6 +25,7 @@ namespace AbangiAPI.Controllers
         public ActionResult<IEnumerable<Item>> GetAll()
         {
             var items = _repository.GetAllItems();
+            
             return Ok(items);
         }
         [HttpGet("{id}")]

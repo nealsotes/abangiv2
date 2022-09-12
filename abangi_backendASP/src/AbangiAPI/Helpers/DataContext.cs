@@ -17,6 +17,8 @@ namespace AbangiAPI.Helpers
             Configuration = configuration;
         }
         
+      
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var builder = new NpgsqlConnectionStringBuilder();
@@ -30,5 +32,6 @@ namespace AbangiAPI.Helpers
         public DbSet<User> Users {get; set;}
         public DbSet<Item> Items {get; set;}
         public DbSet<ItemCategory> ItemCategories {get; set;}
+     
     }
 }

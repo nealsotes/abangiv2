@@ -2,12 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AbangiAPI.Helpers;
 using AbangiAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace AbangiAPI.Data
+namespace AbangiAPI.Data.SqlRepo
 {
-    public class MockItemAPIRepo : IItemAPIRepo
+    public class SqlItemAPIRepo : IItemAPIRepo
     {
+        private readonly DataContext _context; 
+        public SqlItemAPIRepo(DataContext context)
+        {
+            _context = context;
+        }
         public void CreateItem(Item item)
         {
             throw new NotImplementedException();
@@ -20,12 +27,13 @@ namespace AbangiAPI.Data
 
         public IEnumerable<Item> GetAllItems()
         {
-            throw new NotImplementedException();
+            return _context.Items.ToList();
+            
         }
 
         public Item GetItemById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Items.FirstOrDefault(p => p.ItemId == id);
         }
 
         public bool SaveChanges()
