@@ -18,7 +18,8 @@ namespace AbangiAPI.Models
     
         [ForeignKey("UserId")]
         public User User {get; set;}
-       
+        public string ItemImage {get; set;}
+
         [Required]
         [MaxLength(250)]
         public string ItemName {get;set;}
@@ -27,6 +28,5 @@ namespace AbangiAPI.Models
         [Required]
         [MaxLength(150)]
         public string ItemDescription {get; set;}
-        public string ItemImage {get; set;}
     }
 }

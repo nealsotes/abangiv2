@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using AbangiAPI.Data;
+using AbangiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +15,27 @@ namespace AbangiAPI.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        private readonly IItemAPIRepo _repository;
+        public ItemsController(IItemAPIRepo repository)
         {
-            return new string[]{"dasd"};
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<Item>> GetAll()
+        {
+            var items = _repository.GetAllItems();
+            return Ok(items);
+        }
+        [HttpGet("{id}")]
+        public ActionResult<Item> GetItemById(int id)
+        {
+            var item = _repository.GetItemById(id);
+            if(item == null)
+            {
+                return NotFound();
+            }
+            return Ok(item);
         }
     }
 }

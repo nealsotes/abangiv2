@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
 using AbangiAPI.Helpers;
 using AbangiAPI.Services;
+using AbangiAPI.Data;
 
 namespace AbangiAPI
 {
@@ -39,7 +40,7 @@ namespace AbangiAPI
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //configure DI for application repo
             services.AddScoped<IUserAPIRepo, SqlUserAPIRepo>();
-
+            services.AddScoped<IItemAPIRepo, MockItemAPIRepo>();
             //configure strongly typed settings objects
             var appSettingsSection = _configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
