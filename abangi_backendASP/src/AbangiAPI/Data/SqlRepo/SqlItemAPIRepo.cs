@@ -27,7 +27,11 @@ namespace AbangiAPI.Data.SqlRepo
 
         public void DeleteItem(Item item)
         {
-            throw new NotImplementedException();
+            if(item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            _context.Items.Remove(item);
         }
 
         public IEnumerable<Item> GetAllItems()

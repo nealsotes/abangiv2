@@ -7,6 +7,7 @@ using AbangiAPI.Data;
 using AbangiAPI.Dtos;
 using AbangiAPI.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -51,6 +52,51 @@ namespace AbangiAPI.Controllers
             _repository.SaveChanges();
             var itemReadDto = _mapper.Map<ItemReadDto>(itemModel);
             return CreatedAtRoute(nameof(GetItemById), new { id = itemReadDto.ItemId }, itemReadDto);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateItem(int id, ItemUpdateDto itemUpdateDto)
+        {
+            var itemModelFromRepo = _repository.GetItemById(id);
+            if(itemModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(itemUpdateDto, itemModelFromRepo);
+           // _repository.UpdateItem(itemModelFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+        [HttpPatch("{id}")]
+        public ActionResult PartialItemUpdate(int id, JsonPatchDocument<ItemUpdateDto> patchDocument)
+        {
+            var itemModelFromRepo = _repository.GetItemById(id);
+            if(itemModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            var itemToPatch = _mapper.Map<ItemUpdateDto>(itemModelFromRepo);
+            patchDocument.ApplyTo(itemToPatch, ModelState);
+            if(!TryValidateModel(itemToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+            _mapper.Map(itemToPatch, itemModelFromRepo);
+            _repository.UpdateItem(itemModelFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public ActionResult DeleteItem(int id)
+        {
+            var itemModelFromRepo = _repository.GetItemById(id);
+            if(itemModelFromRepo == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteItem(itemModelFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
         }
     }
 }

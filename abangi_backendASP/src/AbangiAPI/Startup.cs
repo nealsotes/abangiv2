@@ -3,7 +3,7 @@ using System.Text;
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
-using System.Collections.Generic;
+using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,7 +37,9 @@ namespace AbangiAPI
             services.AddCors();
 
             services.AddDbContext<DataContext>();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(s => {
+                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //configure DI for application repo
             services.AddScoped<IUserAPIRepo, SqlUserAPIRepo>();

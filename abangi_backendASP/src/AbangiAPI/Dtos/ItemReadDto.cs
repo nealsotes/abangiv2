@@ -10,11 +10,9 @@ namespace AbangiAPI.Dtos
     public class ItemReadDto
     {
         public int ItemId { get; set; }
-        //public ItemCategory ItemCategoryName{ get; set; }
-        //public int UserId { get; set; }
+        public ItemCategory ItemCategoryName{ get; set; }
+         public string ItemImage { get; set; }
         public string ItemName { get; set; }
-        public double ItemPrice { get; set; }
         public string ItemDescription { get; set; }
-        public string ItemImage { get; set; }
     }
 }
