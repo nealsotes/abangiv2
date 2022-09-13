@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AbangiAPI.Dtos;
 using AbangiAPI.Helpers;
 using AbangiAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,11 @@ namespace AbangiAPI.Data.SqlRepo
         }
         public void CreateItem(Item item)
         {
-            throw new NotImplementedException();
+            if(item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            _context.Items.Add(item);
         }
 
         public void DeleteItem(Item item)
@@ -28,7 +33,6 @@ namespace AbangiAPI.Data.SqlRepo
         public IEnumerable<Item> GetAllItems()
         {
             return _context.Items.ToList();
-            
         }
 
         public Item GetItemById(int id)
@@ -38,7 +42,7 @@ namespace AbangiAPI.Data.SqlRepo
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+           return (_context.SaveChanges() >= 0);
         }
 
         public void UpdateItem(Item item)

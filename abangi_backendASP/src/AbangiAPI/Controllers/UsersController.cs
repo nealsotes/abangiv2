@@ -37,7 +37,7 @@ namespace AbangiAPI.Controllers
         }
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Authenticate([FromBody]AuthenticateModel model)
+        public  IActionResult Authenticate([FromBody]AuthenticateModel model)
         {
             
             var user = _repository.Authenticate(model.Email, model.Password);
