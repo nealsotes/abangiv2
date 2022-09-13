@@ -178,7 +178,7 @@ class _LoginState extends State<login> {
       'email': mailController.text,
       'password': passwordController.text
     };
-    var res = await CallApi().postData(data, 'login');
+    var res = await CallApi().postData(data, 'users/login');
     var body = json.decode(res.body.toString().trim());
 
     if (res.statusCode == 200) {

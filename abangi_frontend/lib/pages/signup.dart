@@ -259,14 +259,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       _isLoading = true;
     });
     var data = {
-      'name': nameController.text,
       'email': emailController.text,
-      'phone': mobileNumberController.text,
       'address': addressController.text,
       'password': passwordController.text,
+      'contact': mobileNumberController.text,
+      'fullname': nameController.text,
     };
-    var res = await CallApi().postData(data, 'register');
-    var body = json.decode(res.body.toString().trim())['message'];
+    var res = await CallApi().postData(data, 'users/register');
+    // ignore: prefer_typing_uninitialized_variables
+    var body;
+
+    if (res.body.isNotEmpty) {
+      body = json.decode(res.body.toString().trim());
+    }
+
     if (res.statusCode == 200) {
       // ignore: use_build_context_synchronously, prefer_const_constructors
       Navigator.push(
@@ -275,9 +281,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       );
     } else {
       // ignore: use_build_context_synchronously, void_checks
-      errorSnackBar(context, body);
+      errorSnackBar(context, body['message']);
     }
-    //  print(body);
+    print(body);
     setState(() {
       _isLoading = false;
     });
