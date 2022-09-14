@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AbangiAPI.Helpers;
 using AbangiAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AbangiAPI.Data.SqlRepo
 {
@@ -26,7 +27,7 @@ namespace AbangiAPI.Data.SqlRepo
 
         public IEnumerable<ItemCategory> GetAllItemCategories()
         {
-            return _context.ItemCategories.ToList();
+            return _context.ItemCategories.Include(i => i.Items).ToList();
         }
 
         public ItemCategory GetItemCategoryById(int id)

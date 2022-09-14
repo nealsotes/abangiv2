@@ -28,21 +28,27 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpGet]
-        public   ActionResult<IEnumerable<ItemReadDto>> GetAll()
+       
+        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetAll()
         {
-            var items = _repository.GetAllItems();
+            var items =  await _repository.GetAllItems();
             
-            return Ok(_mapper.Map<IEnumerable<ItemReadDto>>(items));
+            return Ok(items);
+           
+           
         }
+
+
+
         [HttpGet("{id}", Name="GetItemById")]
-        public ActionResult<ItemReadDto> GetItemById(int id)
+        public  ActionResult<ItemInformation> GetItemById(int id)
         {
             var item = _repository.GetItemById(id);
             if(item == null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ItemReadDto>(item));
+            return Ok(item);
         }
         [HttpPost]
         public ActionResult<ItemReadDto> CreateItem(ItemCreateDto itemCreateDto)
@@ -67,29 +73,11 @@ namespace AbangiAPI.Controllers
             _repository.SaveChanges();
             return NoContent();
         }
-        [HttpPatch("{id}")]
-        public ActionResult PartialItemUpdate(int id, JsonPatchDocument<ItemUpdateDto> patchDocument)
-        {
-            var itemModelFromRepo = _repository.GetItemById(id);
-            if(itemModelFromRepo == null)
-            {
-                return NotFound();
-            }
-            var itemToPatch = _mapper.Map<ItemUpdateDto>(itemModelFromRepo);
-            patchDocument.ApplyTo(itemToPatch, ModelState);
-            if(!TryValidateModel(itemToPatch))
-            {
-                return ValidationProblem(ModelState);
-            }
-            _mapper.Map(itemToPatch, itemModelFromRepo);
-            _repository.UpdateItem(itemModelFromRepo);
-            _repository.SaveChanges();
-            return NoContent();
-        }
+      
         [HttpDelete("{id}")]
         public ActionResult DeleteItem(int id)
         {   
-            var itemModelFromRepo = _repository.GetItemById(id);
+            var itemModelFromRepo = _repository.GetItemById2(id);
             if(itemModelFromRepo == null)
             {
                 return NotFound();

@@ -17,5 +17,7 @@ namespace AbangiAPI.Models
         [Required]
         [MaxLength(150)]
         public string ItemCategoryDescription {get; set;}
+
+        public ICollection<Item> Items {get; set;}
     }
 }

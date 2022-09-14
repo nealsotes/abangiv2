@@ -8,6 +8,9 @@ namespace AbangiAPI.Dtos
 {
     public class ItemCreateDto
     {
+        public int ItemCategoryId { get; set; }
+        public int UserId { get; set; }
+
         [Required]
         public string ItemName { get; set; }
         [Required]

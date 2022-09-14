@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using AbangiAPI.Models;
 
 namespace AbangiAPI.Entities
 {
@@ -20,5 +22,7 @@ namespace AbangiAPI.Entities
        
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public virtual ICollection<Item> Items { get; set; }
+        
     }
 }

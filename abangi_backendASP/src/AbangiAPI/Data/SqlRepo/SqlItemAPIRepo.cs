@@ -34,14 +34,38 @@ namespace AbangiAPI.Data.SqlRepo
             _context.Items.Remove(item);
         }
 
-        public IEnumerable<Item> GetAllItems()
+        public async Task<IEnumerable<ItemInformation>> GetAllItems()
         {
-            return _context.Items.ToList();
+           var itemList = (from i in _context.Items
+                           join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
+                           join u in _context.Users on i.UserId equals u.UserId
+                           select new ItemInformation
+                           {
+                                 ItemId = i.ItemId,
+                                 ItemName = i.ItemName,
+                                 Description = i.ItemDescription,
+                                 Price = i.ItemPrice,
+                                 Category = ic.ItemCategoryName,
+                                 Owner = u.FullName,
+                           }).ToListAsync();
+            return await itemList;
         }
 
-        public Item GetItemById(int id)
+        public ItemInformation GetItemById(int id)
         {
-            return _context.Items.FirstOrDefault(p => p.ItemId == id);
+             var itemList = (from i in _context.Items
+                           join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
+                           join u in _context.Users on i.UserId equals u.UserId
+                           select new ItemInformation
+                           {
+                                 ItemId = i.ItemId,
+                                 ItemName = i.ItemName,
+                                 Description = i.ItemDescription,
+                                 Price = i.ItemPrice,
+                                 Category = ic.ItemCategoryName,
+                                 Owner = u.FullName,
+                           }).FirstOrDefaultAsync(i => i.ItemId == id);
+            return itemList.Result;
         }
 
         public bool SaveChanges()
@@ -52,6 +76,10 @@ namespace AbangiAPI.Data.SqlRepo
         public void UpdateItem(Item item)
         {
             throw new NotImplementedException();
+        }
+        public Item GetItemById2(int id)
+        {
+            return _context.Items.FirstOrDefault(p => p.ItemId == id);
         }
     }
 }

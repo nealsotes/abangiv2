@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace AbangiAPI.Controllers
 {  
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
@@ -134,7 +134,7 @@ namespace AbangiAPI.Controllers
         {
             var users = _repository.GetAll();
             var model = _mapper.Map<IList<UserModel>>(users);
-            return Ok(users);
+            return Ok(model);
         }
 
     }

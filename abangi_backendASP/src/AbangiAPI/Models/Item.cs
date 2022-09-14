@@ -13,11 +13,11 @@ namespace AbangiAPI.Models
         [Required]
         public int ItemId {get; set;}
 
-        [ForeignKey("ItemCategoryId")]
         public ItemCategory ItemCategory {get; set;}
-    
-        [ForeignKey("UserId")]
+        public int ItemCategoryId {get; set;}
+       
         public User User {get; set;}
+        public int UserId {get; set;}
         public string ItemImage {get; set;}
 
         [Required]
@@ -29,6 +29,6 @@ namespace AbangiAPI.Models
         [MaxLength(150)]
         public string ItemDescription {get; set;}
 
-        public List<ItemCategory> ItemCategories {get; set;}
+        
     }
 }

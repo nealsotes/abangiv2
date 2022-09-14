@@ -3,15 +3,17 @@ using System;
 using AbangiAPI.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AbangiAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220913082449_Addrelation")]
+    partial class Addrelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +66,7 @@ namespace AbangiAPI.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("ItemCategoryId")
+                    b.Property<int?>("ItemCategoryId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ItemDescription")
@@ -83,7 +85,7 @@ namespace AbangiAPI.Migrations
                     b.Property<double>("ItemPrice")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("ItemId");
@@ -121,15 +123,11 @@ namespace AbangiAPI.Migrations
                 {
                     b.HasOne("AbangiAPI.Models.ItemCategory", "ItemCategory")
                         .WithMany("Items")
-                        .HasForeignKey("ItemCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemCategoryId");
 
                     b.HasOne("AbangiAPI.Entities.User", "User")
-                        .WithMany("Items")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

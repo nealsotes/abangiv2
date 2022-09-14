@@ -89,7 +89,7 @@ namespace AbangiAPI.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users;
+            return _context.Users.ToList();
         }
 
         public User GetById(int id)
