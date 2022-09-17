@@ -44,6 +44,7 @@ namespace AbangiAPI
             //configure DI for application repo
             services.AddScoped<IUserAPIRepo, SqlUserAPIRepo>();
             services.AddScoped<IItemAPIRepo, SqlItemAPIRepo>();
+            services.AddScoped<IRentalMethodAPIRepo, SqlRentaMethodAPIREpo>();
             services.AddScoped<IItemCategoryAPIRepo, SqlItemCategoriesAPIRepo>();
             //configure strongly typed settings objects
             var appSettingsSection = _configuration.GetSection("AppSettings");

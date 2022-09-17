@@ -32,6 +32,8 @@ namespace AbangiAPI.Helpers
         public DbSet<User> Users {get; set;}
         public DbSet<Item> Items {get; set;}
         public DbSet<ItemCategory> ItemCategories {get; set;}
+
+        public DbSet<RentalMethod> RentalMethods {get; set;}
      
     }
 }

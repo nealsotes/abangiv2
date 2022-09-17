@@ -122,7 +122,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
               padding: const EdgeInsets.all(10),
               child: TextFormField(),
             )
-
             // ignore: avoid_unnecessary_containers
           ],
         ));

@@ -18,6 +18,8 @@ namespace AbangiAPI.Models
        
         public User User {get; set;}
         public int UserId {get; set;}
+        public int RentalMethodId {get; set;}
+        public RentalMethod RentalMethod {get; set;}
         public string ItemImage {get; set;}
 
         [Required]
@@ -25,10 +27,11 @@ namespace AbangiAPI.Models
         public string ItemName {get;set;}
         [Required]
         public double ItemPrice {get; set;}
-        [Required]
+        public string ItemLocation {get; set;}
+        [Required]  
         [MaxLength(150)]
         public string ItemDescription {get; set;}
-
+        
         
     }
 }
