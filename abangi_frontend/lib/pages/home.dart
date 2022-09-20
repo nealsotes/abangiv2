@@ -38,23 +38,6 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
-            /*   new Positioned(
-              child: AppBar(
-                title: Text(''), // You can add title here
-                leading: new IconButton(
-                  icon: new Icon(Icons.arrow_back, color: Colors.grey),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Welcome()),
-                    );
-                  },
-                ),
-                backgroundColor: Colors.white,
-                //You can make this transparent
-                elevation: 0.0, //No shadow
-              ),
-            ), */
             Container(
                 alignment: Alignment.topRight,
                 // ignore: unnecessary_new
