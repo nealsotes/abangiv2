@@ -1,5 +1,5 @@
 // ignore_for_file: unused_local_variable
-
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'dart:convert';
 import 'package:abangi_v1/global_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -180,10 +180,17 @@ class _LoginState extends State<login> {
     };
     var res = await CallApi().postData(data, 'users/login');
     var body = json.decode(res.body.toString().trim());
+    var getData = await CallApi().getData('users');
+    var bodyData = json.decode(getData.body.toString().trim());
 
     if (res.statusCode == 200) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
+      for (var i = 0; i < bodyData.length; i++) {
+        if (bodyData[i]['email'] == mailController.text) {
+          localStorage.setString('user', bodyData[i]['fullName']);
+        }
+      }
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
@@ -193,10 +200,7 @@ class _LoginState extends State<login> {
       // ignore: use_build_context_synchronously
       errorSnackBar(context, body['message']);
     }
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var token = localStorage.getString('token');
-    // ignore: avoid_print
-    print(token);
+
     setState(() {
       _isLoading = false;
     });

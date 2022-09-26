@@ -1,6 +1,8 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: use_key_in_widget_constructors
 class Home extends StatelessWidget {
@@ -29,11 +31,20 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
   ParseUser? currentUser;
   Future<ParseUser?> getData() async {
-    return null;
+    currentUser = await ParseUser.currentUser() as ParseUser?;
+    return currentUser;
+  }
+
+  var currentUserEmail;
+  // ignore: unused_element
+  void handleCurrentUser() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    currentUserEmail = localStorage.getString('user');
   }
 
   @override
   Widget build(BuildContext context) {
+    handleCurrentUser();
     return Padding(
         padding: const EdgeInsets.all(10),
         child: ListView(
@@ -69,11 +80,11 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                             children: [
                               Center(
                                 child: Text(
-                                  'let\'s Rent,',
+                                  'let\'s Rent,' + ' ' + currentUserEmail,
                                   style: TextStyle(
                                       color: Color.fromRGBO(0, 176, 236, 1),
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 35),
+                                      fontSize: 20),
                                 ),
                               )
                             ],

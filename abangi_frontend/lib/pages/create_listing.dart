@@ -28,8 +28,9 @@ class CreateListingScreen extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<CreateListingScreen> {
-  TextEditingController nameOfListing = TextEditingController();
-  TextEditingController describeListing = TextEditingController();
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _itemDescriptionController =
+      TextEditingController();
 
   var dropdownvalueCategory = "Electronics";
   var dropdownvaluePerPrice = "1";
@@ -49,12 +50,19 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     'Clothes',
     'Others'
   ];
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   var _isChecked = false;
+
+  var _radioValue;
+
+  var _handleRadioValueChange;
 
   @override
   Widget build(BuildContext context) {
     return Form(
+        key: _formKey,
         child: Padding(
             padding: const EdgeInsets.all(10),
             child: ListView(
@@ -118,7 +126,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     padding: const EdgeInsets.all(7),
                     child: TextFormField(
                       style: TextStyle(fontSize: textInputFontSize),
-                      controller: nameOfListing,
+                      controller: _itemNameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -185,7 +193,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                 Container(
                   padding: const EdgeInsets.all(7),
                   child: TextFormField(
-                    controller: describeListing,
+                    controller: _itemDescriptionController,
                     maxLines: 5,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -400,60 +408,177 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                 ),
                 Column(
                   children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: mounted ? _isChecked : true,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _isChecked = value!;
-                            });
-                          },
-                        ),
-                        const Text('Rent to own'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: mounted ? _isChecked : true,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              _isChecked = value!;
-                            });
-                          },
-                        ),
-                        const Text('Rent to own'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                ),
-                              ),
-                              child: Checkbox(
-                                value: mounted ? _isChecked : true,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _isChecked = value!;
-                                  });
-                                },
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 0.2),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Radio(
+                                        value: 1,
+                                        groupValue: _radioValue,
+                                        onChanged: _handleRadioValueChange,
+                                      ),
+                                      const Text('Meet Up'),
+                                    ],
+                                  ),
+                                  Text(
+                                    'You are going to meet up with the renter',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
                               ),
                             ),
-                            const Text('Rent to own'),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 0.2),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Radio(
+                                        value: 1,
+                                        groupValue: _radioValue,
+                                        onChanged: _handleRadioValueChange,
+                                      ),
+                                      const Text('Delivery/Drop Off'),
+                                    ],
+                                  ),
+                                  Text(
+                                    'You will deliver the item to the renter',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 0.2),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Radio(
+                                        value: 1,
+                                        groupValue: _radioValue,
+                                        onChanged: _handleRadioValueChange,
+                                      ),
+                                      const Text('Pick Up'),
+                                    ],
+                                  ),
+                                  Text(
+                                    'The renter will pick up the item at your place',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 0.2),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Radio(
+                                        value: 1,
+                                        groupValue: _radioValue,
+                                        onChanged: _handleRadioValueChange,
+                                      ),
+                                      const Text('Not Applicable'),
+                                    ],
+                                  ),
+                                  Text(
+                                    'For real-estate properties,spaces, etc.',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                        height: 50,
+                        margin: const EdgeInsets.only(top: 15),
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: SizedBox.expand(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              onPrimary: Colors.white,
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                return _isLoading ? null : _handlePost();
+                              }
+                            },
+                            child: Text(_isLoading ? 'Posting...' : 'Post'),
+                          ),
+                        )),
                   ],
                 ),
                 // ignore: avoid_unnecessary_containers
               ],
             )));
+  }
+
+  _handlePost() {
+    _setState() {
+      _isLoading = true;
+    }
+
+    var data = {
+      'title': _itemNameController,
+      'description': _itemDescriptionController.text,
+      /* 'price': _priceController.text,
+      'category': _categoryController.text,
+      'condition': _conditionController.text,
+      'rental_method': _rentalMethodController.text,
+      'address': _addressController.text,
+      'city': _cityController.text,
+      'province': _provinceController.text,
+      'barangay': _barangayController.text,
+      'house_unit_no': _houseUnitNoController.text,
+      'user_id': _userId, */
+    };
   }
 }

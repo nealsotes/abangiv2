@@ -43,6 +43,7 @@ dependencies:
   dio: any
   flutter_secure_storage: any
   flutter_riverpod: any
+  flutter_session_manager: ^1.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
