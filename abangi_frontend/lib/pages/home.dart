@@ -1,4 +1,10 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
+import 'package:abangi_v1/pages/Menu/bikes.dart';
+import 'package:abangi_v1/pages/Menu/books.dart';
+import 'package:abangi_v1/pages/Menu/clothes.dart';
+import 'package:abangi_v1/pages/Menu/electronics.dart';
+import 'package:abangi_v1/pages/Menu/handytools.dart';
+import 'package:abangi_v1/pages/Menu/others.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:http/http.dart' as http;
@@ -35,11 +41,11 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
     return currentUser;
   }
 
-  var currentUserEmail;
+  var currentUserSession;
   // ignore: unused_element
   void handleCurrentUser() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
-    currentUserEmail = localStorage.getString('user');
+    currentUserSession = localStorage.getString('user');
   }
 
   @override
@@ -80,7 +86,7 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                             children: [
                               Center(
                                 child: Text(
-                                  'let\'s Rent,' + ' ' + currentUserEmail,
+                                  'let\'s Rent,' + ' ' + currentUserSession,
                                   style: TextStyle(
                                       color: Color.fromRGBO(0, 176, 236, 1),
                                       fontWeight: FontWeight.w600,
@@ -104,6 +110,189 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                 ),
               ),
             ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 25),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Electronics()),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.cable_outlined,
+                            color: Color.fromRGBO(0, 176, 236, 1),
+                            size: 40,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Electronics',
+                      ),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 25),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Bikes()),
+                            );
+                          },
+                          icon: Icon(Icons.pedal_bike,
+                              color: Color.fromRGBO(0, 176, 236, 1), size: 40),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Bikes',
+                      ),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 25),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Books()),
+                            );
+                          },
+                          icon: Icon(Icons.library_books,
+                              color: Color.fromRGBO(0, 176, 236, 1), size: 40),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Books',
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 45),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HandyTools()),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.handyman_outlined,
+                            color: Color.fromRGBO(0, 176, 236, 1),
+                            size: 40,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Handy Tools',
+                      ),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 45),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Clothes()),
+                            );
+                          },
+                          icon: Icon(Icons.checkroom_outlined,
+                              color: Color.fromRGBO(0, 176, 236, 1), size: 40),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Clothes',
+                      ),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 45),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Others()),
+                            );
+                          },
+                          icon: Icon(Icons.device_unknown,
+                              color: Color.fromRGBO(0, 176, 236, 1), size: 40),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: const Text(
+                        'Others',
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            )
           ],
         ));
   }
