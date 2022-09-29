@@ -18,5 +18,9 @@ namespace AbangiAPI.Models
         public string Category {get; set;}
         [Column("Owner")]
         public string Owner{get; set;}
+        [Column("RentalMethod")]
+        public string RentalMethod {get; set;}
+        [Column("Location")]
+        public string Location {get; set;}
     }
 }

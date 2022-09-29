@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using AbangiAPI.Entities;
+using Microsoft.AspNetCore.Http;
+
 namespace AbangiAPI.Models
 {
     public class Item
@@ -15,11 +17,13 @@ namespace AbangiAPI.Models
 
         public ItemCategory ItemCategory {get; set;}
         public int ItemCategoryId {get; set;}
-       
-        public User User {get; set;}
+
+        
+    
         public int UserId {get; set;}
         public int RentalMethodId {get; set;}
-        public RentalMethod RentalMethod {get; set;}
+       
+       
         public string ItemImage {get; set;}
 
         [Required]

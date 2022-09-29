@@ -15,6 +15,7 @@ using AbangiAPI.Helpers;
 using AbangiAPI.Services;
 using AbangiAPI.Data;
 using AbangiAPI.Data.SqlRepo;
+using Microsoft.AspNetCore.Http;
 
 namespace AbangiAPI
 {
@@ -39,6 +40,7 @@ namespace AbangiAPI
             services.AddDbContext<DataContext>();
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                s.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //configure DI for application repo
@@ -99,7 +101,10 @@ namespace AbangiAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+          
+            
+           
+            
             app.UseRouting();
             //global cors policy 
             app.UseCors(x => x

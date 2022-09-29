@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using AbangiAPI.Data;
 using AbangiAPI.Dtos;
 using AbangiAPI.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,17 +20,18 @@ namespace AbangiAPI.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
+        private readonly IWebHostEnvironment _env;
         private readonly IItemAPIRepo _repository;
         private readonly IMapper _mapper;
-        public ItemsController(IItemAPIRepo repository, IMapper mapper)
+        public ItemsController(IItemAPIRepo repository, IMapper mapper, IWebHostEnvironment env)
         {
             _repository = repository;
             _mapper = mapper;
+            _env = env;
         
         }
 
         [HttpGet]
-       
         public async Task<ActionResult<IEnumerable<ItemInformation>>> GetAll()
         {
             var items =  await _repository.GetAllItems();
@@ -37,10 +40,11 @@ namespace AbangiAPI.Controllers
            
            
         }
+       
+       
 
 
-
-        [HttpGet("{id}", Name="GetItemById")]
+        [HttpGet("{id}", Name = "GetItemById")]
         public  ActionResult<ItemInformation> GetItemById(int id)
         {
             var item = _repository.GetItemById(id);
@@ -58,6 +62,7 @@ namespace AbangiAPI.Controllers
             _repository.SaveChanges();
             var itemReadDto = _mapper.Map<ItemReadDto>(itemModel);
             return CreatedAtRoute(nameof(GetItemById), new { id = itemReadDto.ItemId }, itemReadDto);
+    
         }
 
         [HttpPut("{id}")]

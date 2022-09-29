@@ -12,6 +12,7 @@ namespace AbangiAPI.Models
         public int RentalMethodId {get; set;}
         [Required]
         public string RentalMethodName {get; set;}
+        [Required]
         public string RentalMethodDescription {get; set;}
     }
 }

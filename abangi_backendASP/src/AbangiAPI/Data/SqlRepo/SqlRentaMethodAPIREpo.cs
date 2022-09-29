@@ -50,7 +50,7 @@ namespace AbangiAPI.Data.SqlRepo
 
         public void UpdateRentalMethod(RentalMethod rentalMethod)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

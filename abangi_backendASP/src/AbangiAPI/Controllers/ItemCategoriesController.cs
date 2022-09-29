@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AbangiAPI.Data;
+using AbangiAPI.Dtos;
 using AbangiAPI.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AbangiAPI.Controllers
@@ -13,9 +15,11 @@ namespace AbangiAPI.Controllers
     public class ItemCategoriesController : ControllerBase
     {
         private readonly IItemCategoryAPIRepo _repository;
-        public ItemCategoriesController(IItemCategoryAPIRepo repository)
+        private readonly IMapper _mapper;
+        public ItemCategoriesController(IItemCategoryAPIRepo repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
         [HttpGet]
         public ActionResult<IEnumerable<ItemCategory>> GetAll()
@@ -32,6 +36,16 @@ namespace AbangiAPI.Controllers
                 return NotFound();
             }
             return Ok(itemCategory);
+        }
+        [HttpGet("GetItemByCategory/{name}")]
+        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetItemByCategory(string name)
+        {
+            var item = await _repository.GetItemByCategory(name);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            return Ok(item);   
         }
     }
 }

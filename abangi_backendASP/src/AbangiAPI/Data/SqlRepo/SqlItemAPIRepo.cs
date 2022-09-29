@@ -39,6 +39,7 @@ namespace AbangiAPI.Data.SqlRepo
            var itemList = (from i in _context.Items
                            join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                            join u in _context.Users on i.UserId equals u.UserId
+                           join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
                            select new ItemInformation
                            {
                                  ItemId = i.ItemId,
@@ -47,6 +48,8 @@ namespace AbangiAPI.Data.SqlRepo
                                  Price = i.ItemPrice,
                                  Category = ic.ItemCategoryName,
                                  Owner = u.FullName,
+                                 RentalMethod = r.RentalMethodName,
+                                Location = i.ItemLocation
                            }).ToListAsync();
             return await itemList;
         }
@@ -56,6 +59,8 @@ namespace AbangiAPI.Data.SqlRepo
              var itemList = (from i in _context.Items
                            join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                            join u in _context.Users on i.UserId equals u.UserId
+                           join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
+                            where i.ItemId == id
                            select new ItemInformation
                            {
                                  ItemId = i.ItemId,
@@ -64,6 +69,9 @@ namespace AbangiAPI.Data.SqlRepo
                                  Price = i.ItemPrice,
                                  Category = ic.ItemCategoryName,
                                  Owner = u.FullName,
+                                RentalMethod = r.RentalMethodName,
+                                Location = i.ItemLocation
+                                
                            }).FirstOrDefaultAsync(i => i.ItemId == id);
             return itemList.Result;
         }
@@ -81,5 +89,7 @@ namespace AbangiAPI.Data.SqlRepo
         {
             return _context.Items.FirstOrDefault(p => p.ItemId == id);
         }
+
+       
     }
 }
