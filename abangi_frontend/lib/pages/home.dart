@@ -1,10 +1,10 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
-import 'package:abangi_v1/pages/Menu/bikes.dart';
-import 'package:abangi_v1/pages/Menu/books.dart';
-import 'package:abangi_v1/pages/Menu/clothes.dart';
-import 'package:abangi_v1/pages/Menu/electronics.dart';
-import 'package:abangi_v1/pages/Menu/handytools.dart';
-import 'package:abangi_v1/pages/Menu/others.dart';
+import 'package:abangi_v1/pages/Menus/bikes.dart';
+import 'package:abangi_v1/pages/Menus/books.dart';
+import 'package:abangi_v1/pages/Menus/electronics.dart';
+import 'package:abangi_v1/pages/Menus/clothes.dart';
+import 'package:abangi_v1/pages/Menus/handytools.dart';
+import 'package:abangi_v1/pages/Menus/others.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:http/http.dart' as http;
