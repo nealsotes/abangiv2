@@ -55,8 +55,12 @@ namespace AbangiAPI.Controllers
             return Ok(item);
         }
         [HttpPost]
-        public ActionResult<ItemReadDto> CreateItem(ItemCreateDto itemCreateDto)
+        public  ActionResult<ItemReadDto> CreateItem([FromForm]ItemCreateDto itemCreateDto)
         {
+            if(itemCreateDto.Image != null)
+            {
+                 _repository.SavePostImageAsync(itemCreateDto);
+            }
             var itemModel = _mapper.Map<Item>(itemCreateDto);
             _repository.CreateItem(itemModel);
             _repository.SaveChanges();

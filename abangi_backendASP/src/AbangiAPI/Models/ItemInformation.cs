@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace AbangiAPI.Models
 {
@@ -22,5 +23,8 @@ namespace AbangiAPI.Models
         public string RentalMethod {get; set;}
         [Column("Location")]
         public string Location {get; set;}
+        [Column("Image")]
+        public string Image {get; set;}
+        
     }
 }

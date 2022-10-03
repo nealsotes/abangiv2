@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AbangiAPI.Dtos;
 using AbangiAPI.Models;
 
 namespace AbangiAPI.Data
@@ -15,7 +16,7 @@ namespace AbangiAPI.Data
         void CreateItem(Item item);
         void UpdateItem(Item item);
         void DeleteItem(Item item);
-       
+        void SavePostImageAsync(ItemCreateDto itemCreateDto);
     }
     
 }

@@ -23,7 +23,7 @@ namespace AbangiAPI.Models
         public int UserId {get; set;}
         public int RentalMethodId {get; set;}
        
-       
+           
         public string ItemImage {get; set;}
 
         [Required]

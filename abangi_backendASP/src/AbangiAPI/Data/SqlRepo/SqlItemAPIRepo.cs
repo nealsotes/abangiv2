@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AbangiAPI.Dtos;
 using AbangiAPI.Helpers;
 using AbangiAPI.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 namespace AbangiAPI.Data.SqlRepo
@@ -12,10 +14,13 @@ namespace AbangiAPI.Data.SqlRepo
     public class SqlItemAPIRepo : IItemAPIRepo
     {
         private readonly DataContext _context; 
-        public SqlItemAPIRepo(DataContext context)
+        private readonly IWebHostEnvironment environment;
+        public SqlItemAPIRepo(DataContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            environment = hostEnvironment;
         }
+       
         public void CreateItem(Item item)
         {
             if(item == null)
@@ -42,14 +47,15 @@ namespace AbangiAPI.Data.SqlRepo
                            join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
                            select new ItemInformation
                            {
-                                 ItemId = i.ItemId,
-                                 ItemName = i.ItemName,
-                                 Description = i.ItemDescription,
-                                 Price = i.ItemPrice,
-                                 Category = ic.ItemCategoryName,
-                                 Owner = u.FullName,
-                                 RentalMethod = r.RentalMethodName,
-                                Location = i.ItemLocation
+                                ItemId = i.ItemId,
+                                ItemName = i.ItemName,
+                                Description = i.ItemDescription,
+                                Price = i.ItemPrice,
+                                Category = ic.ItemCategoryName,
+                                Owner = u.FullName,
+                                RentalMethod = r.RentalMethodName,
+                                Location = i.ItemLocation,
+                                Image = i.ItemImage
                            }).ToListAsync();
             return await itemList;
         }
@@ -90,6 +96,19 @@ namespace AbangiAPI.Data.SqlRepo
             return _context.Items.FirstOrDefault(p => p.ItemId == id);
         }
 
-       
+        public void  SavePostImageAsync(ItemCreateDto itemCreateDto)
+        {
+            var item = new ItemReadDto();
+            var uniqueFileName = FileHelper.GetUniqueFileName(itemCreateDto.Image.FileName);
+            var uploads = Path.Combine(environment.WebRootPath, "Images","Items", item.ItemId.ToString());
+            var filePath = Path.Combine(uploads, uniqueFileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            itemCreateDto.Image.CopyToAsync(new FileStream(filePath, FileMode.Create));
+            itemCreateDto.ItemImage = filePath;
+            return;
+        
+        }
+        
+            
     }
 }
