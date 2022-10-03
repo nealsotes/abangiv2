@@ -1,4 +1,7 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
+
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:io' as io;
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +15,8 @@ class ElectronicsDetails extends StatelessWidget {
       required String description,
       required double price,
       required String category,
-      required String owner})
+      required String owner,
+      required String image})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -42,8 +46,7 @@ class ElectronicsDetails extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage(
-                                'https://images.pexels.com/photos/577769/pexels-photo-577769.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                            image: FileImage(io.File(itemModel.image)),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -195,7 +198,7 @@ class ElectronicsDetails extends StatelessWidget {
                         itemModel.description,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500),
                       ),
                     ),

@@ -1,6 +1,8 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
 import 'dart:convert';
 
+import 'dart:io';
+
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/api/api.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +64,7 @@ Future<List<ItemModel>> getItemData() async {
         i['owner'],
         i['rentalMethod'],
         i['location'],
+        i['image'],
       );
       items.add(item);
     }
@@ -104,13 +107,17 @@ class _MyStatefulWidgetState extends State<ElectronicsScreen> {
                             price: snapshot.data![index].price,
                             category: snapshot.data![index].category,
                             owner: snapshot.data![index].owner,
+                            image: snapshot.data![index].image,
                             itemModel: snapshot.data![index],
                           ),
                         ),
                       );
                     },
-                    leading: Image.network(
-                        'https://images.pexels.com/photos/577769/pexels-photo-577769.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                    leading: Image.file(
+                      File(snapshot.data![index].image),
+                      width: 100,
+                      height: 100,
+                    ),
                     title: Text(snapshot.data![index].itemName),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

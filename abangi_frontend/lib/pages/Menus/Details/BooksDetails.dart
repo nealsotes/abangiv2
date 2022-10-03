@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' as io;
 
 // ignore: use_key_in_widget_constructors
 class BooksDetails extends StatelessWidget {
@@ -42,8 +43,7 @@ class BooksDetails extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
-                            image: NetworkImage(
-                                'https://images.pexels.com/photos/459791/pexels-photo-459791.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'),
+                            image: FileImage(io.File(itemModel.image)),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -195,7 +195,7 @@ class BooksDetails extends StatelessWidget {
                         itemModel.description,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500),
                       ),
                     ),
