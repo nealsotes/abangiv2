@@ -1,8 +1,19 @@
-// ignore_for_file: camel_case_types, prefer_const_constructors
-import 'dart:ffi';
+// ignore_for_file: camel_case_types, prefer_const_constructors, unused_field
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:open_file/open_file.dart';
+// ignore: import_of_legacy_library_into_null_safe
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../api/api.dart';
+import '../global_utils.dart';
 
 // ignore: use_key_in_widget_constructors
 class CreateListing extends StatelessWidget {
@@ -28,36 +39,87 @@ class CreateListingScreen extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<CreateListingScreen> {
-  final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _itemDescriptionController =
-      TextEditingController();
+  TextEditingController listingController = TextEditingController();
+  TextEditingController itemDescriptionController = TextEditingController();
+  TextEditingController itemPriceController = TextEditingController();
+  TextEditingController itemHouseLocationController = TextEditingController();
+  TextEditingController itemBarLocationController = TextEditingController();
+  TextEditingController itemCityLocationController = TextEditingController();
 
-  var dropdownvalueCategory = "Electronics";
+  final _formKey = GlobalKey<FormState>();
+  //Image upload
+
+  dynamic _fileName = '';
+
+  void _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg'],
+    );
+
+    // if no file is picked
+
+    if (result == null) return;
+
+    _fileName = result.files.first.path;
+
+    final file = result.files.first;
+    _openFile(file);
+  }
+
+  void _openFile(PlatformFile file) async {
+    OpenFile.open(file.path);
+  }
+
+//clear text
+  void clearText() {
+    listingController.clear();
+    itemDescriptionController.clear();
+    itemPriceController.clear();
+    itemHouseLocationController.clear();
+    itemBarLocationController.clear();
+    itemCityLocationController.clear();
+  }
+
+  var dropdownvalueCategory = "9";
   var dropdownvaluePerPrice = "1";
-  var perprice = ['1', '2', '3', '4', '5', '6', '7'];
+
   var dropdownvalueDaysWeeks = "Days";
+  // ignore: non_constant_identifier_names
   var DaysWeeks = [
     'Days',
     'Weeks',
     'Months',
   ];
   var textInputFontSize = 14.00;
-  var category = [
-    'Electronics',
-    'Bikes',
-    'Books',
-    'Handy Tools',
-    'Clothes',
-    'Others'
-  ];
-  final _formKey = GlobalKey<FormState>();
+  List<DropdownMenuItem<String>> get dropdownCategories {
+    List<DropdownMenuItem<String>> categories = [
+      DropdownMenuItem(value: "8", child: Text("Electronics")),
+      DropdownMenuItem(value: "9", child: Text("Bikes")),
+      DropdownMenuItem(value: "10", child: Text("Books")),
+      DropdownMenuItem(value: "11", child: Text("Handy Tools")),
+      DropdownMenuItem(value: "12", child: Text("Clothes")),
+    ];
+    return categories;
+  }
+
+  List<DropdownMenuItem<String>> get dropdownPerDaysWeeks {
+    List<DropdownMenuItem<String>> perdaysweeks = [
+      DropdownMenuItem(value: "1", child: Text("1")),
+      DropdownMenuItem(value: "2", child: Text("2")),
+      DropdownMenuItem(value: "3", child: Text("3")),
+      DropdownMenuItem(value: "4", child: Text("4")),
+      DropdownMenuItem(value: "5", child: Text("5")),
+      DropdownMenuItem(value: "6", child: Text("6")),
+      DropdownMenuItem(value: "7", child: Text("7")),
+    ];
+    return perdaysweeks;
+  }
+
   bool _isLoading = false;
 
-  var _isChecked = false;
-
-  var _radioValue;
-
-  var _handleRadioValueChange;
+  // ignore: prefer_typing_uninitialized_variables
+  var _radioRentalValue;
 
   @override
   Widget build(BuildContext context) {
@@ -89,24 +151,17 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   height: 60,
-                  child: ElevatedButton(
-                    // ignore: sort_child_properties_last
+                  child: MaterialButton(
                     child: const Text(
-                      '+ Add Photo',
-                      style: TextStyle(color: Color.fromRGBO(0, 176, 236, 1)),
+                      'Upload Image',
+                      style: TextStyle(
+                          color: Color.fromRGBO(0, 176, 236, 1),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        // ignore: prefer_const_constructors
-                        primary: Color.fromRGBO(255, 255, 255, 1),
-                        // ignore: prefer_const_constructors
-                        side: BorderSide(
-                            // ignore: prefer_const_constructors
-                            color: Color.fromRGBO(0, 176, 236, 1),
-                            width: 1)),
-                    onPressed: () {},
+                    onPressed: () {
+                      _pickFile();
+                    },
                   ),
                 ),
 
@@ -126,13 +181,19 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     padding: const EdgeInsets.all(7),
                     child: TextFormField(
                       style: TextStyle(fontSize: textInputFontSize),
-                      controller: _itemNameController,
+                      controller: listingController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         labelText: 'Name this listing',
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a title';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -161,13 +222,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                           size: 25,
                         ),
                         // Array list of items
-                        items: category.map((String items) {
-                          return DropdownMenuItem(
-                            value: items,
-                            child: Text(items,
-                                style: TextStyle(fontSize: textInputFontSize)),
-                          );
-                        }).toList(),
+
                         // After selecting the desired option,it will
                         // change button value to selected value
                         onChanged: (String? newValue) {
@@ -175,6 +230,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             dropdownvalueCategory = newValue!;
                           });
                         },
+                        items: dropdownCategories,
                       ),
                     ),
                   ),
@@ -193,12 +249,18 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                 Container(
                   padding: const EdgeInsets.all(7),
                   child: TextFormField(
-                    controller: _itemDescriptionController,
+                    controller: itemDescriptionController,
                     maxLines: 5,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Describe your listing',
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter item description';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 Row(
@@ -222,6 +284,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                           SizedBox(
                             width: 100,
                             child: TextFormField(
+                              controller: itemPriceController,
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.digitsOnly
@@ -230,6 +293,12 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                 border: OutlineInputBorder(),
                                 labelText: '₱0.00',
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter item price';
+                                }
+                                return null;
+                              },
                             ),
                           )
                         ],
@@ -265,20 +334,16 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     Icons.keyboard_arrow_down,
                                     size: 10,
                                   ),
-                                  // Array list of items
-                                  items: perprice.map((String items) {
-                                    return DropdownMenuItem(
-                                      value: items,
-                                      child: Text(items),
-                                    );
-                                  }).toList(),
-                                  // After selecting the desired option,it will
-                                  // change button value to selected value
                                   onChanged: (String? newValue) {
                                     setState(() {
                                       dropdownvaluePerPrice = newValue!;
                                     });
                                   },
+                                  // Array list of items
+                                  items: dropdownPerDaysWeeks,
+
+                                  // After selecting the desired option,it will
+                                  // change button value to selected value
                                 ),
                               ),
                             )
@@ -343,6 +408,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                       child: SizedBox(
                         width: 100,
                         child: TextFormField(
+                          controller: itemHouseLocationController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'House unit no.',
@@ -356,10 +422,17 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                         child: SizedBox(
                           width: 100,
                           child: TextFormField(
+                            controller: itemBarLocationController,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Barangay',
                             ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter barangay';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ),
@@ -373,24 +446,17 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                       child: SizedBox(
                         width: 100,
                         child: TextFormField(
+                          controller: itemCityLocationController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'City/Municipality',
                           ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: SizedBox(
-                          width: 100,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Province',
-                            ),
-                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter city';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                     ),
@@ -423,8 +489,12 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     children: [
                                       Radio(
                                         value: 1,
-                                        groupValue: _radioValue,
-                                        onChanged: _handleRadioValueChange,
+                                        groupValue: _radioRentalValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _radioRentalValue = value!;
+                                          });
+                                        },
                                       ),
                                       const Text('Meet Up'),
                                     ],
@@ -454,9 +524,13 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                   Row(
                                     children: [
                                       Radio(
-                                        value: 1,
-                                        groupValue: _radioValue,
-                                        onChanged: _handleRadioValueChange,
+                                        value: 2,
+                                        groupValue: _radioRentalValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _radioRentalValue = value!;
+                                          });
+                                        },
                                       ),
                                       const Text('Delivery/Drop Off'),
                                     ],
@@ -486,9 +560,13 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                   Row(
                                     children: [
                                       Radio(
-                                        value: 1,
-                                        groupValue: _radioValue,
-                                        onChanged: _handleRadioValueChange,
+                                        value: 3,
+                                        groupValue: _radioRentalValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _radioRentalValue = value!;
+                                          });
+                                        },
                                       ),
                                       const Text('Pick Up'),
                                     ],
@@ -518,9 +596,13 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                   Row(
                                     children: [
                                       Radio(
-                                        value: 1,
-                                        groupValue: _radioValue,
-                                        onChanged: _handleRadioValueChange,
+                                        value: 4,
+                                        groupValue: _radioRentalValue,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _radioRentalValue = value;
+                                          });
+                                        },
                                       ),
                                       const Text('Not Applicable'),
                                     ],
@@ -546,12 +628,14 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                               primary: Colors.blue,
                               onPrimary: Colors.white,
                             ),
+                            child: Text(_isLoading ? 'Posting...' : 'Post'),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
+                                // ignore: void_checks
+                                clearText();
                                 return _isLoading ? null : _handlePost();
                               }
                             },
-                            child: Text(_isLoading ? 'Posting...' : 'Post'),
                           ),
                         )),
                   ],
@@ -561,24 +645,53 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
             )));
   }
 
-  _handlePost() {
-    _setState() {
+  void _handlePost() async {
+    setState(() {
       _isLoading = true;
-    }
+    });
+    try {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      var userid = localStorage.getString('userid');
+      var data = {
+        "ItemCategoryId": dropdownvalueCategory,
+        "UserId": int.parse(userid!),
+        "ItemName": listingController.text,
+        "ItemPrice": double.parse(itemPriceController.text),
+        "ItemDescription": itemDescriptionController.text,
+        // ignore: prefer_interpolation_to_compose_strings
+        "ItemLocation": itemHouseLocationController.text +
+            ' ' +
+            itemBarLocationController.text +
+            ' ' +
+            itemCityLocationController.text,
+        "ItemImage": _fileName,
+        "RentalMethodId": _radioRentalValue,
+      };
+      var res = await CallApi().postData(data, 'api/items');
+      // ignore: prefer_typing_uninitialized_variables
+      var body;
+      if (res.body.isNotEmpty) {
+        body = json.decode(res.body.toString().trim());
+      }
 
-    var data = {
-      'title': _itemNameController,
-      'description': _itemDescriptionController.text,
-      /* 'price': _priceController.text,
-      'category': _categoryController.text,
-      'condition': _conditionController.text,
-      'rental_method': _rentalMethodController.text,
-      'address': _addressController.text,
-      'city': _cityController.text,
-      'province': _provinceController.text,
-      'barangay': _barangayController.text,
-      'house_unit_no': _houseUnitNoController.text,
-      'user_id': _userId, */
-    };
+      if (res.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Item Posted'),
+        ));
+      } else {
+        // ignore: use_build_context_synchronously
+        errorSnackBar(context, body['message']);
+      }
+    } catch (e) {
+      print(e);
+    } finally {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Item Posted'),
+      ));
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

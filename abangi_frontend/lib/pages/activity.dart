@@ -1,5 +1,7 @@
 // ignore_for_file: camel_case_types
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
 
 // ignore: use_key_in_widget_constructors
 class Activity extends StatelessWidget {
@@ -26,6 +28,20 @@ class ActivityScreen extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<ActivityScreen> {
   TextEditingController searchController = TextEditingController();
+  var _openResult = 'Unknown';
+
+  Future<void> openFile() async {
+    String? filePath = r'/storage/emulated/0/update.apk';
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      filePath = result.files.single.path;
+    } else {
+      // User canceled the pickerr
+    }
+    final _result = await OpenFile.open(filePath);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(

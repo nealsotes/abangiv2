@@ -189,6 +189,7 @@ class _LoginState extends State<login> {
       for (var i = 0; i < bodyData.length; i++) {
         if (bodyData[i]['email'] == mailController.text) {
           localStorage.setString('user', bodyData[i]['fullName']);
+          localStorage.setString('userid', bodyData[i]['userId'].toString());
         }
       }
       // ignore: use_build_context_synchronously

@@ -3,10 +3,12 @@ import 'package:abangi_v1/Models/Item.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' as io;
 
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
 // ignore: use_key_in_widget_constructors
 class BikesDetails extends StatelessWidget {
   final ItemModel itemModel;
-  const BikesDetails(
+  BikesDetails(
       {Key? key,
       required this.itemModel,
       required String itemName,
@@ -16,6 +18,24 @@ class BikesDetails extends StatelessWidget {
       required String owner,
       required String image})
       : super(key: key);
+
+  String _selectedDate = '';
+  String _dateCount = '';
+  String _range = '';
+  String _rangeCount = '';
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    if (args.value is PickerDateRange) {
+      final dynamic date = args.value;
+      _range = 'From: ${date.startDate}, To: ${date.endDate}';
+      _rangeCount =
+          'Total days: ${date.endDate.difference(date.startDate).inDays}';
+    } else {
+      final dynamic date = args.value;
+      _selectedDate = 'Date: $date';
+      _dateCount = '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -198,6 +218,33 @@ class BikesDetails extends StatelessWidget {
                             color: Colors.black,
                             fontSize: 14,
                             fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ),
+                      child: Text(
+                        "Schedule Availability",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 21,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      top: 80,
+                      right: 0,
+                      bottom: 0,
+                      child: SfDateRangePicker(
+                        onSelectionChanged: _onSelectionChanged,
+                        selectionMode: DateRangePickerSelectionMode.range,
+                        initialSelectedRange: PickerDateRange(
+                            DateTime.now().subtract(const Duration(days: 4)),
+                            DateTime.now().add(const Duration(days: 3))),
                       ),
                     ),
                   ],
