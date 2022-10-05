@@ -8,8 +8,16 @@ class ItemModel {
   late String location;
   late String image;
 
-  ItemModel(this.itemName, this.description, this.price, this.category,
-      this.owner, this.rentalMethod, this.location, this.image);
+  ItemModel(
+    this.itemName,
+    this.description,
+    this.price,
+    this.category,
+    this.owner,
+    this.rentalMethod,
+    this.location,
+    this.image,
+  );
 
   ItemModel.fromJson(Map<String, dynamic> json) {
     itemName = json['itemName'];

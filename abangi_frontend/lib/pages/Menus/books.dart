@@ -98,11 +98,6 @@ class _MyStatefulWidgetState extends State<BooksScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => BooksDetails(
-                            itemName: snapshot.data![index].itemName,
-                            description: snapshot.data![index].description,
-                            price: snapshot.data![index].price,
-                            category: snapshot.data![index].category,
-                            owner: snapshot.data![index].owner,
                             itemModel: snapshot.data![index],
                           ),
                         ),

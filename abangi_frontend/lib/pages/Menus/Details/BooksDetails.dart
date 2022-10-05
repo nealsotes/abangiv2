@@ -1,23 +1,23 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
-import 'package:abangi_v1/Models/Item.dart';
-import 'package:flutter/material.dart';
-import 'dart:io' as io;
 
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:io' as io;
+import 'package:abangi_v1/Models/Item.dart';
+import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
+import 'package:abangi_v1/pages/Menus/Details/Reservation/reservation.dart';
+import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:intl/intl.dart';
 
 // ignore: use_key_in_widget_constructors
 class BooksDetails extends StatelessWidget {
   final ItemModel itemModel;
-  BooksDetails(
-      {Key? key,
-      required this.itemModel,
-      required String itemName,
-      required String description,
-      required double price,
-      required String category,
-      required String owner})
-      : super(key: key);
-
+  // ignore: prefer_const_constructors_in_immutables
+  BooksDetails({
+    Key? key,
+    required this.itemModel,
+  }) : super(key: key);
+  // ignore: unused_field
   String _selectedDate = '';
   String _dateCount = '';
   String _range = '';
@@ -219,6 +219,7 @@ class BooksDetails extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
+
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       decoration: BoxDecoration(
@@ -226,26 +227,14 @@ class BooksDetails extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: Text(
-                        "Schedule Availability",
+                        "Available Dates",
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: 21,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
-                    Positioned(
-                      left: 0,
-                      top: 80,
-                      right: 0,
-                      bottom: 0,
-                      child: SfDateRangePicker(
-                        onSelectionChanged: _onSelectionChanged,
-                        selectionMode: DateRangePickerSelectionMode.range,
-                        initialSelectedRange: PickerDateRange(
-                            DateTime.now().subtract(const Duration(days: 4)),
-                            DateTime.now().add(const Duration(days: 3))),
-                      ),
-                    ),
+                    ScheduleAvalability(),
                   ],
                 ),
               )
@@ -254,6 +243,146 @@ class BooksDetails extends StatelessWidget {
       theme: ThemeData(
           scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
           fontFamily: 'Poppins'),
+    );
+  }
+}
+
+class ScheduleAvalability extends StatefulWidget {
+  const ScheduleAvalability({Key? key}) : super(key: key);
+
+  @override
+  ElectronicsDetailsState createState() => ElectronicsDetailsState();
+}
+
+/// State for ScheduleAvalability
+class ElectronicsDetailsState extends State<ScheduleAvalability> {
+  DateRangePickerController _dateRangePickerController =
+      DateRangePickerController();
+  TextEditingController dateInput = TextEditingController();
+  String _selectedDate = '';
+  String _dateCount = '';
+  String _range = '';
+  String _rangeCount = '';
+
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    setState(() {
+      if (args.value is PickerDateRange) {
+        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
+            // ignore: lines_longer_than_80_chars
+            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+      } else if (args.value is DateTime) {
+        _selectedDate = args.value.toString();
+      } else if (args.value is List<DateTime>) {
+        _dateCount = args.value.length.toString();
+      } else {
+        _rangeCount = args.value.length.toString();
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    dateInput.text = ""; //set the initial value of text field
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SfDateRangePicker(
+          onSelectionChanged: _onSelectionChanged,
+          controller: _dateRangePickerController,
+          selectionMode: DateRangePickerSelectionMode.range,
+          initialSelectedRange: PickerDateRange(
+              DateTime.now().add(const Duration(days: 0)),
+              DateTime.now().add(const Duration(days: 30))),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Text(
+            "Ratings and Reviews",
+            style: TextStyle(
+                color: Colors.black, fontSize: 21, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Text(
+            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit",
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Text(
+            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit",
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Text(
+            "How to book",
+            style: TextStyle(
+                color: Colors.black, fontSize: 21, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+        ),
+        Container(
+            height: 50,
+            width: 400,
+            margin: const EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: OutlinedButton(
+              child: const Text('Chat Now'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Chat()),
+                );
+              },
+            )),
+        Container(
+            height: 50,
+            width: 400,
+            margin: const EdgeInsets.only(top: 15),
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: ElevatedButton(
+              child: const Text('Ask for reservation'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Reservation()),
+                );
+              },
+            )),
+      ],
     );
   }
 }

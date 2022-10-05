@@ -9,8 +9,9 @@ import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:open_file/open_file.dart';
 // ignore: import_of_legacy_library_into_null_safe
-
+import 'package:intl/intl.dart' as intl;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../api/api.dart';
 import '../global_utils.dart';
@@ -116,6 +117,27 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     return perdaysweeks;
   }
 
+  String _selectedDate = '';
+  String _dateCount = '';
+  String _range = '';
+  String _rangeCount = '';
+  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+    setState(() {
+      if (args.value is PickerDateRange) {
+        _range =
+            '${intl.DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
+            // ignore: lines_longer_than_80_chars
+            ' ${intl.DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+      } else if (args.value is DateTime) {
+        _selectedDate = args.value.toString();
+      } else if (args.value is List<DateTime>) {
+        _dateCount = args.value.length.toString();
+      } else {
+        _rangeCount = args.value.length.toString();
+      }
+    });
+  }
+
   bool _isLoading = false;
 
   // ignore: prefer_typing_uninitialized_variables
@@ -149,15 +171,27 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                   ),
                 ),
                 Container(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    '$_fileName',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                Container(
                   padding: const EdgeInsets.all(10),
                   height: 60,
-                  child: MaterialButton(
-                    child: const Text(
-                      'Upload Image',
-                      style: TextStyle(
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        side: const BorderSide(
                           color: Color.fromRGBO(0, 176, 236, 1),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20),
+                        )),
+                    child: const Text(
+                      '+ Add Photo',
+                      style: TextStyle(
+                          color: Color.fromRGBO(0, 176, 236, 1), fontSize: 17),
                     ),
                     onPressed: () {
                       _pickFile();
@@ -263,6 +297,26 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     },
                   ),
                 ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Schedule Availability',
+                    style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: SfDateRangePicker(
+                    onSelectionChanged: _onSelectionChanged,
+                    selectionMode: DateRangePickerSelectionMode.range,
+                    initialSelectedRange: PickerDateRange(
+                        DateTime.now().add(const Duration(days: 0)),
+                        DateTime.now().add(const Duration(days: 30))),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,7 +336,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             ),
                           ),
                           SizedBox(
-                            width: 100,
+                            width: 350,
                             child: TextFormField(
                               controller: itemPriceController,
                               keyboardType: TextInputType.number,
@@ -302,92 +356,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             ),
                           )
                         ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        // ignore: prefer_const_constructors
-                        padding: EdgeInsets.only(left: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Per',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 50,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  // ignore: prefer_const_constructors
-                                  // Initial Value
-                                  value: dropdownvaluePerPrice,
-                                  // Down Arrow Icon
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 10,
-                                  ),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      dropdownvaluePerPrice = newValue!;
-                                    });
-                                  },
-                                  // Array list of items
-                                  items: dropdownPerDaysWeeks,
-
-                                  // After selecting the desired option,it will
-                                  // change button value to selected value
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 52),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  // ignore: prefer_const_constructors
-                                  // Initial Value
-                                  value: dropdownvalueDaysWeeks,
-                                  // Down Arrow Icon
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 10,
-                                  ),
-                                  // Array list of items
-                                  items: DaysWeeks.map((String items) {
-                                    return DropdownMenuItem(
-                                      value: items,
-                                      child: Text(items),
-                                    );
-                                  }).toList(),
-                                  // After selecting the desired option,it will
-                                  // change button value to selected value
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      dropdownvalueDaysWeeks = newValue!;
-                                    });
-                                  },
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
                       ),
                     ),
                   ],
