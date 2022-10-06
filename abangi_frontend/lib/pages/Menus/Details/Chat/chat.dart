@@ -27,21 +27,6 @@ class ActivityScreen extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<ActivityScreen> {
-  TextEditingController searchController = TextEditingController();
-  var _openResult = 'Unknown';
-
-  Future<void> openFile() async {
-    String? filePath = r'/storage/emulated/0/update.apk';
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-
-    if (result != null) {
-      filePath = result.files.single.path;
-    } else {
-      // User canceled the pickerr
-    }
-    final _result = await OpenFile.open(filePath);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(

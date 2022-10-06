@@ -61,6 +61,8 @@ Future<List<ItemModel>> getItemData() async {
         i['rentalMethod'],
         i['location'],
         i['image'],
+        i['startDate'],
+        i['endDate'],
       );
       items.add(item);
     }

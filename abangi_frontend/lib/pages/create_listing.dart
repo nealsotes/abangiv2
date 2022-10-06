@@ -83,7 +83,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
   }
 
   var dropdownvalueCategory = "9";
-  var dropdownvaluePerPrice = "1";
 
   var dropdownvalueDaysWeeks = "Days";
   // ignore: non_constant_identifier_names
@@ -121,6 +120,8 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
+  String _startDate = '';
+  String _endDate = '';
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is PickerDateRange) {
@@ -128,6 +129,9 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
             '${intl.DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
             // ignore: lines_longer_than_80_chars
             ' ${intl.DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+        _startDate = intl.DateFormat('yyyy/MM/dd').format(args.value.startDate);
+        _endDate = intl.DateFormat('yyyy/MM/dd')
+            .format(args.value.endDate ?? args.value.startDate);
       } else if (args.value is DateTime) {
         _selectedDate = args.value.toString();
       } else if (args.value is List<DateTime>) {
@@ -170,15 +174,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    '$_fileName',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
+
                 Container(
                   padding: const EdgeInsets.all(10),
                   height: 60,
@@ -297,6 +293,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     },
                   ),
                 ),
+
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: const Text(
@@ -307,6 +304,14 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                         color: Colors.black),
                   ),
                 ),
+                Text(
+                  'Start Date: $_startDate',
+                  style: TextStyle(color: Color.fromRGBO(0, 176, 236, 1)),
+                ),
+                Text(
+                  'End Date: $_endDate',
+                  style: TextStyle(color: Color.fromRGBO(0, 176, 236, 1)),
+                ),
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: SfDateRangePicker(
@@ -314,7 +319,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     selectionMode: DateRangePickerSelectionMode.range,
                     initialSelectedRange: PickerDateRange(
                         DateTime.now().add(const Duration(days: 0)),
-                        DateTime.now().add(const Duration(days: 30))),
+                        DateTime.now().add(const Duration(days: 0))),
                   ),
                 ),
                 Row(
@@ -335,26 +340,23 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                   color: Colors.black),
                             ),
                           ),
-                          SizedBox(
-                            width: 350,
-                            child: TextFormField(
-                              controller: itemPriceController,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.digitsOnly
-                              ],
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: '₱0.00',
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter item price';
-                                }
-                                return null;
-                              },
+                          TextFormField(
+                            controller: itemPriceController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: '₱0.00',
                             ),
-                          )
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter item price';
+                              }
+                              return null;
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -600,7 +602,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 // ignore: void_checks
-                                clearText();
+
                                 return _isLoading ? null : _handlePost();
                               }
                             },
@@ -633,7 +635,9 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
             ' ' +
             itemCityLocationController.text,
         "ItemImage": _fileName,
-        "RentalMethodId": _radioRentalValue,
+        "RentalMethodId": _radioRentalValue as int,
+        "StartDate": _startDate,
+        "EndDate": _endDate,
       };
       var res = await CallApi().postData(data, 'api/items');
       // ignore: prefer_typing_uninitialized_variables

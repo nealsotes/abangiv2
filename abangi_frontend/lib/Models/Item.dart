@@ -7,6 +7,8 @@ class ItemModel {
   late String rentalMethod;
   late String location;
   late String image;
+  late String startDate;
+  late String endDate;
 
   ItemModel(
     this.itemName,
@@ -17,6 +19,8 @@ class ItemModel {
     this.rentalMethod,
     this.location,
     this.image,
+    this.startDate,
+    this.endDate,
   );
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -28,5 +32,7 @@ class ItemModel {
     rentalMethod = json['rentalMethod'];
     location = json['location'];
     image = json['image'];
+    startDate = json['startDate'];
+    endDate = json['endDate'];
   }
 }

@@ -234,7 +234,15 @@ class HandyToolsDetails extends StatelessWidget {
                             fontWeight: FontWeight.w600),
                       ),
                     ),
-                    ScheduleAvalability(),
+                    SfDateRangePicker(
+                      selectionMode: DateRangePickerSelectionMode.range,
+                      initialSelectedRange: PickerDateRange(
+                          DateTime.parse(itemModel.startDate)
+                              .add(Duration(days: 0)),
+                          DateTime.parse(itemModel.endDate)
+                              .add(Duration(days: 0))),
+                    ),
+                    ButtonWidget(),
                   ],
                 ),
               )
@@ -247,45 +255,15 @@ class HandyToolsDetails extends StatelessWidget {
   }
 }
 
-class ScheduleAvalability extends StatefulWidget {
-  const ScheduleAvalability({Key? key}) : super(key: key);
+class ButtonWidget extends StatefulWidget {
+  const ButtonWidget({Key? key}) : super(key: key);
 
   @override
   ElectronicsDetailsState createState() => ElectronicsDetailsState();
 }
 
-/// State for ScheduleAvalability
-class ElectronicsDetailsState extends State<ScheduleAvalability> {
-  DateRangePickerController _dateRangePickerController =
-      DateRangePickerController();
-  TextEditingController dateInput = TextEditingController();
-  String _selectedDate = '';
-  String _dateCount = '';
-  String _range = '';
-  String _rangeCount = '';
-
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    setState(() {
-      if (args.value is PickerDateRange) {
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-            // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
-      } else if (args.value is List<DateTime>) {
-        _dateCount = args.value.length.toString();
-      } else {
-        _rangeCount = args.value.length.toString();
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    dateInput.text = ""; //set the initial value of text field
-    super.initState();
-  }
-
+/// State for ButtonWidget
+class ElectronicsDetailsState extends State<ButtonWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -293,14 +271,6 @@ class ElectronicsDetailsState extends State<ScheduleAvalability> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SfDateRangePicker(
-          onSelectionChanged: _onSelectionChanged,
-          controller: _dateRangePickerController,
-          selectionMode: DateRangePickerSelectionMode.range,
-          initialSelectedRange: PickerDateRange(
-              DateTime.now().add(const Duration(days: 0)),
-              DateTime.now().add(const Duration(days: 30))),
-        ),
         Container(
           margin: EdgeInsets.only(top: 20),
           decoration: BoxDecoration(

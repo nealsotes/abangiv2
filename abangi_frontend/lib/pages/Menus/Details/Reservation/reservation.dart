@@ -5,6 +5,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 /// My app class to display the date range picker
 class Reservation extends StatefulWidget {
+  const Reservation({Key? key}) : super(key: key);
+
   @override
   MyAppState createState() => MyAppState();
 }
