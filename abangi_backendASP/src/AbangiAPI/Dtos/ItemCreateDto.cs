@@ -24,9 +24,9 @@ namespace AbangiAPI.Dtos
         public double ItemPrice { get; set; }
         [Required(ErrorMessage = "Description is required")]
         public string ItemDescription { get; set; }
-        [Required(ErrorMessage = "Item image is required")]
+       
         public IFormFile Image { get; set; }
-        [Required(ErrorMessage = "Item image is required")]
+       
         public string ItemImage { get; set; }
         [Required(ErrorMessage = "Location is required")]
         public string ItemLocation { get; set; }

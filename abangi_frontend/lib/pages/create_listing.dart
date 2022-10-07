@@ -47,6 +47,12 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
   TextEditingController itemBarLocationController = TextEditingController();
   TextEditingController itemCityLocationController = TextEditingController();
   var _dateRangePickerController;
+  bool _isLoading = false;
+  // change text to upload file
+  String _uploadFileText = '+ Add Photo';
+
+  // ignore: prefer_typing_uninitialized_variables
+  var _radioRentalValue;
   var textInputFontSize = 14.00;
   final _formKey = GlobalKey<FormState>();
   //Image upload
@@ -142,11 +148,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     });
   }
 
-  bool _isLoading = false;
-
-  // ignore: prefer_typing_uninitialized_variables
-  var _radioRentalValue;
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -187,13 +188,17 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                           side: const BorderSide(
                             color: Color.fromRGBO(0, 176, 236, 1),
                           )),
-                      child: const Text(
-                        '+ Add Photo',
+                      child: Text(
+                        _uploadFileText,
                         style: TextStyle(
                             color: Color.fromRGBO(0, 176, 236, 1),
                             fontSize: 17),
                       ),
                       onPressed: () {
+                        setState(() {
+                          _uploadFileText = 'Photo Added';
+                        });
+
                         _pickFile();
                       },
                     ),
@@ -597,7 +602,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   // ignore: void_checks
-
                                   return _isLoading ? null : _handlePost();
                                 }
                               },
@@ -646,9 +650,10 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('Item Posted'),
         ));
+        clearText();
       } else {
         // ignore: use_build_context_synchronously
-        errorSnackBar(context, body['errors']["image"][0].toString().trim());
+        errorSnackBar(context, "Error Posting Item Try Again");
       }
     } catch (e) {
       print(e);
