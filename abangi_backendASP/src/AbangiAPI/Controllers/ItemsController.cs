@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AbangiAPI.Controllers
 {
@@ -54,18 +55,26 @@ namespace AbangiAPI.Controllers
             }
             return Ok(item);
         }
+        [AllowAnonymous]
         [HttpPost]
-        public  ActionResult<ItemReadDto> CreateItem([FromForm]ItemCreateDto itemCreateDto)
+        public  ActionResult<ItemReadDto> CreateItem([FromBody]ItemCreateDto itemCreateDto)
         {
-            if(itemCreateDto.Image != null)
-            {
-                 _repository.SavePostImageAsync(itemCreateDto);
-            }
-            var itemModel = _mapper.Map<Item>(itemCreateDto);
-            _repository.CreateItem(itemModel);
-            _repository.SaveChanges();
-            var itemReadDto = _mapper.Map<ItemReadDto>(itemModel);
-            return CreatedAtRoute(nameof(GetItemById), new { id = itemReadDto.ItemId }, itemReadDto);
+           if(ModelState.IsValid)
+           {
+                 if(itemCreateDto.Image != null)
+                {
+                    _repository.SavePostImageAsync(itemCreateDto);
+                }
+                var itemModel = _mapper.Map<Item>(itemCreateDto);
+                _repository.CreateItem(itemModel);
+                _repository.SaveChanges();
+                var itemReadDto = _mapper.Map<ItemReadDto>(itemModel);
+                return CreatedAtRoute(nameof(GetItemById), new { id = itemReadDto.ItemId }, itemReadDto);
+           }
+           else
+           {
+            return BadRequest(ModelState);
+           }
     
         }
 

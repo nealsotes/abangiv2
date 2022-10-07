@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace AbangiAPI.Models
 {
@@ -25,6 +26,12 @@ namespace AbangiAPI.Models
         public string Location {get; set;}
         [Column("Image")]
         public string Image {get; set;}
-        
+       
+        [DataType(DataType.Date)]
+        public DateTime DateCreated {get; set;}
+        [DataType(DataType.Date)]
+        public DateTime StartDate {get; set;}
+        [DataType(DataType.Date)]
+        public DateTime EndDate {get; set;}
     }
 }

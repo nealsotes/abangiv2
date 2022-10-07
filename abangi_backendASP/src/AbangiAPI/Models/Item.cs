@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace AbangiAPI.Models
 {
     public class Item
     {   
+      
+
         [Key]
         [Required]
         public int ItemId {get; set;}
@@ -25,6 +28,13 @@ namespace AbangiAPI.Models
        
            
         public string ItemImage {get; set;}
+
+        [DataType(DataType.Date)]
+        public DateTime DateCreated {get; set;}
+        [DataType(DataType.Date)]
+        public DateTime StartDate {get; set;}
+        [DataType(DataType.Date)]
+        public DateTime EndDate {get; set;}
 
         [Required]
         [MaxLength(250)]

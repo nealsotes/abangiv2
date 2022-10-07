@@ -55,7 +55,11 @@ namespace AbangiAPI.Data.SqlRepo
                                 Owner = u.FullName,
                                 RentalMethod = r.RentalMethodName,
                                 Location = i.ItemLocation,
-                                Image = i.ItemImage
+                                Image = i.ItemImage,
+                                DateCreated = i.DateCreated,
+                                StartDate = i.StartDate,
+                                EndDate = i.EndDate
+                               
                            }).ToListAsync();
             return await itemList;
         }
@@ -76,7 +80,12 @@ namespace AbangiAPI.Data.SqlRepo
                                  Category = ic.ItemCategoryName,
                                  Owner = u.FullName,
                                 RentalMethod = r.RentalMethodName,
-                                Location = i.ItemLocation
+                                Location = i.ItemLocation,
+                                Image = i.ItemImage,
+                                DateCreated = i.DateCreated,
+                                StartDate = i.StartDate,
+                                EndDate = i.EndDate
+                                
                                 
                            }).FirstOrDefaultAsync(i => i.ItemId == id);
             return itemList.Result;

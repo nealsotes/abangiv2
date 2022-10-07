@@ -54,7 +54,10 @@ namespace AbangiAPI.Data.SqlRepo
                             Owner = u.FullName,
                             RentalMethod = r.RentalMethodName,
                             Location = i.ItemLocation,
-                            Image = i.ItemImage
+                            Image = i.ItemImage,
+                            DateCreated = i.DateCreated,
+                            StartDate = i.StartDate,
+                            EndDate = i.EndDate,
                         }).ToListAsync();
             return await Item;
         }
