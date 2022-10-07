@@ -49,7 +49,7 @@ Future<List<ItemModel>> getItemData() async {
     var response =
         await CallApi().getData('api/itemcategories/getitembycategory/books');
     var jsonData = jsonDecode(response.body);
-    print(jsonData);
+
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(

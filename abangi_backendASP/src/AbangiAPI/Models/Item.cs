@@ -26,7 +26,7 @@ namespace AbangiAPI.Models
         public int UserId {get; set;}
         public int RentalMethodId {get; set;}
        
-           
+        [Required]
         public string ItemImage {get; set;}
 
         [DataType(DataType.Date)]

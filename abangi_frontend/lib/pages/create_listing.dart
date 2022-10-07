@@ -1,11 +1,15 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors, unused_field
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:angles/angles.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'dart:math';
+import 'dart:core';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:open_file/open_file.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -102,6 +106,8 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     itemHouseLocationController.clear();
     itemBarLocationController.clear();
     itemCityLocationController.clear();
+    _radioRentalValue = null;
+    _uploadFileText = "+ Add Photo";
   }
 
   List<DropdownMenuItem<String>> get dropdownCategories {
@@ -181,7 +187,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     height: 60,
-                    width: 400,
+                    width: 900,
                     child: FlatButton(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -195,11 +201,10 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             fontSize: 17),
                       ),
                       onPressed: () {
+                        _pickFile();
                         setState(() {
                           _uploadFileText = 'Photo Added';
                         });
-
-                        _pickFile();
                       },
                     ),
                   ),
@@ -228,7 +233,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter item name';
+                            return 'Required*';
                           }
                           return null;
                         },
@@ -295,7 +300,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter item description';
+                          return 'Required*';
                         }
                         return null;
                       },
@@ -352,7 +357,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter item price';
+                                  return 'Required*';
                                 }
                                 return null;
                               },
@@ -399,7 +404,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter barangay';
+                                  return 'Required*';
                                 }
                                 return null;
                               },
@@ -423,7 +428,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter city';
+                                return 'Required*';
                               }
                               return null;
                             },
@@ -598,13 +603,17 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                 primary: Colors.blue,
                                 onPrimary: Colors.white,
                               ),
-                              child: Text(_isLoading ? 'Posting...' : 'Post'),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  // ignore: void_checks
+                                  if (_radioRentalValue == null) {
+                                    errorSnackBar(context,
+                                        "Please select a rental method");
+                                  }
+
                                   return _isLoading ? null : _handlePost();
                                 }
                               },
+                              child: Text(_isLoading ? 'Posting...' : 'Post'),
                             ),
                           )),
                     ],
@@ -646,11 +655,20 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
       }
 
       if (res.statusCode == 201) {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Item Posted'),
-        ));
+        // ignore: use_build_context_synchronously, avoid_single_cascade_in_expression_statements
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'Success',
+          desc: 'Item Posted Successfully',
+          buttonsTextStyle: const TextStyle(color: Colors.white),
+          showCloseIcon: false,
+          btnOkOnPress: () {},
+        ).show();
         clearText();
+        // ignore: unnecessary_null_comparison
       } else {
         // ignore: use_build_context_synchronously
         errorSnackBar(context, "Error Posting Item Try Again");
