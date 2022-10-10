@@ -23,7 +23,11 @@ namespace AbangiAPI.Data.SqlRepo
        
         public void CreateItemCategory(ItemCategory itemCategory)
         {
-            throw new NotImplementedException();
+            if(itemCategory == null)
+            {
+                throw new ArgumentNullException(nameof(itemCategory));
+            }
+            _context.ItemCategories.Add(itemCategory);
         }
 
         public void DeleteItemCategory(ItemCategory itemCategory)

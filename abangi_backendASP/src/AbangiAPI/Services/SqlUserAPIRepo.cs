@@ -14,8 +14,8 @@ namespace AbangiAPI.Services
         User GetById(int id);
         User Create(User user, string password);
         void Update(User user, string password = null);
-        void Delete(int id);
-    
+        void DeleteUser(User user);
+        void SaveChanges();
     }
 
 
@@ -77,14 +77,13 @@ namespace AbangiAPI.Services
             return user;
         }
 
-        public void Delete(int id)
+        public void DeleteUser(User user)
         {
-            var user = _context.Users.Find(id);
-            if(user != null)
+            if(user == null)
             {
-                _context.Users.Remove(user);
-                _context.SaveChanges();
+                throw new AppException("User not found");
             }
+            _context.Users.Remove(user);
         }
 
         public IEnumerable<User> GetAll()
@@ -170,6 +169,11 @@ namespace AbangiAPI.Services
                 }
             }
             return true;
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
         }
     }
 

@@ -50,12 +50,14 @@ namespace AbangiAPI
             services.AddScoped<IItemCategoryAPIRepo, SqlItemCategoriesAPIRepo>();
             services.AddScoped<IRoleAPIRepo, SqlRoleAPIRepo>();
             services.AddScoped<IUserRoleAPIRepo, SqlUserRoleAPIRepo>();
-        
+            services.AddControllersWithViews();
+            services.AddCoreAdmin();
+            
             //configure strongly typed settings objects
             var appSettingsSection = _configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
         
-            services.AddCoreAdmin();
+       
         
 
            //configure jwt authentication
@@ -94,6 +96,7 @@ namespace AbangiAPI
                     ValidateAudience =false
                 };
            });
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,11 +108,12 @@ namespace AbangiAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+               
             }
-          
-        
-           
-            
+
+
+
+
             app.UseRouting();
             //global cors policy 
             app.UseCors(x => x
@@ -120,7 +124,7 @@ namespace AbangiAPI
             );
             app.UseAuthentication();
             app.UseAuthorization();
-            
+            app.UseStaticFiles();
             app.UseEndpoints(endpoints =>
             {
                endpoints.MapControllers();

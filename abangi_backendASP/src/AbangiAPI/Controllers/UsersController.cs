@@ -125,8 +125,14 @@ namespace AbangiAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _repository.Delete(id);
-            return Ok();
+            var user = _repository.GetById(id);
+            if(user == null)
+            {
+                return NotFound();
+            }
+            _repository.DeleteUser(user);
+            _repository.SaveChanges();
+            return NoContent();
         }
 
         [HttpGet]
