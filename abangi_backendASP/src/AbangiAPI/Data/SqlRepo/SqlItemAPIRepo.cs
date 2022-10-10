@@ -45,6 +45,7 @@ namespace AbangiAPI.Data.SqlRepo
                            join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                            join u in _context.Users on i.UserId equals u.UserId
                            join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
+                           join c in _context.UserRoles on u.UserId equals c.UserId
                            select new ItemInformation
                            {
                                 ItemId = i.ItemId,
@@ -58,15 +59,16 @@ namespace AbangiAPI.Data.SqlRepo
                                 Image = i.ItemImage,
                                 DateCreated = i.DateCreated,
                                 StartDate = i.StartDate,
-                                EndDate = i.EndDate
+                                EndDate = i.EndDate,
+                                AbangiVerified = c.AbangiVerified
                                
                            }).ToListAsync();
             return await itemList;
         }
 
-        public ItemInformation GetItemById(int id)
+        public async Task<ItemInformation> GetItemById(int id)
         {
-             var itemList = (from i in _context.Items
+             var itemList = await (from i in _context.Items
                            join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                            join u in _context.Users on i.UserId equals u.UserId
                            join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
@@ -84,11 +86,10 @@ namespace AbangiAPI.Data.SqlRepo
                                 Image = i.ItemImage,
                                 DateCreated = i.DateCreated,
                                 StartDate = i.StartDate,
-                                EndDate = i.EndDate
-                                
+                                EndDate = i.EndDate          
                                 
                            }).FirstOrDefaultAsync(i => i.ItemId == id);
-            return itemList.Result;
+            return  itemList;
         }
 
         public bool SaveChanges()

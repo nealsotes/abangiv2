@@ -38,9 +38,9 @@ namespace AbangiAPI.Data.SqlRepo
            return await _context.RentalMethods.ToListAsync();
         }
 
-        public RentalMethod GetRentalMethodById(int id)
+        public async Task<RentalMethod> GetRentalMethodById(int id)
         {
-            return _context.RentalMethods.FirstOrDefault(p => p.RentalMethodId == id);
+            return await _context.RentalMethods.FirstOrDefaultAsync(p => p.RentalMethodId == id);
         }
 
         public bool SaveChanges()
@@ -50,7 +50,7 @@ namespace AbangiAPI.Data.SqlRepo
 
         public void UpdateRentalMethod(RentalMethod rentalMethod)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

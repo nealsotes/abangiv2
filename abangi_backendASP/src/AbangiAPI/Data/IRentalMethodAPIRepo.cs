@@ -10,7 +10,7 @@ namespace AbangiAPI.Data
     {
         bool SaveChanges();
         Task<IEnumerable<RentalMethod>> GetAllRentalMethods();
-        RentalMethod GetRentalMethodById(int id);
+        Task<RentalMethod> GetRentalMethodById(int id);
         void CreateRentalMethod(RentalMethod rentalMethod);
         void UpdateRentalMethod(RentalMethod rentalMethod);
         void DeleteRentalMethod(RentalMethod rentalMethod);

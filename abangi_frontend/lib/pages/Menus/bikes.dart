@@ -63,6 +63,7 @@ Future<List<ItemModel>> getItemData() async {
         i['image'],
         i['startDate'],
         i['endDate'],
+        i['abangiVerified'],
       );
       items.add(item);
     }

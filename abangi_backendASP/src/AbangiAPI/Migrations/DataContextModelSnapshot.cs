@@ -153,6 +153,53 @@ namespace AbangiAPI.Migrations
                     b.ToTable("RentalMethods");
                 });
 
+            modelBuilder.Entity("AbangiAPI.Models.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("RoleDescription")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("AbangiAPI.Models.UserRole", b =>
+                {
+                    b.Property<int>("UserRoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("AbangiVerified")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserRoleId");
+
+                    b.ToTable("UserRoles");
+                });
+
             modelBuilder.Entity("AbangiAPI.Models.Item", b =>
                 {
                     b.HasOne("AbangiAPI.Models.ItemCategory", "ItemCategory")

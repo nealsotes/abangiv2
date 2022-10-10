@@ -31,9 +31,9 @@ namespace AbangiAPI.Data.SqlRepo
             throw new NotImplementedException();
         }
 
-        public IEnumerable<ItemCategory> GetAllItemCategories()
+        public async Task<IEnumerable<ItemCategory>> GetAllItemCategories()
         {
-            return _context.ItemCategories.Include(i => i.Items).ToList();
+            return await _context.ItemCategories.Include(i => i.Items).ToListAsync();
         }
 
          public async Task<IEnumerable<ItemInformation>> GetItemByCategory(string name)
@@ -42,7 +42,8 @@ namespace AbangiAPI.Data.SqlRepo
             var Item = (from i in _context.Items
                         join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                         join u in _context.Users on i.UserId equals u.UserId
-                        join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
+                        join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId 
+                        join c in _context.UserRoles on u.UserId equals c.UserId 
                         where ic.ItemCategoryName.ToLower() == name
                         select new ItemInformation
                         {
@@ -55,6 +56,7 @@ namespace AbangiAPI.Data.SqlRepo
                             RentalMethod = r.RentalMethodName,
                             Location = i.ItemLocation,
                             Image = i.ItemImage,
+                            AbangiVerified = c.AbangiVerified,
                             DateCreated = i.DateCreated,
                             StartDate = i.StartDate,
                             EndDate = i.EndDate,
@@ -64,9 +66,9 @@ namespace AbangiAPI.Data.SqlRepo
 
        
        
-        public ItemCategory GetItemCategoryById(int id)
+        public async Task<ItemCategory> GetItemCategoryById(int id)
         {
-            return _context.ItemCategories.FirstOrDefault(p => p.ItemCategoryId == id);
+            return await _context.ItemCategories.FirstOrDefaultAsync(p => p.ItemCategoryId == id);
         }
     
         public bool SaveChanges()

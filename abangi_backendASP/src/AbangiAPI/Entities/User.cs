@@ -23,6 +23,7 @@ namespace AbangiAPI.Entities
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public virtual ICollection<Item> Items { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
         
     }
 }

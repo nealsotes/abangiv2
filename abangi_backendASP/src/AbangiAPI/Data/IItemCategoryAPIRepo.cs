@@ -9,8 +9,8 @@ namespace AbangiAPI.Data
     public interface IItemCategoryAPIRepo
     {
         bool SaveChanges();
-        IEnumerable<ItemCategory> GetAllItemCategories();
-        ItemCategory GetItemCategoryById(int id);
+        Task<IEnumerable<ItemCategory>> GetAllItemCategories();
+        Task<ItemCategory> GetItemCategoryById(int id);
         void CreateItemCategory(ItemCategory itemCategory);
         void UpdateItemCategory(ItemCategory itemCategory);
         void DeleteItemCategory(ItemCategory itemCategory);

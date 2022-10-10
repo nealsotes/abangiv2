@@ -36,7 +36,7 @@ namespace AbangiAPI
         {
           
             services.AddCors();
-
+            services.AddRazorPages();
             services.AddDbContext<DataContext>();
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -48,10 +48,15 @@ namespace AbangiAPI
             services.AddScoped<IItemAPIRepo, SqlItemAPIRepo>();
             services.AddScoped<IRentalMethodAPIRepo, SqlRentaMethodAPIREpo>();
             services.AddScoped<IItemCategoryAPIRepo, SqlItemCategoriesAPIRepo>();
+            services.AddScoped<IRoleAPIRepo, SqlRoleAPIRepo>();
+            services.AddScoped<IUserRoleAPIRepo, SqlUserRoleAPIRepo>();
+        
             //configure strongly typed settings objects
             var appSettingsSection = _configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-           
+        
+            services.AddCoreAdmin();
+        
 
            //configure jwt authentication
            var appSettings = appSettingsSection.Get<AppSettings>();
@@ -102,7 +107,7 @@ namespace AbangiAPI
                 app.UseDeveloperExceptionPage();
             }
           
-            
+        
            
             
             app.UseRouting();
@@ -115,7 +120,7 @@ namespace AbangiAPI
             );
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                endpoints.MapControllers();

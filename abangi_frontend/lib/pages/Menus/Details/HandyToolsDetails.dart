@@ -178,12 +178,13 @@ class HandyToolsDetails extends StatelessWidget {
                             onPressed: () {},
                           ),
                           Text(
-                            itemModel.rentalMethod,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
+                              itemModel.AbangiVerified
+                                  ? "Abangi Verified"
+                                  : "Not Abangi Verified",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500)),
                         ],
                       ),
                     ),

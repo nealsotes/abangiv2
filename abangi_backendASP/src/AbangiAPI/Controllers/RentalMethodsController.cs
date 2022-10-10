@@ -39,9 +39,9 @@ namespace AbangiAPI.Controllers
             return Ok(rentalMethod);
         }
         [HttpDelete("{id}")]
-        public ActionResult<RentalMethod> DeleteRentalMethod(int id)
+        public async Task<ActionResult<RentalMethod>> DeleteRentalMethod(int id)
         {
-            var rentalMethod = _repository.GetRentalMethodById(id);
+            var rentalMethod = await _repository.GetRentalMethodById(id);
             if(rentalMethod == null)
             {
                 return NotFound();

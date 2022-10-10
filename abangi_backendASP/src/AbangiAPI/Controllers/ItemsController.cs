@@ -46,9 +46,9 @@ namespace AbangiAPI.Controllers
 
 
         [HttpGet("{id}", Name = "GetItemById")]
-        public  ActionResult<ItemInformation> GetItemById(int id)
+        public async Task<ActionResult<ItemInformation>> GetItemById(int id)
         {
-            var item = _repository.GetItemById(id);
+            var item = await _repository.GetItemById(id);
             if(item == null)
             {
                 return NotFound();

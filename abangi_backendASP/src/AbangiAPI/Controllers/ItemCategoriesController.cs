@@ -22,15 +22,15 @@ namespace AbangiAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public ActionResult<IEnumerable<ItemCategory>> GetAll()
+        public async Task<ActionResult<IEnumerable<ItemCategory>>> GetAll()
         {
-            var itemCategories = _repository.GetAllItemCategories();
+            var itemCategories = await _repository.GetAllItemCategories();
             return Ok(itemCategories);
         }
         [HttpGet("{id}")]
-        public ActionResult<ItemCategory> GetItemCategoryById(int id)
+        public async Task<ActionResult<ItemCategory>> GetItemCategoryById(int id)
         {
-            var itemCategory = _repository.GetItemCategoryById(id);
+            var itemCategory = await _repository.GetItemCategoryById(id);
             if (itemCategory == null)
             {
                 return NotFound();

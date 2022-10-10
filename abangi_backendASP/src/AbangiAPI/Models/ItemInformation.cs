@@ -26,6 +26,8 @@ namespace AbangiAPI.Models
         public string Location {get; set;}
         [Column("Image")]
         public string Image {get; set;}
+        [Column("AbangiVerified")]
+        public bool AbangiVerified {get; set;}
        
         [DataType(DataType.Date)]
         public DateTime DateCreated {get; set;}

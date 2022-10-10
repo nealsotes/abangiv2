@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class ItemModel {
   late String itemName;
   late String description;
@@ -9,6 +11,7 @@ class ItemModel {
   late String image;
   late String startDate;
   late String endDate;
+  late bool AbangiVerified;
 
   ItemModel(
     this.itemName,
@@ -21,6 +24,7 @@ class ItemModel {
     this.image,
     this.startDate,
     this.endDate,
+    this.AbangiVerified,
   );
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -34,5 +38,6 @@ class ItemModel {
     image = json['image'];
     startDate = json['startDate'];
     endDate = json['endDate'];
+    AbangiVerified = json['abangiVerified'];
   }
 }
