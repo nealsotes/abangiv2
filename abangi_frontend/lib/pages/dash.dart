@@ -34,12 +34,12 @@ class DashboardScreen extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<DashboardScreen> {
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
+  static List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     ActivityScreen(),
     CreateListingScreen(),
     MessagesScreen(),
-    AccountScreen()
+    AccountScreen(),
   ];
 
   void _onItemTapped(int index) {
