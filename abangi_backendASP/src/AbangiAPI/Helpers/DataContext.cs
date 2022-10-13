@@ -35,6 +35,7 @@ namespace AbangiAPI.Helpers
         public DbSet<RentalMethod> RentalMethods {get; set;}
         public DbSet<UserRole> UserRoles {get; set;}
         public DbSet<Role> Roles {get; set;}
+    
      
     }
 }

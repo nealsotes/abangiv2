@@ -118,7 +118,33 @@ namespace AbangiAPI.Data.SqlRepo
             return;
         
         }
-        
+
+        public async Task<IEnumerable<ItemInformation>> GetAllItemsByUser(int id)
+        {
+          var userItems = await (from i in _context.Items
+                           join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
+                           join u in _context.Users on i.UserId equals u.UserId
+                           join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
+                           where i.UserId == id
+                           select new ItemInformation
+                           {
+                                ItemId = i.ItemId,
+                                ItemName = i.ItemName,
+                                Description = i.ItemDescription,
+                                Price = i.ItemPrice,
+                                Category = ic.ItemCategoryName,
+                                Owner = u.FullName,
+                                RentalMethod = r.RentalMethodName,
+                                Location = i.ItemLocation,
+                                Image = i.ItemImage,
+                                DateCreated = i.DateCreated,
+                                StartDate = i.StartDate,
+                                EndDate = i.EndDate
+                                
+                           }).ToListAsync();
+            return userItems;
             
+        
+        }
     }
 }

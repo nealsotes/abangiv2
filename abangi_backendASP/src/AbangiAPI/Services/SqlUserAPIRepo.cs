@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using AbangiAPI.Entities;
 using AbangiAPI.Helpers;
+using AbangiAPI.Dtos;
 
 namespace AbangiAPI.Services
 {
     public interface IUserAPIRepo 
     {
         User Authenticate(String email, string password);
-        IEnumerable<User> GetAll();
+        IEnumerable<UserModel> GetAll();
         User GetById(int id);
         User Create(User user, string password);
         void Update(User user, string password = null);
@@ -86,9 +87,25 @@ namespace AbangiAPI.Services
             _context.Users.Remove(user);
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<UserModel> GetAll()
         {
-            return _context.Users.ToList();
+            var users = from u in _context.Users
+                        join i in _context.UserRoles on u.UserId equals i.UserId
+                        join r in _context.Roles on i.RoleId equals r.RoleId
+                        select new UserModel
+                        {
+                            UserId = u.UserId,
+                            FullName = u.FullName,
+                            Email = u.Email,
+                            Contact = u.Contact,
+                            Address = u.Address,
+                            Role = r.RoleName,
+                            IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
+                            
+                            
+                        };
+            return users;
+                    
         }
 
         public User GetById(int id)
