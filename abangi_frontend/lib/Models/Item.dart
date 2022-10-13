@@ -12,7 +12,7 @@ class ItemModel {
   late String startDate;
   late String endDate;
   late bool AbangiVerified;
-  late String dateCreated;
+
   ItemModel(
     this.itemName,
     this.description,
@@ -25,7 +25,6 @@ class ItemModel {
     this.startDate,
     this.endDate,
     this.AbangiVerified,
-    this.dateCreated,
   );
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +39,5 @@ class ItemModel {
     startDate = json['startDate'];
     endDate = json['endDate'];
     AbangiVerified = json['abangiVerified'];
-    dateCreated = json['dateCreated'];
   }
 }

@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors, unused_field
 import 'dart:convert';
 import 'dart:io';
-import 'package:abangi_v1/Models/User.dart';
 import 'package:angles/angles.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:math';
@@ -15,7 +14,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:open_file/open_file.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:intl/intl.dart' as intl;
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -45,44 +43,6 @@ class CreateListingScreen extends StatefulWidget {
   State<CreateListingScreen> createState() => _MyStatefulWidgetState();
 }
 
-Future<List<User>> getUser() async {
-  try {
-    var response = await CallApi().getData('users');
-    var jsonData = jsonDecode(response.body);
-
-    List<User> users = [];
-    for (var i in jsonData) {
-      User user = User(
-        i['fullname'],
-        i['email'],
-        i['role'],
-        i['contact'],
-        i['address'],
-        i['image'],
-        i['isAbangiVerified'],
-      );
-      users.add(user);
-    }
-    return users;
-  } catch (e) {
-    print(e);
-    rethrow;
-  }
-}
-
-var role = '';
-void _showUser() async {
-  SharedPreferences localStorage = await SharedPreferences.getInstance();
-  var currentUserSession = localStorage.getString('email');
-  List<User> users = await getUser();
-  for (var user in users) {
-    if (user.email == currentUserSession) {
-      role = user.role;
-      localStorage.setString('is_verified', user.isAbangiVerified);
-    }
-  }
-}
-
 class _MyStatefulWidgetState extends State<CreateListingScreen> {
   TextEditingController listingController = TextEditingController();
   TextEditingController itemDescriptionController = TextEditingController();
@@ -90,14 +50,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
   TextEditingController itemHouseLocationController = TextEditingController();
   TextEditingController itemBarLocationController = TextEditingController();
   TextEditingController itemCityLocationController = TextEditingController();
-  late Future<List<User>> user;
-
-  @override
-  void initState() {
-    super.initState();
-    user = getUser();
-  }
-
   var _dateRangePickerController;
   bool _isLoading = false;
   // change text to upload file
@@ -204,563 +156,471 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _showUser();
     return Form(
-      key: _formKey,
-      child: FutureBuilder<List<User>>(
-        future: user,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Padding(
-                padding: const EdgeInsets.all(10),
-                child: role == 'Owner'
-                    ? SingleChildScrollView(
+        key: _formKey,
+        child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.only(top: 10),
+                      child: const Text(
+                        'Create Listing',
+                        style: TextStyle(
+                            color: Color.fromRGBO(0, 176, 236, 1),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 35),
+                      )),
+                  Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      'Complete the information below to create listing.',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    height: 60,
+                    width: 900,
+                    child: FlatButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                          side: const BorderSide(
+                            color: Color.fromRGBO(0, 176, 236, 1),
+                          )),
+                      child: Text(
+                        _uploadFileText,
+                        style: TextStyle(
+                            color: Color.fromRGBO(0, 176, 236, 1),
+                            fontSize: 17),
+                      ),
+                      onPressed: () {
+                        _pickFile();
+                        setState(() {
+                          _uploadFileText = 'Photo Added';
+                        });
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Listing Title',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 90,
+                    child: Container(
+                      padding: const EdgeInsets.all(7),
+                      child: TextFormField(
+                        style: TextStyle(fontSize: textInputFontSize),
+                        controller: listingController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          labelText: 'Name this listing',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Required*';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    child: const Text(
+                      'Category',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    width: 400,
+                    padding: const EdgeInsets.all(7),
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          // ignore: prefer_const_constructors
+                          // Initial Value
+                          value: dropdownvalueCategory,
+                          // Down Arrow Icon
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            size: 25,
+                          ),
+                          // Array list of items
+
+                          // After selecting the desired option,it will
+                          // change button value to selected value
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownvalueCategory = newValue!;
+                            });
+                          },
+                          items: dropdownCategories,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Description',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    child: TextFormField(
+                      controller: itemDescriptionController,
+                      maxLines: 5,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Describe your listing',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Required*';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Schedule Availability',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: SfDateRangePicker(
+                      controller: _dateRangePickerController,
+                      onSelectionChanged: _onSelectionChanged,
+                      selectionMode: DateRangePickerSelectionMode.range,
+                      initialSelectedRange: PickerDateRange(
+                          DateTime.now().add(const Duration(days: 0)),
+                          DateTime.now().add(const Duration(days: 0))),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Container(
-                                padding: const EdgeInsets.all(10),
-                                margin: const EdgeInsets.only(top: 10),
-                                child: const Text(
-                                  'Create Listing',
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(0, 176, 236, 1),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 35),
-                                )),
-                            Container(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: const Text(
-                                'Complete the information below to create listing.',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              height: 60,
-                              width: 900,
-                              child: FlatButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    side: const BorderSide(
-                                      color: Color.fromRGBO(0, 176, 236, 1),
-                                    )),
-                                child: Text(
-                                  _uploadFileText,
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(0, 176, 236, 1),
-                                      fontSize: 17),
-                                ),
-                                onPressed: () {
-                                  _pickFile();
-                                  setState(() {
-                                    _uploadFileText = 'Photo Added';
-                                  });
-                                },
-                              ),
-                            ),
-                            Container(
                               padding: const EdgeInsets.all(10),
                               child: const Text(
-                                'Listing Title',
+                                'Price',
                                 style: TextStyle(
                                     fontSize: 23,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black),
                               ),
                             ),
-                            SizedBox(
-                              height: 90,
-                              child: Container(
-                                padding: const EdgeInsets.all(7),
-                                child: TextFormField(
-                                  style: TextStyle(fontSize: textInputFontSize),
-                                  controller: listingController,
-                                  decoration: const InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colors.grey),
-                                    ),
-                                    labelText: 'Name this listing',
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Required*';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(7),
-                              child: const Text(
-                                'Category',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            Container(
-                              width: 400,
-                              padding: const EdgeInsets.all(7),
-                              child: Directionality(
-                                textDirection: TextDirection.ltr,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                    // ignore: prefer_const_constructors
-                                    // Initial Value
-                                    value: dropdownvalueCategory,
-                                    // Down Arrow Icon
-                                    icon: const Icon(
-                                      Icons.keyboard_arrow_down,
-                                      size: 25,
-                                    ),
-                                    // Array list of items
-
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dropdownvalueCategory = newValue!;
-                                      });
-                                    },
-                                    items: dropdownCategories,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Description',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(7),
-                              child: TextFormField(
-                                controller: itemDescriptionController,
-                                maxLines: 5,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Describe your listing',
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Required*';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Schedule Availability',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: SfDateRangePicker(
-                                controller: _dateRangePickerController,
-                                onSelectionChanged: _onSelectionChanged,
-                                selectionMode:
-                                    DateRangePickerSelectionMode.range,
-                                initialSelectedRange: PickerDateRange(
-                                    DateTime.now().add(const Duration(days: 0)),
-                                    DateTime.now()
-                                        .add(const Duration(days: 0))),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        child: const Text(
-                                          'Price',
-                                          style: TextStyle(
-                                              fontSize: 23,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                      TextFormField(
-                                        controller: itemPriceController,
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: <TextInputFormatter>[
-                                          FilteringTextInputFormatter.digitsOnly
-                                        ],
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: '₱0.00',
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Required*';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                            TextFormField(
+                              controller: itemPriceController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.digitsOnly
                               ],
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Location',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: '₱0.00',
                               ),
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    width: 100,
-                                    child: TextFormField(
-                                      controller: itemHouseLocationController,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: 'House unit no.',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: SizedBox(
-                                      width: 100,
-                                      child: TextFormField(
-                                        controller: itemBarLocationController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Barangay',
-                                        ),
-                                        validator: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Required*';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(padding: EdgeInsets.only(top: 10)),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    width: 100,
-                                    child: TextFormField(
-                                      controller: itemCityLocationController,
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: 'City/Municipality',
-                                      ),
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Required*';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Rental Method',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.2),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio(
-                                                    value: 1,
-                                                    groupValue:
-                                                        _radioRentalValue,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _radioRentalValue =
-                                                            value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  const Text('Meet Up'),
-                                                ],
-                                              ),
-                                              Text(
-                                                'You are going to meet up with the renter',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.2),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio(
-                                                    value: 2,
-                                                    groupValue:
-                                                        _radioRentalValue,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _radioRentalValue =
-                                                            value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  const Text(
-                                                      'Delivery/Drop Off'),
-                                                ],
-                                              ),
-                                              Text(
-                                                'You will deliver the item to the renter',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.2),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio(
-                                                    value: 3,
-                                                    groupValue:
-                                                        _radioRentalValue,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _radioRentalValue =
-                                                            value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  const Text('Pick Up'),
-                                                ],
-                                              ),
-                                              Text(
-                                                'The renter will pick up the item at your place',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.2),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio(
-                                                    value: 4,
-                                                    groupValue:
-                                                        _radioRentalValue,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _radioRentalValue =
-                                                            value;
-                                                      });
-                                                    },
-                                                  ),
-                                                  const Text('Not Applicable'),
-                                                ],
-                                              ),
-                                              Text(
-                                                'For real-estate properties,spaces, etc.',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                    height: 50,
-                                    margin: const EdgeInsets.only(top: 15),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: SizedBox.expand(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.blue,
-                                          onPrimary: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          if (_formKey.currentState!
-                                              .validate()) {
-                                            if (_radioRentalValue == null) {
-                                              errorSnackBar(context,
-                                                  "Please select a rental method");
-                                            }
-
-                                            return _isLoading
-                                                ? null
-                                                : _handlePost();
-                                          }
-                                        },
-                                        child: Text(
-                                            _isLoading ? 'Posting...' : 'Post'),
-                                      ),
-                                    )),
-                              ],
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Required*';
+                                }
+                                return null;
+                              },
                             ),
                           ],
                         ),
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            'assets/images/abangi-dual-color.png',
-                            height: 200,
-                            width: 200,
-                          ),
-                          Center(
-                            child: Text(
-                              "You need to be verified to post listings",
-                              style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Location',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: 100,
+                          child: TextFormField(
+                            controller: itemHouseLocationController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'House unit no.',
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            width: 800,
-                            height: 60,
-                            child: FlatButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  side: const BorderSide(
-                                    color: Color.fromRGBO(0, 176, 236, 1),
-                                  )),
-                              child: Text(
-                                'Please Upload Government ID',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(0, 176, 236, 1),
-                                    fontSize: 17),
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: SizedBox(
+                            width: 100,
+                            child: TextFormField(
+                              controller: itemBarLocationController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Barangay',
                               ),
-                              onPressed: () {
-                                _pickFile();
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Required*';
+                                }
+                                return null;
                               },
                             ),
                           ),
-                          Container(
-                              height: 50,
-                              margin: const EdgeInsets.only(top: 15),
-                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                              child: SizedBox.expand(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.blue,
-                                    onPrimary: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      return _isLoading ? null : _handlePost();
-                                    }
-                                  },
-                                  child: Text('Verify Now'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: 100,
+                          child: TextFormField(
+                            controller: itemCityLocationController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'City/Municipality',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Required*';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const Text(
+                      'Rental Method',
+                      style: TextStyle(
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 0.2),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Radio(
+                                          value: 1,
+                                          groupValue: _radioRentalValue,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _radioRentalValue = value!;
+                                            });
+                                          },
+                                        ),
+                                        const Text('Meet Up'),
+                                      ],
+                                    ),
+                                    Text(
+                                      'You are going to meet up with the renter',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
                                 ),
-                              )),
-                        ],
-                      ));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-    );
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 0.2),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Radio(
+                                          value: 2,
+                                          groupValue: _radioRentalValue,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _radioRentalValue = value!;
+                                            });
+                                          },
+                                        ),
+                                        const Text('Delivery/Drop Off'),
+                                      ],
+                                    ),
+                                    Text(
+                                      'You will deliver the item to the renter',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 0.2),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Radio(
+                                          value: 3,
+                                          groupValue: _radioRentalValue,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _radioRentalValue = value!;
+                                            });
+                                          },
+                                        ),
+                                        const Text('Pick Up'),
+                                      ],
+                                    ),
+                                    Text(
+                                      'The renter will pick up the item at your place',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 0.2),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Radio(
+                                          value: 4,
+                                          groupValue: _radioRentalValue,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _radioRentalValue = value;
+                                            });
+                                          },
+                                        ),
+                                        const Text('Not Applicable'),
+                                      ],
+                                    ),
+                                    Text(
+                                      'For real-estate properties,spaces, etc.',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                          height: 50,
+                          margin: const EdgeInsets.only(top: 15),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: SizedBox.expand(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blue,
+                                onPrimary: Colors.white,
+                              ),
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  if (_radioRentalValue == null) {
+                                    errorSnackBar(context,
+                                        "Please select a rental method");
+                                  }
+
+                                  return _isLoading ? null : _handlePost();
+                                }
+                              },
+                              child: Text(_isLoading ? 'Posting...' : 'Post'),
+                            ),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            )));
   }
 
   void _handlePost() async {

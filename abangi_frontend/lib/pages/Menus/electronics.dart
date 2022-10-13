@@ -57,18 +57,18 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
-          i['itemName'],
-          i['description'],
-          i['price'],
-          i['category'],
-          i['owner'],
-          i['rentalMethod'],
-          i['location'],
-          i['image'],
-          i['startDate'],
-          i['endDate'],
-          i['abangiVerified'],
-          i['dateCreated']);
+        i['itemName'],
+        i['description'],
+        i['price'],
+        i['category'],
+        i['owner'],
+        i['rentalMethod'],
+        i['location'],
+        i['image'],
+        i['startDate'],
+        i['endDate'],
+        i['abangiVerified'],
+      );
       items.add(item);
     }
     return items;
@@ -112,7 +112,8 @@ class _MyStatefulWidgetState extends State<ElectronicsScreen> {
                     },
                     leading: Image.file(
                       File(snapshot.data![index].image),
-                      width: 90,
+                      width: 100,
+                      height: 100,
                     ),
                     title: Text(snapshot.data![index].itemName),
                     subtitle: Column(
@@ -127,20 +128,7 @@ class _MyStatefulWidgetState extends State<ElectronicsScreen> {
                           snapshot.data![index].location,
                           style: TextStyle(color: Colors.black),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Text(
-                                  snapshot.data![index].owner.substring(0, 1),
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(0, 176, 236, 1),
-                                    fontWeight: FontWeight.w500,
-                                  )),
-                            ),
-                            Text(snapshot.data![index].owner),
-                          ],
-                        ),
+                        Text(snapshot.data![index].owner),
                       ],
                     ),
                   );

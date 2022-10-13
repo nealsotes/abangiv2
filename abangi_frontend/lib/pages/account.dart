@@ -37,91 +37,29 @@ class _MyStatefulWidgetState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
+        padding: const EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
             Container(
                 padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(top: 100),
+                margin: const EdgeInsets.only(top: 10),
                 child: const Text(
                   'Account',
-                  style: TextStyle(color: Colors.black, fontSize: 25),
+                  style: TextStyle(
+                      color: Color.fromRGBO(0, 176, 236, 1),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 35),
                 )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 40),
-                  child: Text(
-                    'View Profile',
-                    style: TextStyle(color: Colors.grey, fontSize: 18),
-                  ),
-                ),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios))
-              ],
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 40),
-                    child: Text(
-                      'Change Password',
-                      style: TextStyle(color: Colors.grey, fontSize: 18),
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.arrow_forward_ios))
-                ],
-              ),
-            ),
+
             // ignore: avoid_unnecessary_containers
+
             Container(
+                // ignore: prefer_const_constructors
                 padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(top: 50),
-                child: const Text(
-                  'Support',
-                  style: TextStyle(color: Colors.black, fontSize: 25),
-                )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 40),
-                  child: Text(
-                    'Abount Abangi',
-                    style: TextStyle(color: Colors.grey, fontSize: 18),
-                  ),
-                ),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios))
-              ],
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 40),
-                    child: Text(
-                      'Terms and Conditions',
-                      style: TextStyle(color: Colors.grey, fontSize: 18),
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.arrow_forward_ios))
-                ],
-              ),
-            ),
+                child: Text('My Inquiries')),
             Container(
                 height: 50,
-                margin: const EdgeInsets.only(top: 200),
+                margin: const EdgeInsets.only(top: 15),
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -136,10 +74,17 @@ class _MyStatefulWidgetState extends State<AccountScreen> {
   }
 
   void logout() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    localStorage.remove('token');
+    var res = await CallApi().getData('logout');
+    //var body = json.decode(res.body);
+    if (res.statusCode == 200) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.remove('token');
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Login()));
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Login()),
+      );
+    }
   }
 }

@@ -55,15 +55,16 @@ class _LoginState extends State<login> {
             child: ListView(
               children: <Widget>[
                 Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.only(top: 70),
-                  child: Image.asset(
-                    'assets/images/abangi-dual-color.png',
-                    height: 150,
-                    width: 150,
-                  ),
-                ),
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(top: 70),
+                    child: const Text(
+                      'ABANGI',
+                      style: TextStyle(
+                          color: Color.fromRGBO(0, 176, 236, 1),
+                          fontWeight: FontWeight.w600,
+                          fontSize: 35),
+                    )),
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
@@ -189,8 +190,6 @@ class _LoginState extends State<login> {
       for (var i = 0; i < bodyData.length; i++) {
         if (bodyData[i]['email'] == mailController.text) {
           localStorage.setString('user', bodyData[i]['fullName']);
-          localStorage.setString('userid', bodyData[i]['userId'].toString());
-          localStorage.setString('email', bodyData[i]['email']);
           localStorage.setString('userid', bodyData[i]['userId'].toString());
         }
       }

@@ -11,7 +11,6 @@ namespace AbangiAPI.Data
     {
         bool SaveChanges();
         Task<IEnumerable<ItemInformation>> GetAllItems();
-        Task<IEnumerable<ItemInformation>> GetAllItemsByUser(int id);
         Task<ItemInformation> GetItemById(int id);
         Item GetItemById2(int id);
         void CreateItem(Item item);

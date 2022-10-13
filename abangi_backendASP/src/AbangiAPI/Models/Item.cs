@@ -21,12 +21,12 @@ namespace AbangiAPI.Models
         public ItemCategory ItemCategory {get; set;}
         public int ItemCategoryId {get; set;}
 
+        
+    
         public int UserId {get; set;}
         public int RentalMethodId {get; set;}
-
-        
+       
         [Required]
-        
         public string ItemImage {get; set;}
 
         [DataType(DataType.Date)]

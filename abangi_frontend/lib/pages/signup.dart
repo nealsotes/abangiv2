@@ -134,6 +134,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     validator: (String? val) {
                       if (val!.isEmpty) {
                         return "* Required";
+                      } else if (!RegExp(r'^[a-z A-Z]+$').hasMatch(val)) {
+                        return "Enter valid address";
                       } else {
                         return null;
                       }
@@ -151,7 +153,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     validator: (String? val) {
                       if (val!.isEmpty) {
                         return "* Required";
-                      } else if (!RegExp(r'^(09|\+639)\d{9}$').hasMatch(val)) {
+                      } else if (!RegExp(r'^\+[1-9]{1}[0-9]{3,14}$')
+                          .hasMatch(val)) {
                         return "Enter valid phone number";
                       } else {
                         return null;
