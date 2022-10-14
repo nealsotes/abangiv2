@@ -9,6 +9,8 @@ import 'package:abangi_v1/pages/dash.dart';
 import 'package:flutter/material.dart';
 import 'package:abangi_v1/pages/signup.dart';
 
+import 'home.dart';
+
 void main() => runApp(const Login());
 
 class Login extends StatelessWidget {
@@ -198,7 +200,7 @@ class _LoginState extends State<login> {
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const Home()),
+        MaterialPageRoute(builder: (context) => Homedash()),
       );
     } else {
       // ignore: use_build_context_synchronously

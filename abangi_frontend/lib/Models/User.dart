@@ -18,12 +18,11 @@ class User {
   );
 
   User.fromJson(Map<String, dynamic> json) {
-    name = json['fullname'];
+    name = json['fullName'];
     email = json['email'];
-    role = json['role'];
     phone = json['contact'];
     location = json['address'];
-    image = json['image'];
-    isAbangiVerified = json['isAbangiVerified'];
+    role = json['role'];
+    isAbangiVerified = json["isAbangiVerified"];
   }
 }

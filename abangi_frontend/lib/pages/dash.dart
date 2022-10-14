@@ -2,12 +2,13 @@
 import 'package:abangi_v1/pages/account.dart';
 import 'package:abangi_v1/pages/activity.dart';
 import 'package:abangi_v1/pages/create_listing.dart';
+import 'package:abangi_v1/pages/history.dart';
 import 'package:abangi_v1/pages/home.dart';
 import 'package:abangi_v1/pages/messages.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+class Homedash extends StatelessWidget {
+  const Homedash({Key? key}) : super(key: key);
 
   static const String _title = 'Flutter Code Sample';
 
@@ -35,10 +36,10 @@ class DashboardScreen extends StatefulWidget {
 class _MyStatefulWidgetState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    ActivityScreen(),
-    CreateListingScreen(),
+    Home(),
     MessagesScreen(),
+    CreateListingScreen(),
+    HistoryScreen(),
     AccountScreen(),
   ];
 
@@ -73,16 +74,16 @@ class _MyStatefulWidgetState extends State<DashboardScreen> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.business, color: Colors.blue),
-                label: 'Activity',
+                icon: Icon(Icons.message, color: Colors.blue),
+                label: 'Messages',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.star, color: Colors.blue),
                 label: 'Post for Rent',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.message, color: Colors.blue),
-                label: 'Messages',
+                icon: Icon(Icons.history, color: Colors.blue),
+                label: 'History',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.manage_accounts, color: Colors.blue),

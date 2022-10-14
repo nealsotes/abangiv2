@@ -97,9 +97,9 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<ActionResult> GetById(int id)
         {
-            var user = _repository.GetById(id);
+            var user = await _repository.GetById(id);
             var model = _mapper.Map<UserModel>(user);
             return Ok(model);
         }
@@ -122,18 +122,7 @@ namespace AbangiAPI.Controllers
                 return BadRequest(new {message = ex.Message});
             }
         }
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var user = _repository.GetById(id);
-            if(user == null)
-            {
-                return NotFound();
-            }
-            _repository.DeleteUser(user);
-            _repository.SaveChanges();
-            return NoContent();
-        }
+     
 
         [HttpGet]
         public ActionResult<IEnumerable<User>> GetAllUsers()

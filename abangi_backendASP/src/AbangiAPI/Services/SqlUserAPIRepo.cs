@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Linq;
 using AbangiAPI.Entities;
 using AbangiAPI.Helpers;
 using AbangiAPI.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace AbangiAPI.Services
 {
@@ -12,7 +14,7 @@ namespace AbangiAPI.Services
     {
         User Authenticate(String email, string password);
         IEnumerable<UserModel> GetAll();
-        User GetById(int id);
+        Task<UserModel> GetById(int id);
         User Create(User user, string password);
         void Update(User user, string password = null);
         void DeleteUser(User user);
@@ -102,16 +104,12 @@ namespace AbangiAPI.Services
                             Role = r.RoleName,
                             IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
                             
-                            
                         };
             return users;
                     
         }
 
-        public User GetById(int id)
-        {
-            return _context.Users.FirstOrDefault(p => p.UserId == id);
-        }
+     
 
         public void Update(User userParam, string password = null)
         {
@@ -191,6 +189,26 @@ namespace AbangiAPI.Services
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public async Task<UserModel> GetById(int id)
+        {
+           var user = await (from u in _context.Users
+                        join i in _context.UserRoles on u.UserId equals i.UserId
+                        join r in _context.Roles on i.RoleId equals r.RoleId
+                        where u.UserId == id
+                        select new UserModel
+                        {
+                            UserId = u.UserId,
+                            FullName = u.FullName,
+                            Email = u.Email,
+                            Contact = u.Contact,
+                            Address = u.Address,
+                            Role = r.RoleName,
+                            IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
+
+                        }).FirstOrDefaultAsync(i => i.UserId == id);
+            return user;
         }
     }
 
