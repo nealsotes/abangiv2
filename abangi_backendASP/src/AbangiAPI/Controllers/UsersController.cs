@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,7 +17,10 @@ using AbangiAPI.Helpers;
 using AbangiAPI.Dtos;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace AbangiAPI.Controllers
 {  
     //[Authorize]
@@ -71,15 +75,27 @@ namespace AbangiAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterModel model)
+        public IActionResult Register([FromForm] RegisterModel model)
         {
             //map model to entity
-            var user = _mapper.Map<User>(model);
-
+           
+              
+              
             try
             {
+                if(model.UserImageFile != null)
+                {
+                    _repository.SavePostUserImageAsync(model);
+                }
+                if(model.UserGovernmentIdFile != null)
+                {
+                    _repository.SavePostUserGovermentIdAsync(model);
+                }
+
                 //create user
+                 var user = _mapper.Map<User>(model);
                 _repository.Create(user, model.Password);
+               
                 return Ok();
             }
             catch(AppException ex)
@@ -131,6 +147,25 @@ namespace AbangiAPI.Controllers
             var model = _mapper.Map<IList<UserModel>>(users);
             return Ok(model);
         }
-
+     
+       [HttpPatch("{id}")]
+       public async Task<ActionResult> PartialUserUpdate(int id, [FromBody] JsonPatchDocument<UpdateModel> patchDoc)
+       {
+            var userModelRepo = await _repository.GetByIdPatch(id);
+            if(userModelRepo == null)
+            {
+                return NotFound();
+            }
+            var userModelToPatch = _mapper.Map<UpdateModel>(userModelRepo);
+            patchDoc.ApplyTo(userModelToPatch, ModelState);
+            if(!TryValidateModel(userModelToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+            _mapper.Map(userModelToPatch, userModelRepo);
+            _repository.UpdateViaPatch(userModelRepo);
+            _repository.SaveChanges();
+            return NoContent();
+       }
     }
 }

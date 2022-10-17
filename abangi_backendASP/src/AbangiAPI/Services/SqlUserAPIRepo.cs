@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System;
@@ -7,6 +8,9 @@ using AbangiAPI.Entities;
 using AbangiAPI.Helpers;
 using AbangiAPI.Dtos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AbangiAPI.Services
 {
@@ -15,20 +19,28 @@ namespace AbangiAPI.Services
         User Authenticate(String email, string password);
         IEnumerable<UserModel> GetAll();
         Task<UserModel> GetById(int id);
+        Task<User> GetByIdPatch(int id);
         User Create(User user, string password);
         void Update(User user, string password = null);
+        void UpdateViaPatch(User user);
         void DeleteUser(User user);
         void SaveChanges();
-    }
+        void SavePostUserImageAsync(RegisterModel userModel);
+
+        void SavePostUserGovermentIdAsync(RegisterModel userModel);
+        
+    }   
 
 
     public class SqlUserAPIRepo : IUserAPIRepo
     {
 
         private readonly DataContext _context;
-        public SqlUserAPIRepo(DataContext context)
+        private readonly IWebHostEnvironment _environment;
+        public SqlUserAPIRepo(DataContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         public User Authenticate(string email, string password)
@@ -205,10 +217,45 @@ namespace AbangiAPI.Services
                             Contact = u.Contact,
                             Address = u.Address,
                             Role = r.RoleName,
+                            UserImage = u.UserImage,
                             IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
 
                         }).FirstOrDefaultAsync(i => i.UserId == id);
             return user;
+        }
+
+        public void SavePostUserImageAsync(RegisterModel userModel)
+        {
+            var user = new UserModel();
+            var uniqueFileName = FileHelper.GetUniqueFileName(userModel.UserImageFile.FileName);
+            var uploads = Path.Combine(_environment.WebRootPath, "Images","UserImages", user.UserId.ToString());
+            var filePath = Path.Combine(uploads, uniqueFileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            userModel.UserImageFile.CopyTo(new FileStream(filePath, FileMode.Create));
+            userModel.UserImage = filePath;
+            return;
+        }
+
+        public void UpdateViaPatch(User user)
+        {
+            
+        }
+
+        public async Task<User> GetByIdPatch(int id)
+        {
+           return await _context.Users.FirstOrDefaultAsync(i => i.UserId == id);
+        }
+
+        public void SavePostUserGovermentIdAsync(RegisterModel userModel)
+        {
+            var user = new UserModel();
+            var uniqueFileName = FileHelper.GetUniqueFileName(userModel.UserGovernmentIdFile.FileName);
+            var uploads = Path.Combine(_environment.WebRootPath, "Images", "UserGovernmentID", user.UserId.ToString());
+            var filePath = Path.Combine(uploads, uniqueFileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            userModel.UserGovernmentIdFile.CopyTo(new FileStream(filePath, FileMode.Create));
+            userModel.UserGovertId = filePath;
+            return;
         }
     }
 

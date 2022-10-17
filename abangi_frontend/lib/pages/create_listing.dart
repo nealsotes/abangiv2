@@ -710,9 +710,13 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             width: 200,
                           ),
                           Center(
-                            child: Text(
-                              "You need to be verified to post listings",
-                              style: TextStyle(fontSize: 20),
+                            child: Container(
+                              margin: EdgeInsets.only(top: 30),
+                              child: Text(
+                                "You need to be verified to post listings",
+                                style:
+                                    TextStyle(fontSize: 20, color: Colors.red),
+                              ),
                             ),
                           ),
                           Container(
@@ -738,7 +742,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                           ),
                           Container(
                               height: 50,
-                              margin: const EdgeInsets.only(top: 15),
+                              margin: const EdgeInsets.only(top: 25),
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                               child: SizedBox.expand(
                                 child: ElevatedButton(
@@ -747,9 +751,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     onPrimary: Colors.white,
                                   ),
                                   onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      return _isLoading ? null : _handlePost();
-                                    }
+                                    _handlePatch();
                                   },
                                   child: Text('Verify Now'),
                                 ),
@@ -815,6 +817,48 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
       }
     } catch (e) {
       print(e);
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _handlePatch() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      var userid = localStorage.getString('userid');
+      var data = [
+        {
+          "op": "replace",
+          "path": "UserGovertId",
+          "value": _fileName,
+        },
+      ];
+      var res = await CallApi().patchData(data, 'users/$userid');
+      if (res.statusCode == 204) {
+        // ignore: use_build_context_synchronously
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          headerAnimationLoop: false,
+          animType: AnimType.bottomSlide,
+          title: 'Success',
+          desc: 'Please wait for admin to verify your account',
+          buttonsTextStyle: const TextStyle(color: Colors.white),
+          showCloseIcon: false,
+          btnOkOnPress: () {},
+        ).show();
+        clearText();
+      } else {
+        // ignore: use_build_context_synchronously
+        errorSnackBar(context, "Error Uploading Image Try Again");
+      }
+    } catch (e) {
+      print(e.toString());
     }
     setState(() {
       _isLoading = false;

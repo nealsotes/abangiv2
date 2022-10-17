@@ -13,6 +13,7 @@ namespace AbangiAPI.Entities
         [MinLength(2),MaxLength(150)]
         public string FullName { get; set; }
         public string UserImage {get; set;}
+        public string UserGovertId {get; set;}
         [Required]
         public string Email { get; set; }
         [Required]
