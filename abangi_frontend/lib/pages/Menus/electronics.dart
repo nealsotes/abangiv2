@@ -5,7 +5,9 @@ import 'dart:io';
 
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/api/api.dart';
+import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'Details/ElectronicsDetails.dart';
 
@@ -17,6 +19,7 @@ class Electronics extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: false ? Colors.white : Colors.white,
           title: Text(
             'Electronics',
@@ -42,7 +45,7 @@ class ElectronicsScreen extends StatefulWidget {
   ElectronicsScreen({Key? key}) : super(key: key);
 
   @override
-  State<ElectronicsScreen> createState() => _MyStatefulWidgetState();
+  State<ElectronicsScreen> createState() => ElectronicsState();
 }
 
 Future<List<ItemModel>> getItemData() async {
@@ -57,18 +60,21 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
-          i['itemName'],
-          i['description'],
-          i['price'],
-          i['category'],
-          i['owner'],
-          i['rentalMethod'],
-          i['location'],
-          i['image'],
-          i['startDate'],
-          i['endDate'],
-          i['abangiVerified'],
-          i['dateCreated']);
+        i['userId'],
+        i['itemName'],
+        i['description'],
+        i['price'],
+        i['category'],
+        i['owner'],
+        i['rentalMethod'],
+        i['location'],
+        i['image'],
+        i['startDate'],
+        i['endDate'],
+        i['abangiVerified'],
+        i['dateCreated'],
+        i['status'],
+      );
       items.add(item);
     }
     return items;
@@ -78,7 +84,7 @@ Future<List<ItemModel>> getItemData() async {
   }
 }
 
-class _MyStatefulWidgetState extends State<ElectronicsScreen> {
+class ElectronicsState extends State<ElectronicsScreen> {
   late Future<List<ItemModel>> itemModel;
 
   @override

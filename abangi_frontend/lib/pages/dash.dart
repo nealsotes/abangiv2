@@ -30,10 +30,10 @@ class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  State<DashboardScreen> createState() => _MyStatefulWidgetState();
+  State<DashboardScreen> createState() => DashState();
 }
 
-class _MyStatefulWidgetState extends State<DashboardScreen> {
+class DashState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
     Home(),

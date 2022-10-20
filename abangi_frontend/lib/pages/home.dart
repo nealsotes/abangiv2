@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
 
+import 'package:abangi_v1/api/api.dart';
 import 'package:abangi_v1/pages/Menus/bikes.dart';
 import 'package:abangi_v1/pages/Menus/books.dart';
 import 'package:abangi_v1/pages/Menus/electronics.dart';
@@ -33,10 +34,10 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _MyStatefulWidgetState();
+  State<HomeScreen> createState() => HomeScreenState();
 }
 
-class _MyStatefulWidgetState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   TextEditingController searchController = TextEditingController();
   ParseUser? currentUser;
   Future<ParseUser?> getData() async {
@@ -45,10 +46,42 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
   }
 
   var currentUserSession;
+  var userid;
   // ignore: unused_element
   void handleCurrentUser() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     currentUserSession = localStorage.getString('user');
+    userid = localStorage.getString('userid');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    setStatus('Online');
+  }
+
+  void setStatus(String status) async {
+    var data = [
+      {
+        "op": "add",
+        "path": "Status",
+        "value": status,
+      },
+    ];
+    await CallApi().patchData(data, 'users/$userid');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      setStatus('Online');
+      print('Online');
+    } else {
+      setStatus('Offline');
+      print('Offline');
+    }
   }
 
   @override
@@ -126,11 +159,10 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                         height: 60,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Electronics()),
-                            );
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    // ignore: unnecessary_new
+                                    builder: (context) => Electronics()));
                           },
                           icon: Icon(
                             Icons.cable_outlined,
@@ -157,10 +189,10 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                         height: 60,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Bikes()),
-                            );
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    // ignore: unnecessary_new
+                                    builder: (context) => Bikes()));
                           },
                           icon: Icon(Icons.pedal_bike,
                               color: Color.fromRGBO(0, 176, 236, 1), size: 40),
@@ -184,10 +216,10 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                         height: 60,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Books()),
-                            );
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    // ignore: unnecessary_new
+                                    builder: (context) => Books()));
                           },
                           icon: Icon(Icons.library_books,
                               color: Color.fromRGBO(0, 176, 236, 1), size: 40),
@@ -217,11 +249,10 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                         height: 60,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HandyTools()),
-                            );
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    // ignore: unnecessary_new
+                                    builder: (context) => HandyTools()));
                           },
                           icon: Icon(
                             Icons.handyman_outlined,
@@ -248,11 +279,10 @@ class _MyStatefulWidgetState extends State<HomeScreen> {
                         height: 60,
                         child: IconButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Clothes()),
-                            );
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    // ignore: unnecessary_new
+                                    builder: (context) => Clothes()));
                           },
                           icon: Icon(Icons.checkroom_outlined,
                               color: Color.fromRGBO(0, 176, 236, 1), size: 40),

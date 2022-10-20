@@ -45,6 +45,7 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
+        i['userId'],
         i['itemName'],
         i['description'],
         i['price'],
@@ -57,6 +58,7 @@ Future<List<ItemModel>> getItemData() async {
         i['endDate'],
         i['abangiVerified'],
         i['dateCreated'],
+        i['Status'],
       );
       items.add(item);
     }

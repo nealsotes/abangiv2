@@ -6,6 +6,7 @@ class User {
   late String location;
   late String image;
   late String isAbangiVerified;
+  late String userStatus;
 
   User(
     this.name,
@@ -15,6 +16,7 @@ class User {
     this.location,
     this.image,
     this.isAbangiVerified,
+    this.userStatus,
   );
 
   User.fromJson(Map<String, dynamic> json) {
@@ -24,5 +26,6 @@ class User {
     location = json['address'];
     role = json['role'];
     isAbangiVerified = json["isAbangiVerified"];
+    userStatus = json["Status"];
   }
 }

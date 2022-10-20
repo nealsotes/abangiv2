@@ -4,6 +4,7 @@ using AbangiAPI.Entities;
 using Npgsql;
 using System.Collections.Generic;
 using AbangiAPI.Models;
+using AbangiAPI.Models.ChatApp;
 
 namespace AbangiAPI.Helpers
 {
@@ -25,16 +26,24 @@ namespace AbangiAPI.Helpers
             builder.ConnectionString = Configuration.GetConnectionString("PostgreSqlConnection");
             builder.Username = Configuration["UserID"];
             builder.Password = Configuration["Password"];
-
+            
            optionsBuilder.UseNpgsql(builder.ConnectionString);
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+           base.OnModelCreating(modelBuilder);
+           modelBuilder.Entity<Message>().HasOne(m => m.User).WithMany(u => u.Messages).HasForeignKey(m => m.UserId);
+        }
         public DbSet<User> Users {get; set;}
         public DbSet<Item> Items {get; set;}
         public DbSet<ItemCategory> ItemCategories {get; set;}
         public DbSet<RentalMethod> RentalMethods {get; set;}
         public DbSet<UserRole> UserRoles {get; set;}
         public DbSet<Role> Roles {get; set;}
+
+       
+        public DbSet<Message> Messages {get; set;}
     
      
     }

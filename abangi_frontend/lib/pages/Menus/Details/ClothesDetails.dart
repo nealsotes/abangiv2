@@ -41,6 +41,7 @@ class ClothesDetails extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           appBar: AppBar(
+            elevation: 0,
             backgroundColor: false ? Colors.white : Colors.white,
             leading: IconButton(
               icon:
@@ -243,7 +244,7 @@ class ClothesDetails extends StatelessWidget {
                           DateTime.parse(itemModel.endDate)
                               .add(Duration(days: 0))),
                     ),
-                    ButtonWidget(),
+                    ButtonWidget(itemModel: itemModel),
                   ],
                 ),
               )
@@ -257,7 +258,8 @@ class ClothesDetails extends StatelessWidget {
 }
 
 class ButtonWidget extends StatefulWidget {
-  const ButtonWidget({Key? key}) : super(key: key);
+  final ItemModel itemModel;
+  const ButtonWidget({Key? key, required this.itemModel}) : super(key: key);
 
   @override
   ElectronicsDetailsState createState() => ElectronicsDetailsState();
@@ -335,7 +337,10 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Chat()),
+                  MaterialPageRoute(
+                      builder: (context) => Chat(
+                            itemModel: widget.itemModel,
+                          )),
                 );
               },
             )),

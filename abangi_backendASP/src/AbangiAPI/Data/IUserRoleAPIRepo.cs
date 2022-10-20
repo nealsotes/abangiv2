@@ -10,7 +10,7 @@ namespace AbangiAPI.Data
     {
         bool SaveChanges();
         Task<IEnumerable<UserRoleInformation>> GetAllUserRoles();
-        UserRole GetUserRoleById(int id);
+        Task<UserRole> GetUserRoleById(int id);
         void CreateUserRole(UserRole userRole);
         void UpdateUserRole(UserRole userRole);
         void DeleteUserRole(UserRole userRole);

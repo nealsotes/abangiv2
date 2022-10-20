@@ -14,10 +14,12 @@ namespace AbangiAPI.Dtos
         public string Contact {get; set;}
         [Required]
         public string Address {get; set;}
-
+        
         public IFormFile UserImageFile {get; set;}
         public string UserImage {get; set;}
+        [Required]
         public string UserGovertId {get; set;}
+        public string Status  {get; set;}
         public IFormFile UserGovernmentIdFile {get; set;}
         
         [Required]

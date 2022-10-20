@@ -43,9 +43,9 @@ namespace AbangiAPI.Controllers
             return Ok(userRole);
         }
         [HttpDelete("{id}")]
-        public ActionResult DeleteUserRole(int id)
+        public async Task<ActionResult> DeleteUserRole(int id)
         {
-            var userRoleFromRepo = _repository.GetUserRoleById(id);
+            var userRoleFromRepo = await _repository.GetUserRoleById(id);
             if(userRoleFromRepo == null)
             {
                 return NotFound();

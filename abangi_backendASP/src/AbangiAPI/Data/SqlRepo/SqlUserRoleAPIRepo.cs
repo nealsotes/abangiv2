@@ -53,9 +53,9 @@ namespace AbangiAPI.Data.SqlRepo
             return await userRoleList.ToListAsync();
         }
 
-        public UserRole GetUserRoleById(int id)
+        public async Task<UserRole> GetUserRoleById(int id)
         {
-            return _context.UserRoles.FirstOrDefault(p => p.UserRoleId == id);
+            return await _context.UserRoles.FirstOrDefaultAsync(p => p.UserRoleId == id);
         }
 
         public bool SaveChanges()

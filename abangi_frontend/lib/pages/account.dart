@@ -117,7 +117,7 @@ class _MyAppState extends State<AccountScreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 90, left: 90),
+                        margin: EdgeInsets.only(bottom: 90, left: 50),
                         child: IconButton(
                             onPressed: () {
                               Navigator.push(

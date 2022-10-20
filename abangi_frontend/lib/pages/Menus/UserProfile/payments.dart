@@ -136,10 +136,10 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
             child: OutlinedButton(
               child: const Text('Chat Now'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Chat()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => Chat()),
+                // );
               },
             )),
         Container(

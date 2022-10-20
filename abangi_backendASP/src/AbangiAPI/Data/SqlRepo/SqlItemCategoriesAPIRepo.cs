@@ -64,6 +64,7 @@ namespace AbangiAPI.Data.SqlRepo
                             DateCreated = i.DateCreated,
                             StartDate = i.StartDate,
                             EndDate = i.EndDate,
+                            Status = u.Status
                         }).ToListAsync();
             return await Item;
         }

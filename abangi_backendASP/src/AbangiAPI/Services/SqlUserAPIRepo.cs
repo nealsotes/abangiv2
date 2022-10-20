@@ -16,11 +16,11 @@ namespace AbangiAPI.Services
 {
     public interface IUserAPIRepo 
     {
-        User Authenticate(String email, string password);
-        IEnumerable<UserModel> GetAll();
+        Task<User> Authenticate(String email, string password);
+       Task<IEnumerable<UserModel>> GetAll();
         Task<UserModel> GetById(int id);
         Task<User> GetByIdPatch(int id);
-        User Create(User user, string password);
+        Task<User> Create(User user, string password);
         void Update(User user, string password = null);
         void UpdateViaPatch(User user);
         void DeleteUser(User user);
@@ -43,7 +43,7 @@ namespace AbangiAPI.Services
             _environment = environment;
         }
 
-        public User Authenticate(string email, string password)
+        public async Task<User> Authenticate(string email, string password)
         {
             if(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -52,7 +52,7 @@ namespace AbangiAPI.Services
             
            
         
-            var user = _context.Users.SingleOrDefault(x => x.Email == email);
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
             // check  if email is exists
             if(user == null)
             {
@@ -70,7 +70,7 @@ namespace AbangiAPI.Services
        
 
 
-        public User Create(User user, string password)
+        public async Task<User> Create(User user, string password)
         {
             // validation
             if(string.IsNullOrWhiteSpace(password))
@@ -86,7 +86,7 @@ namespace AbangiAPI.Services
             
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            _context.Users.Add(user);
+           await _context.Users.AddAsync(user);
             _context.SaveChanges();
 
             return user;
@@ -101,9 +101,9 @@ namespace AbangiAPI.Services
             _context.Users.Remove(user);
         }
 
-        public IEnumerable<UserModel> GetAll()
+        public async Task<IEnumerable<UserModel>> GetAll()
         {
-            var users = from u in _context.Users
+            var users = await(from u in _context.Users
                         join i in _context.UserRoles on u.UserId equals i.UserId
                         join r in _context.Roles on i.RoleId equals r.RoleId
                         select new UserModel
@@ -116,7 +116,9 @@ namespace AbangiAPI.Services
                             Role = r.RoleName,
                             IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
                             
-                        };
+                        }
+            
+                        ).ToListAsync();
             return users;
                     
         }
@@ -218,6 +220,7 @@ namespace AbangiAPI.Services
                             Address = u.Address,
                             Role = r.RoleName,
                             UserImage = u.UserImage,
+                            Status = u.Status,
                             IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
 
                         }).FirstOrDefaultAsync(i => i.UserId == id);

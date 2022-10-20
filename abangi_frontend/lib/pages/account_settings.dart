@@ -139,6 +139,9 @@ class _MyStatefulWidgetState extends State<AccountSettingsScreen> {
   void logout() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.remove('token');
+    localStorage.remove('user');
+    localStorage.remove('userid');
+    localStorage.remove('email');
 
     Navigator.of(context, rootNavigator: true)
         .pushReplacement(MaterialPageRoute(builder: (context) => Login()));

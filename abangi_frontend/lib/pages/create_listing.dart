@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:abangi_v1/Models/User.dart';
+import 'package:abangi_v1/pages/blank_page.dart';
 import 'package:angles/angles.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:math';
@@ -11,6 +12,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:image_picker/image_picker.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:open_file/open_file.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -60,6 +62,7 @@ Future<List<User>> getUser() async {
         i['address'],
         i['image'],
         i['isAbangiVerified'],
+        i['Status'],
       );
       users.add(user);
     }
@@ -108,6 +111,16 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
   var textInputFontSize = 14.00;
   final _formKey = GlobalKey<FormState>();
   //Image upload
+  XFile? _image;
+
+  final ImagePicker _picker = ImagePicker();
+  //we can use this to get the image from the gallery
+  Future getImageFromGallery(ImageSource media) async {
+    var img = await _picker.pickImage(source: media);
+    setState(() {
+      _image = img;
+    });
+  }
 
   dynamic _fileName = '';
   var dropdownvalueCategory = "9";
@@ -156,6 +169,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     itemCityLocationController.clear();
     _radioRentalValue = null;
     _uploadFileText = "+ Add Photo";
+    _image = null;
   }
 
   List<DropdownMenuItem<String>> get dropdownCategories {
@@ -238,6 +252,20 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                 ),
                               ),
                             ),
+                            _image != null
+                                ? Center(
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: Image.file(
+                                        File(_image!.path),
+                                        height: 100,
+                                        width: 100,
+                                      ),
+                                    ),
+                                  )
+                                : Center(
+                                    child: Text("No Image"),
+                                  ),
                             Container(
                               padding: const EdgeInsets.all(10),
                               height: 60,
@@ -255,10 +283,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                       fontSize: 17),
                                 ),
                                 onPressed: () {
-                                  _pickFile();
-                                  setState(() {
-                                    _uploadFileText = 'Photo Added';
-                                  });
+                                  myAlert();
                                 },
                               ),
                             ),
@@ -704,14 +729,16 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Image.asset(
-                            'assets/images/abangi-dual-color.png',
-                            height: 200,
-                            width: 200,
-                          ),
+                          Container(
+                              margin: const EdgeInsets.only(top: 60),
+                              child: Image.asset(
+                                'assets/images/abangi-dual-color.png',
+                                height: 200,
+                                width: 200,
+                              )),
                           Center(
                             child: Container(
-                              margin: EdgeInsets.only(top: 30),
+                              margin: EdgeInsets.only(top: 45),
                               child: Text(
                                 "You need to be verified to post listings",
                                 style:
@@ -736,13 +763,23 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     fontSize: 17),
                               ),
                               onPressed: () {
-                                _pickFile();
+                                myAlert();
                               },
                             ),
                           ),
+                          _image != null
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  child: Image.file(
+                                    File(_image!.path),
+                                    height: 100,
+                                    width: 100,
+                                  ),
+                                )
+                              : Text("No Image"),
                           Container(
                               height: 50,
-                              margin: const EdgeInsets.only(top: 25),
+                              margin: const EdgeInsets.only(top: 10),
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                               child: SizedBox.expand(
                                 child: ElevatedButton(
@@ -784,7 +821,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
             itemBarLocationController.text +
             ' ' +
             itemCityLocationController.text,
-        "ItemImage": _fileName,
+        "ItemImage": _image!.path,
         "RentalMethodId": _radioRentalValue as int,
         "StartDate": _startDate,
         "EndDate": _endDate,
@@ -835,7 +872,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
         {
           "op": "replace",
           "path": "UserGovertId",
-          "value": _fileName,
+          "value": _image!.path,
         },
       ];
       var res = await CallApi().patchData(data, 'users/$userid');
@@ -863,5 +900,50 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void myAlert() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            title: Text('Please choose media to select'),
+            content: Container(
+              height: MediaQuery.of(context).size.height / 6,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    //if user click this button, user can upload image from gallery
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImageFromGallery(ImageSource.gallery);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.image),
+                        Text('From Gallery'),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    //if user click this button. user can upload image from camera
+                    onPressed: () {
+                      Navigator.pop(context);
+                      getImageFromGallery(ImageSource.camera);
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.camera),
+                        Text('From Camera'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 }

@@ -19,6 +19,7 @@ namespace AbangiAPI.Dtos
         //public string Password {get; set;}
         public string Role {get; set;}
         public String IsAbangiVerified {get; set;}
+        public String Status {get; set;}
         public ICollection<Item> Items {get; set;}
     }
 }

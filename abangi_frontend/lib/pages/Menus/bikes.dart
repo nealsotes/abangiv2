@@ -16,6 +16,7 @@ class Bikes extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: false ? Colors.white : Colors.white,
           title: Text(
             'Bikes',
@@ -53,6 +54,7 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
+        i['userId'],
         i['itemName'],
         i['description'],
         i['price'],
@@ -65,6 +67,7 @@ Future<List<ItemModel>> getItemData() async {
         i['endDate'],
         i['abangiVerified'],
         i['dateCreated'],
+        i['status'],
       );
       items.add(item);
     }

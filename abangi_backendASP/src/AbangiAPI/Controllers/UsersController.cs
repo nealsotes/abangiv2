@@ -41,10 +41,10 @@ namespace AbangiAPI.Controllers
         }
         [AllowAnonymous]
         [HttpPost("login")]
-        public  IActionResult Authenticate([FromBody]AuthenticateModel model)
+        public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model)
         {
             
-            var user = _repository.Authenticate(model.Email, model.Password);
+            var user = await _repository.Authenticate(model.Email, model.Password);
             if(user == null)
             {
                 return BadRequest(new {message = "Email or password is incorrect!"});
@@ -75,7 +75,7 @@ namespace AbangiAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromForm] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             //map model to entity
            
@@ -94,7 +94,7 @@ namespace AbangiAPI.Controllers
 
                 //create user
                  var user = _mapper.Map<User>(model);
-                _repository.Create(user, model.Password);
+              await  _repository.Create(user, model.Password);
                
                 return Ok();
             }
@@ -141,9 +141,9 @@ namespace AbangiAPI.Controllers
      
 
         [HttpGet]
-        public ActionResult<IEnumerable<User>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
-            var users = _repository.GetAll();
+            var users = await _repository.GetAll();
             var model = _mapper.Map<IList<UserModel>>(users);
             return Ok(model);
         }

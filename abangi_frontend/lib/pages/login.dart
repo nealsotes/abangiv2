@@ -1,4 +1,5 @@
 // ignore_for_file: unused_local_variable
+import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'dart:convert';
@@ -50,6 +51,7 @@ class _LoginState extends State<login> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unrelated_type_equality_checks
     return Form(
         key: _formKey,
         child: Padding(

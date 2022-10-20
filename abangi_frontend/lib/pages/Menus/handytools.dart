@@ -17,6 +17,7 @@ class HandyTools extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           backgroundColor: false ? Colors.white : Colors.white,
           title: Text(
             'HandyTools',
@@ -54,18 +55,21 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
-          i['itemName'],
-          i['description'],
-          i['price'],
-          i['category'],
-          i['owner'],
-          i['rentalMethod'],
-          i['location'],
-          i['image'],
-          i['startDate'],
-          i['endDate'],
-          i['abangiVerified'],
-          i['dateCreated']);
+        i['userId'],
+        i['itemName'],
+        i['description'],
+        i['price'],
+        i['category'],
+        i['owner'],
+        i['rentalMethod'],
+        i['location'],
+        i['image'],
+        i['startDate'],
+        i['endDate'],
+        i['abangiVerified'],
+        i['dateCreated'],
+        i['status'],
+      );
       items.add(item);
     }
     return items;

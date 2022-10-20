@@ -16,6 +16,7 @@ using AbangiAPI.Services;
 using AbangiAPI.Data;
 using AbangiAPI.Data.SqlRepo;
 using Microsoft.AspNetCore.Http;
+using AbangiAPI.Hubs;
 
 namespace AbangiAPI
 {
@@ -50,9 +51,10 @@ namespace AbangiAPI
             services.AddScoped<IItemCategoryAPIRepo, SqlItemCategoriesAPIRepo>();
             services.AddScoped<IRoleAPIRepo, SqlRoleAPIRepo>();
             services.AddScoped<IUserRoleAPIRepo, SqlUserRoleAPIRepo>();
+            services.AddScoped<IMessageAPIRepo, SqlIMessageAPIRepo>();
             services.AddControllersWithViews();
             services.AddCoreAdmin();
-            
+            services.AddSignalR();
             //configure strongly typed settings objects
             var appSettingsSection = _configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -100,6 +102,7 @@ namespace AbangiAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DataContext dataContext)
         {
             //migrate any database changes on startup(includes initial db creation)
@@ -113,7 +116,10 @@ namespace AbangiAPI
 
 
 
-
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
             app.UseRouting();
             //global cors policy 
             app.UseCors(x => x
