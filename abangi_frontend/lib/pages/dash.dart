@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors, duplicate_ignore
+import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/pages/account.dart';
 import 'package:abangi_v1/pages/activity.dart';
 import 'package:abangi_v1/pages/create_listing.dart';
@@ -6,10 +7,9 @@ import 'package:abangi_v1/pages/history.dart';
 import 'package:abangi_v1/pages/home.dart';
 import 'package:abangi_v1/pages/messages.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Homedash extends StatelessWidget {
-  const Homedash({Key? key}) : super(key: key);
-
   static const String _title = 'Flutter Code Sample';
 
   @override
@@ -34,7 +34,14 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class DashState extends State<DashboardScreen> {
+  var currentUser;
+  void getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    currentUser = prefs.getString('user');
+  }
+
   int _selectedIndex = 0;
+  // ignore: prefer_final_fields
   static List<Widget> _widgetOptions = <Widget>[
     Home(),
     MessagesScreen(),
@@ -51,6 +58,7 @@ class DashState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getUser();
     return Scaffold(
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

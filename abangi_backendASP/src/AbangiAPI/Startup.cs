@@ -10,12 +10,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.SpaServices.Webpack;
 using AutoMapper;
 using AbangiAPI.Helpers;
 using AbangiAPI.Services;
 using AbangiAPI.Data;
 using AbangiAPI.Data.SqlRepo;
 using Microsoft.AspNetCore.Http;
+
+
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using AbangiAPI.Hubs;
 
 namespace AbangiAPI
@@ -38,6 +42,8 @@ namespace AbangiAPI
           
             services.AddCors();
             services.AddRazorPages();
+           
+         
             services.AddDbContext<DataContext>();
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -51,10 +57,14 @@ namespace AbangiAPI
             services.AddScoped<IItemCategoryAPIRepo, SqlItemCategoriesAPIRepo>();
             services.AddScoped<IRoleAPIRepo, SqlRoleAPIRepo>();
             services.AddScoped<IUserRoleAPIRepo, SqlUserRoleAPIRepo>();
-            services.AddScoped<IMessageAPIRepo, SqlIMessageAPIRepo>();
+            services.AddScoped<IRentalAPIRepo, SqlRentalAPIRepo>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+         
             services.AddControllersWithViews();
             services.AddCoreAdmin();
-            services.AddSignalR();
+            services.AddSignalR(options => {
+                options.EnableDetailedErrors = true;
+            });
             //configure strongly typed settings objects
             var appSettingsSection = _configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
@@ -114,12 +124,8 @@ namespace AbangiAPI
                
             }
 
+         
 
-
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<ChatHub>("/chatHub");
-            });
             app.UseRouting();
             //global cors policy 
             app.UseCors(x => x
@@ -131,10 +137,17 @@ namespace AbangiAPI
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseStaticFiles();
+           
             app.UseEndpoints(endpoints =>
             {
                endpoints.MapControllers();
+              
             });
+            app.UseSignalR(routes =>
+            {
+               routes.MapHub<ChatHub>("/chatHub");
+            });
+             
         }
     }
 }

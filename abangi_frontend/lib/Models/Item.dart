@@ -2,6 +2,7 @@
 
 class ItemModel {
   late int userId;
+  late int itemId;
   late String itemName;
   late String description;
   late double price;
@@ -17,6 +18,7 @@ class ItemModel {
   late String userStatus;
   ItemModel(
     this.userId,
+    this.itemId,
     this.itemName,
     this.description,
     this.price,
@@ -34,6 +36,7 @@ class ItemModel {
 
   ItemModel.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
+    itemId = json['itemId'];
     itemName = json['itemName'];
     description = json['description'];
     price = json['price'];

@@ -1,4 +1,9 @@
+class AuthUserDetails {
+  User? userDetails;
+}
+
 class User {
+  late int userid;
   late String name;
   late String email;
   late String role;
@@ -9,6 +14,7 @@ class User {
   late String userStatus;
 
   User(
+    this.userid,
     this.name,
     this.email,
     this.role,
@@ -20,6 +26,7 @@ class User {
   );
 
   User.fromJson(Map<String, dynamic> json) {
+    userid = json['userid'];
     name = json['fullName'];
     email = json['email'];
     phone = json['contact'];
@@ -28,4 +35,16 @@ class User {
     isAbangiVerified = json["isAbangiVerified"];
     userStatus = json["Status"];
   }
+
+  Map<String, dynamic> toJson() => {
+        'userid': userid,
+        'fullName': name,
+        'email': email,
+        'contact': phone,
+        'address': location,
+        'role': role,
+        'image': image,
+        'isAbangiVerified': isAbangiVerified,
+        'Status': userStatus,
+      };
 }

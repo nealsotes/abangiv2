@@ -45,6 +45,7 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
+        i['ItemId'],
         i['userId'],
         i['itemName'],
         i['description'],

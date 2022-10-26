@@ -52,7 +52,7 @@ class TabViewState extends State<MyListWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 30, left: 30),
+            padding: EdgeInsets.only(top: 20, left: 30),
             child: Text(
               "History",
               style: TextStyle(

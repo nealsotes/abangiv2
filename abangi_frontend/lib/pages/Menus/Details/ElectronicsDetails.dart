@@ -6,6 +6,7 @@ import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
 import 'package:abangi_v1/pages/Menus/Details/Reservation/reservation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
 
@@ -238,6 +239,7 @@ class ElectronicsDetails extends StatelessWidget {
                     ),
                     SfDateRangePicker(
                       selectionMode: DateRangePickerSelectionMode.range,
+                      enablePastDates: false,
                       initialSelectedRange: PickerDateRange(
                           DateTime.parse(itemModel.startDate)
                               .add(Duration(days: 0)),
@@ -267,8 +269,16 @@ class ButtonWidget extends StatefulWidget {
 
 /// State for ButtonWidget
 class ElectronicsDetailsState extends State<ButtonWidget> {
+  var currentUser;
+  void getCurrentUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    currentUser = prefs.getString('user');
+  }
+
   @override
   Widget build(BuildContext context) {
+    getCurrentUser();
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.min,
@@ -339,6 +349,7 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => Chat(
+                            name: currentUser,
                             itemModel: widget.itemModel,
                           )),
                 );
@@ -354,7 +365,10 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Reservation()),
+                  MaterialPageRoute(
+                      builder: (context) => Reservation(
+                            itemModel: widget.itemModel,
+                          )),
                 );
               },
             )),

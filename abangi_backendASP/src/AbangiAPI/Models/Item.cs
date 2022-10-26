@@ -21,6 +21,7 @@ namespace AbangiAPI.Models
         public ItemCategory ItemCategory {get; set;}
         public int ItemCategoryId {get; set;}
 
+        public User User {get; set;}
         public int UserId {get; set;}
         public int RentalMethodId {get; set;}
 
@@ -45,7 +46,5 @@ namespace AbangiAPI.Models
         [Required]  
         [MaxLength(150)]
         public string ItemDescription {get; set;}
-        
-        
     }
 }

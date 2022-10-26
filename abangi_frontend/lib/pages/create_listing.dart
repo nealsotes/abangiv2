@@ -55,6 +55,7 @@ Future<List<User>> getUser() async {
     List<User> users = [];
     for (var i in jsonData) {
       User user = User(
+        i['userid'],
         i['fullname'],
         i['email'],
         i['role'],

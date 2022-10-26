@@ -13,7 +13,9 @@ namespace AbangiAPI.Profiles
        public ItemsProfile()
        {
               CreateMap<Item, ItemReadDto>();
+              CreateMap<Rental, RentalReadDto>();
               CreateMap<ItemCreateDto, Item>();
+              CreateMap<RentalCreateDto,Rental>();
               CreateMap<ItemUpdateDto, Item>();
               CreateMap<Item, ItemUpdateDto>();
               CreateMap<RentalMethodUpdateDto, RentalMethod>();

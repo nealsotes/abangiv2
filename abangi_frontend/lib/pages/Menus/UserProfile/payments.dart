@@ -150,10 +150,10 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
             child: ElevatedButton(
               child: const Text('Ask for reservation'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Reservation()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => Reservation()),
+                // );
               },
             )),
       ],

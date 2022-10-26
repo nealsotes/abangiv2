@@ -3,15 +3,17 @@ using System;
 using AbangiAPI.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AbangiAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221026013530_AddChatTest")]
+    partial class AddChatTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,9 @@ namespace AbangiAPI.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int?>("ChatId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Contact")
                         .IsRequired()
@@ -60,7 +65,50 @@ namespace AbangiAPI.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("ChatId");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("AbangiAPI.Models.Chat.Chat", b =>
+                {
+                    b.Property<int>("ChatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ChatId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("AbangiAPI.Models.Chat.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("ChatId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("AbangiAPI.Models.Item", b =>
@@ -139,43 +187,6 @@ namespace AbangiAPI.Migrations
                     b.ToTable("ItemCategories");
                 });
 
-            modelBuilder.Entity("AbangiAPI.Models.Rental", b =>
-                {
-                    b.Property<int>("RentalId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("RentalRemarks")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RentalStatus")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("RentalId");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Rentals");
-                });
-
             modelBuilder.Entity("AbangiAPI.Models.RentalMethod", b =>
                 {
                     b.Property<int>("RentalMethodId")
@@ -245,6 +256,20 @@ namespace AbangiAPI.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("AbangiAPI.Entities.User", b =>
+                {
+                    b.HasOne("AbangiAPI.Models.Chat.Chat", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ChatId");
+                });
+
+            modelBuilder.Entity("AbangiAPI.Models.Chat.Message", b =>
+                {
+                    b.HasOne("AbangiAPI.Models.Chat.Chat", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId");
+                });
+
             modelBuilder.Entity("AbangiAPI.Models.Item", b =>
                 {
                     b.HasOne("AbangiAPI.Models.ItemCategory", "ItemCategory")
@@ -255,21 +280,6 @@ namespace AbangiAPI.Migrations
 
                     b.HasOne("AbangiAPI.Entities.User", null)
                         .WithMany("Items")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AbangiAPI.Models.Rental", b =>
-                {
-                    b.HasOne("AbangiAPI.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AbangiAPI.Entities.User", "User")
-                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

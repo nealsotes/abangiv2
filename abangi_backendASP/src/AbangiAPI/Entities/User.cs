@@ -1,21 +1,18 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 using AbangiAPI.Models;
-using AbangiAPI.Models.ChatApp;
 
 namespace AbangiAPI.Entities
 {
     public class User
     {
-        public User()
-        {
-          
-            Messages = new HashSet<Message>();
-        }
-      
+       
 
         [Key]
         [Required]
+
         public int UserId { get; set; }
         [Required]
         [MinLength(2),MaxLength(150)]
@@ -34,9 +31,7 @@ namespace AbangiAPI.Entities
         public byte[] PasswordSalt { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
-        public virtual ICollection<Message> Messages { get; set; }
-      
-       
-        
+    
+    
     }
 }

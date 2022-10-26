@@ -41,7 +41,7 @@ namespace AbangiAPI.Controllers
            
            
         }
-          [HttpGet("{id}", Name = "GetItemByUser"), Route("GetItemByUser/{id}")]
+        [HttpGet("{id}", Name = "GetItemByUser"), Route("GetItemByUser/{id}")]
         public async Task<ActionResult<IEnumerable<ItemInformation>>> GetAllByUser(int id)
         {
             var items =  await _repository.GetAllItemsByUser(id);

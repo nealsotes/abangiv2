@@ -354,7 +354,10 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Reservation()),
+                  MaterialPageRoute(
+                      builder: (context) => Reservation(
+                            itemModel: widget.itemModel,
+                          )),
                 );
               },
             )),
