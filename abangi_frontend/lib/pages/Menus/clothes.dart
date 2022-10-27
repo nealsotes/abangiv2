@@ -70,6 +70,7 @@ Future<List<ItemModel>> getItemData() async {
         i['abangiVerified'],
         i['dateCreated'],
         i['status'],
+        i['rentaStatus'],
       );
       items.add(item);
     }

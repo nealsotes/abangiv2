@@ -8,7 +8,7 @@ using AbangiAPI.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.JsonPatch;
 namespace AbangiAPI.Controllers
 {
     [ApiController]
@@ -38,6 +38,7 @@ namespace AbangiAPI.Controllers
             }
             return Ok(rental);
         }
+
        [HttpPost]
        [AllowAnonymous]
          public  ActionResult<RentalReadDto> CreateRental([FromBody] RentalCreateDto rentalCreateDto)
@@ -56,7 +57,7 @@ namespace AbangiAPI.Controllers
              }
          }
             [HttpGet("GetRentalByUserId/{id}")]
-            public async Task<ActionResult<RentalInformation>> GetRentalByUserId(int id)
+            public async Task<ActionResult<IEnumerable<RentalInformation>>> GetRentalByUserId(int id)
             {
                 var rental = await _repository.GetRentalByUserId(id);
                 if(rental == null)
@@ -65,5 +66,36 @@ namespace AbangiAPI.Controllers
                 }
                 return Ok(rental);
             }
+
+            [HttpGet("GetRentalByOwnerId/{id}")]
+            public async Task<ActionResult<IEnumerable<RentalInformation>>> GetRentalByOwnerId(int id)
+            {
+                var rental = await _repository.GetRentalByOwnerId(id);
+                if(rental == null)
+                {
+                    return NotFound();
+                }
+                return Ok(rental);
+            }
+            [HttpPatch("{id}")]
+            public async Task<ActionResult> UpdateRental(int id, [FromBody] JsonPatchDocument<RentalUpdateDto> patchDoc)
+            {
+                var rentalModelFromRepo = await _repository.GetIdPatch(id);
+                if(rentalModelFromRepo == null)
+                {
+                    return NotFound();
+                }
+                var rentalToPatch = _mapper.Map<RentalUpdateDto>(rentalModelFromRepo);
+                patchDoc.ApplyTo(rentalToPatch, ModelState);
+                if(!TryValidateModel(rentalToPatch))
+                {
+                    return ValidationProblem(ModelState);
+                }
+                _mapper.Map(rentalToPatch, rentalModelFromRepo);
+                _repository.UpdateViaPatch(rentalModelFromRepo);
+                _repository.SaveChanges();
+                return NoContent();
+            }
+           
     }
 }

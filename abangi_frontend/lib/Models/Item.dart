@@ -16,6 +16,7 @@ class ItemModel {
   late bool AbangiVerified;
   late String dateCreated;
   late String userStatus;
+  late String rentalStatus;
   ItemModel(
     this.userId,
     this.itemId,
@@ -32,6 +33,7 @@ class ItemModel {
     this.AbangiVerified,
     this.dateCreated,
     this.userStatus,
+    this.rentalStatus,
   );
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -50,5 +52,6 @@ class ItemModel {
     AbangiVerified = json['abangiVerified'];
     dateCreated = json['dateCreated'];
     userStatus = json['status'];
+    rentalStatus = json['rentalStatus'];
   }
 }

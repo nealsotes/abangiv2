@@ -11,7 +11,10 @@ namespace AbangiAPI.Data
         bool SaveChanges();
         Task<IEnumerable<RentalInformation>> GetAllRentals();
         Task<RentalInformation> GetRentalById(int id);
+        Task<Rental> GetIdPatch(int id);
         void CreateRental(Rental rental);
-        Task<RentalInformation> GetRentalByUserId(int id);
+        Task<IEnumerable<RentalInformation>> GetRentalByUserId(int id);
+        Task<IEnumerable<RentalInformation>> GetRentalByOwnerId(int id);
+        void UpdateViaPatch(Rental rental);
     }
 }

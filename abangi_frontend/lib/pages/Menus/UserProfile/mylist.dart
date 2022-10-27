@@ -60,6 +60,7 @@ Future<List<ItemModel>> getItemData() async {
         i['abangiVerified'],
         i['dateCreated'],
         i['Status'],
+        i['rentalStatus'],
       );
       items.add(item);
     }
@@ -102,8 +103,48 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                     subtitle: Row(
                       children: [
                         SizedBox(
-                          child: Text(
-                              '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
+                              Container(
+                                padding: EdgeInsets.all(5.0),
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      var data = [
+                                        {
+                                          "op": "replace",
+                                          "path": "rentalStatus",
+                                          "value": "Approved"
+                                        }
+                                      ];
+                                      await CallApi()
+                                          .patchData(data, 'api/rentals/21');
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                    setState(() {
+                                      snapshot.data![index].rentalStatus =
+                                          "Approved";
+                                    });
+                                  },
+                                  child: Text(
+                                    snapshot.data![index].rentalStatus,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 11),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Color.fromRGBO(0, 176, 236, 1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     ),

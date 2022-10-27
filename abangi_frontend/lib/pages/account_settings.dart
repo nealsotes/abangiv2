@@ -16,7 +16,32 @@ class AccountSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const Scaffold(
+      home: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: false ? Colors.white : Colors.white,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Color.fromRGBO(0, 176, 236, 1)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () async {
+            SharedPreferences localStorage =
+                await SharedPreferences.getInstance();
+            localStorage.remove('token');
+            localStorage.remove('user');
+            localStorage.remove('userid');
+            localStorage.remove('email');
+
+            Navigator.of(context, rootNavigator: true).pushReplacement(
+                MaterialPageRoute(builder: (context) => Login()));
+          },
+          label: const Text('Logout'),
+          icon: const Icon(Icons.logout),
+          backgroundColor: Colors.red,
+        ),
         body: AccountSettingsScreen(),
       ),
       theme: ThemeData(
@@ -43,7 +68,7 @@ class _MyStatefulWidgetState extends State<AccountSettingsScreen> {
           children: <Widget>[
             Container(
                 padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(top: 100),
+                margin: const EdgeInsets.only(top: 50),
                 child: const Text(
                   'Account',
                   style: TextStyle(color: Colors.black, fontSize: 25),
@@ -120,30 +145,7 @@ class _MyStatefulWidgetState extends State<AccountSettingsScreen> {
                 ],
               ),
             ),
-            Container(
-                height: 50,
-                margin: const EdgeInsets.only(top: 175),
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color.fromRGBO(0, 176, 236, 1),
-                  ),
-                  // ignore: sort_child_properties_last
-                  child: const Text('Logout'),
-                  onPressed: logout,
-                )),
           ],
         ));
-  }
-
-  void logout() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    localStorage.remove('token');
-    localStorage.remove('user');
-    localStorage.remove('userid');
-    localStorage.remove('email');
-
-    Navigator.of(context, rootNavigator: true)
-        .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
   }
 }

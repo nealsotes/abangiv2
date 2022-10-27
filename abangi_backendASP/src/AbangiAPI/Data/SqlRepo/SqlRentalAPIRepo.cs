@@ -50,6 +50,11 @@ namespace AbangiAPI.Data.SqlRepo
             return rentalList;
         }
 
+        public async Task<Rental> GetIdPatch(int id)
+        {
+            return await _context.Rentals.FirstOrDefaultAsync(r => r.RentalId == id);
+        }
+
         public async Task<RentalInformation> GetRentalById(int id)
         {
             var rental = await (from r in _context.Rentals
@@ -73,9 +78,32 @@ namespace AbangiAPI.Data.SqlRepo
             return rental;
         }
 
-        public async Task<RentalInformation> GetRentalByUserId(int id)
+        public async Task<IEnumerable<RentalInformation>> GetRentalByOwnerId(int id)
         {
-            var rentalList = await (from r in _context.Rentals
+           var rentalList =  await (from r in _context.Rentals
+                          join i in _context.Items on r.ItemId equals i.ItemId
+                          join u in _context.Users on r.UserId equals u.UserId
+                          join c in _context.UserRoles on u.UserId equals c.UserId
+                          where i.UserId == id
+                          select new RentalInformation
+                          {
+                              RentalId = r.RentalId,
+                              ItemOwner = i.User.FullName,
+                              ItemName = i.ItemName,
+                              ItemImage = i.ItemImage,
+                              ItemCategory = i.ItemCategory.ItemCategoryName,
+                              ItemLocation = i.ItemLocation,
+                              AbangiVerified = c.AbangiVerified,
+                              RentalStatus = r.RentalStatus,
+                              StartDate = r.StartDate,
+                              EndDate = r.EndDate
+                          }).ToListAsync();
+            return rentalList;
+        }
+
+        public async Task<IEnumerable<RentalInformation>> GetRentalByUserId(int id)
+        {
+            var rentalList = (from r in _context.Rentals
                               join i in _context.Items on r.ItemId equals i.ItemId
                               join u in _context.Users on r.UserId equals u.UserId
                               join c in _context.UserRoles on u.UserId equals c.UserId
@@ -87,18 +115,25 @@ namespace AbangiAPI.Data.SqlRepo
                                   ItemName = i.ItemName,
                                   ItemImage = i.ItemImage,
                                   ItemCategory = i.ItemCategory.ItemCategoryName,
+                                  ItemOwner = i.User.FullName,
                                   ItemLocation = i.ItemLocation,
                                   AbangiVerified = c.AbangiVerified,
+                                  RentalRemarks = r.RentalRemarks,
                                   RentalStatus = r.RentalStatus,
                                   StartDate = r.StartDate,
                                   EndDate = r.EndDate
-                              }).FirstOrDefaultAsync();
-            return rentalList;
+                              }).ToListAsync();
+            return await rentalList;
         }
 
         public bool SaveChanges()
         {
              return (_context.SaveChanges() >= 0);
+        }
+
+        public void UpdateViaPatch(Rental rental)
+        {
+            
         }
     }
 }

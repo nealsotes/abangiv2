@@ -120,9 +120,9 @@ class _MyAppState extends State<AccountScreen> {
                         margin: EdgeInsets.only(bottom: 90, left: 50),
                         child: IconButton(
                             onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
+                              Navigator.of(context, rootNavigator: true)
+                                  .push(MaterialPageRoute(
+                                      // ignore: unnecessary_new
                                       builder: (context) => AccountSettings()));
                             },
                             icon: Icon(

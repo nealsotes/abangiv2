@@ -5,12 +5,8 @@ using System.Threading.Tasks;
 
 namespace AbangiAPI.Dtos
 {
-    public class RentalCreateDto
+    public class RentalUpdateDto
     {
-        public RentalCreateDto()
-        {
-            DateCreated = DateTime.Now;
-        }
         public int RentalId { get; set; }
         public int UserId { get; set; }
         public int ItemId { get; set; }
@@ -18,6 +14,5 @@ namespace AbangiAPI.Dtos
         public DateTime EndDate { get; set; }
         public string RentalStatus { get; set; }
         public string RentalRemarks { get; set; }
-        public DateTime DateCreated { get; set; }
     }
 }

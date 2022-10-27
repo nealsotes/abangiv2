@@ -19,7 +19,8 @@ namespace AbangiAPI.Profiles
               CreateMap<ItemUpdateDto, Item>();
               CreateMap<Item, ItemUpdateDto>();
               CreateMap<RentalMethodUpdateDto, RentalMethod>();
-             
+              CreateMap<RentalUpdateDto,Rental>();
+              CreateMap<Rental, RentalUpdateDto>();
        }
     }
 

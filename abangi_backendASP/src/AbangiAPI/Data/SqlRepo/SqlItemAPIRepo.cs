@@ -46,6 +46,7 @@ namespace AbangiAPI.Data.SqlRepo
                            join u in _context.Users on i.UserId equals u.UserId
                            join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
                            join c in _context.UserRoles on u.UserId equals c.UserId
+
                            select new ItemInformation
                            {
                                 ItemId = i.ItemId,
@@ -125,6 +126,8 @@ namespace AbangiAPI.Data.SqlRepo
                            join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                            join u in _context.Users on i.UserId equals u.UserId
                            join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
+                           join rt in _context.Rentals on i.ItemId equals rt.ItemId
+                        
                            where i.UserId == id
                            select new ItemInformation
                            {
@@ -135,6 +138,7 @@ namespace AbangiAPI.Data.SqlRepo
                                 Category = ic.ItemCategoryName,
                                 Owner = u.FullName,
                                 RentalMethod = r.RentalMethodName,
+                                RentalStatus = rt.RentalStatus,
                                 Location = i.ItemLocation,
                                 Image = i.ItemImage,
                                 DateCreated = i.DateCreated,

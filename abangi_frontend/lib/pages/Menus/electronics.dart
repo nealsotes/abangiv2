@@ -75,6 +75,7 @@ Future<List<ItemModel>> getItemData() async {
         i['abangiVerified'],
         i['dateCreated'],
         i['status'],
+        i['rentaStatus'],
       );
       items.add(item);
     }
@@ -96,6 +97,7 @@ class ElectronicsState extends State<ElectronicsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(itemModel);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Card(

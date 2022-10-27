@@ -175,7 +175,8 @@ class MyAppState extends State<Reservation> {
         "Userid": int.parse(userid!),
         "Itemid": widget.itemModel.itemId,
         "StartDate": _selectedDate,
-        "RentalStatus": "Pending",
+        "RentalStatus": "For Approval",
+        "RentalRemarks": "Waiting for merchant to accept reservation"
       };
       var res = await CallApi().postData(data, 'api/rentals');
       var body = json.decode(res.body);
