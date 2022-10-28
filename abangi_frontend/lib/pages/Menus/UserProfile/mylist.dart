@@ -61,6 +61,7 @@ Future<List<ItemModel>> getItemData() async {
         i['dateCreated'],
         i['Status'],
         i['rentalStatus'],
+        i['rentalId'],
       );
       items.add(item);
     }
@@ -92,63 +93,142 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {},
-                    leading: Image.file(
-                      File(snapshot.data![index].image),
-                      width: 80,
-                      height: 70,
-                    ),
-                    title: Text(snapshot.data![index].itemName),
-                    subtitle: Row(
-                      children: [
-                        SizedBox(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                  '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
-                              Container(
-                                padding: EdgeInsets.all(5.0),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      var data = [
-                                        {
-                                          "op": "replace",
-                                          "path": "rentalStatus",
-                                          "value": "Approved"
-                                        }
-                                      ];
-                                      await CallApi()
-                                          .patchData(data, 'api/rentals/21');
-                                    } catch (e) {
-                                      print(e);
-                                    }
-                                    setState(() {
-                                      snapshot.data![index].rentalStatus =
-                                          "Approved";
-                                    });
-                                  },
+                  return snapshot.data![index].rentalStatus == 'Approved' ||
+                          snapshot.data![index].rentalStatus == 'Disapproved' ||
+                          snapshot.data![index].rentalStatus == 'Cancelled'
+                      ? Visibility(visible: false, child: Text(''))
+                      : RefreshIndicator(
+                          onRefresh: refreshList,
+                          child: ListTile(
+                            onTap: () {},
+                            leading: Image.file(
+                              File(snapshot.data![index].image),
+                              width: 80,
+                              height: 70,
+                            ),
+                            title: Row(
+                              children: [
+                                Text(snapshot.data![index].itemName),
+                                Container(
+                                  margin:
+                                      const EdgeInsets.only(left: 5, top: 5),
                                   child: Text(
                                     snapshot.data![index].rentalStatus,
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 11),
+                                        color: Color.fromRGBO(0, 176, 236, 1),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Color.fromRGBO(0, 176, 236, 1),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
+                                )
+                              ],
+                            ),
+                            subtitle: Row(
+                              children: [
+                                SizedBox(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
+                                      Container(
+                                        padding: EdgeInsets.all(5.0),
+                                        child: Row(
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                try {
+                                                  var data = [
+                                                    {
+                                                      "op": "replace",
+                                                      "path": "rentalStatus",
+                                                      "value": "Approved"
+                                                    },
+                                                    {
+                                                      "op": "replace",
+                                                      "path": "rentalRemarks",
+                                                      "value":
+                                                          "You can now rent this item and pay the owner"
+                                                    }
+                                                  ];
+                                                  CallApi().patchData(data,
+                                                      'api/rentals/${snapshot.data![index].rentalId}');
+                                                } catch (e) {
+                                                  print(e);
+                                                }
+                                                refreshList();
+                                              },
+                                              child: Text(
+                                                snapshot.data![index]
+                                                    .rentalStatus = 'Approved',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 11),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Color.fromRGBO(
+                                                    0, 176, 236, 1),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(left: 10),
+                                              child: ElevatedButton(
+                                                onPressed: () async {
+                                                  try {
+                                                    var data = [
+                                                      {
+                                                        "op": "replace",
+                                                        "path": "rentalStatus",
+                                                        "value": "Disapproved"
+                                                      },
+                                                      {
+                                                        "op": "replace",
+                                                        "path": "rentalRemarks",
+                                                        "value":
+                                                            "Your request to rent this item has been disapproved"
+                                                      }
+                                                    ];
+                                                    await CallApi().patchData(
+                                                        data,
+                                                        'api/rentals/${snapshot.data![index].rentalId}');
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                  refreshList();
+                                                },
+                                                // ignore: sort_child_properties_last
+                                                child: Text(
+                                                  snapshot.data![index]
+                                                          .rentalStatus =
+                                                      "Disapproved",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 11),
+                                                ),
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Color.fromRGBO(
+                                                      0, 176, 236, 1),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                              ],
+                            ),
+                          ));
                 },
               );
             } else {
@@ -158,5 +238,12 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> refreshList() async {
+    await Future.delayed(Duration(seconds: 0));
+    setState(() {
+      itemModel = getItemData();
+    });
   }
 }

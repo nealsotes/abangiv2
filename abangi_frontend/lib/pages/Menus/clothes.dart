@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/api/api.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Details/BooksDetails.dart';
 import 'Details/ClothesDetails.dart';
@@ -46,10 +47,13 @@ class ClothesScreen extends StatefulWidget {
   State<ClothesScreen> createState() => _MyStatefulWidgetState();
 }
 
+var currentUser;
 Future<List<ItemModel>> getItemData() async {
   try {
-    var response =
-        await CallApi().getData('api/itemcategories/getitembycategory/clothes');
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    currentUser = localStorage.getString('userid');
+    var response = await CallApi()
+        .getData('api/itemcategories/getitembycategory/clothes/$currentUser');
     var jsonData = jsonDecode(response.body);
 
     List<ItemModel> items = [];
@@ -71,6 +75,7 @@ Future<List<ItemModel>> getItemData() async {
         i['dateCreated'],
         i['status'],
         i['rentaStatus'],
+        i['rentalId'],
       );
       items.add(item);
     }

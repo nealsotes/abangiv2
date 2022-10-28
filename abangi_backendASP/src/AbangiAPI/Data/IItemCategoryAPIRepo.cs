@@ -14,6 +14,6 @@ namespace AbangiAPI.Data
         void CreateItemCategory(ItemCategory itemCategory);
         void UpdateItemCategory(ItemCategory itemCategory);
         void DeleteItemCategory(ItemCategory itemCategory);
-       Task<IEnumerable<ItemInformation>> GetItemByCategory(string name);
+       Task<IEnumerable<ItemInformation>> GetItemByCategory(string name, int id);
     }
 }

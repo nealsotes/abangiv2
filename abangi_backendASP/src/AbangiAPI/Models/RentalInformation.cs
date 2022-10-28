@@ -19,6 +19,8 @@ namespace AbangiAPI.Models
         public bool AbangiVerified {get; set;}
         public string RentalStatus {get; set;}
         public string RentalRemarks {get; set;}
+        public string Status {get; set;}
+        public double ItemPrice {get; set;}
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 

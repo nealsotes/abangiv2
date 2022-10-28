@@ -43,10 +43,10 @@ namespace AbangiAPI.Controllers
             }
             return Ok(itemCategory);
         }
-        [HttpGet("GetItemByCategory/{name}")]
-        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetItemByCategory(string name)
+        [HttpGet("GetItemByCategory/{name}/{id}")]
+        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetItemByCategory(string name,int id)
         {
-            var item = await _repository.GetItemByCategory(name);
+            var item = await _repository.GetItemByCategory(name, id);
             if (item == null)
             {
                 return NotFound();

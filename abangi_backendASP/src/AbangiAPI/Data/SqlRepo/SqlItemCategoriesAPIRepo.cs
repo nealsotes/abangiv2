@@ -40,7 +40,7 @@ namespace AbangiAPI.Data.SqlRepo
             return await _context.ItemCategories.Include(i => i.Items).ToListAsync();
         }
 
-         public async Task<IEnumerable<ItemInformation>> GetItemByCategory(string name)
+         public async Task<IEnumerable<ItemInformation>> GetItemByCategory(string name, int id)
         {
             
             var Item = (from i in _context.Items
@@ -48,7 +48,7 @@ namespace AbangiAPI.Data.SqlRepo
                         join u in _context.Users on i.UserId equals u.UserId
                         join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId 
                         join c in _context.UserRoles on u.UserId equals c.UserId 
-                        where ic.ItemCategoryName.ToLower() == name
+                        where ic.ItemCategoryName.ToLower() == name && c.UserId != id
                         select new ItemInformation
                         {
                             ItemId = i.ItemId,

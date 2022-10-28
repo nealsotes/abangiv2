@@ -8,6 +8,7 @@ import 'package:abangi_v1/api/api.dart';
 import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Details/ElectronicsDetails.dart';
 
@@ -48,13 +49,13 @@ class ElectronicsScreen extends StatefulWidget {
   State<ElectronicsScreen> createState() => ElectronicsState();
 }
 
+var currentUser;
 Future<List<ItemModel>> getItemData() async {
   try {
-    // var category = await CallApi().getData('api/itemcategories');
-    // var jsonData2 = jsonDecode(category.body);
-    // print(jsonData2[3]['items']);
-    var response = await CallApi()
-        .getData('api/itemcategories/getitembycategory/electronics');
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    currentUser = localStorage.getString('userid');
+    var response = await CallApi().getData(
+        'api/itemcategories/getitembycategory/electronics/$currentUser');
     var jsonData = jsonDecode(response.body);
 
     List<ItemModel> items = [];
@@ -76,6 +77,7 @@ Future<List<ItemModel>> getItemData() async {
         i['dateCreated'],
         i['status'],
         i['rentaStatus'],
+        i['rentalId'],
       );
       items.add(item);
     }
@@ -97,7 +99,6 @@ class ElectronicsState extends State<ElectronicsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(itemModel);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Card(

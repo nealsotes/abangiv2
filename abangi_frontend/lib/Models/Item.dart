@@ -17,6 +17,7 @@ class ItemModel {
   late String dateCreated;
   late String userStatus;
   late String rentalStatus;
+  late int rentalId;
   ItemModel(
     this.userId,
     this.itemId,
@@ -34,6 +35,7 @@ class ItemModel {
     this.dateCreated,
     this.userStatus,
     this.rentalStatus,
+    this.rentalId,
   );
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -53,5 +55,6 @@ class ItemModel {
     dateCreated = json['dateCreated'];
     userStatus = json['status'];
     rentalStatus = json['rentalStatus'];
+    rentalId = json['rentalId'];
   }
 }

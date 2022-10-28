@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io' as io;
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
+import 'package:abangi_v1/pages/Menus/Details/Chat/chat_approval.dart';
 import 'package:abangi_v1/pages/Menus/Details/Reservation/reservation.dart';
 import 'package:abangi_v1/pages/Menus/UserProfile/payments.dart';
 
@@ -47,14 +48,16 @@ Future<List<RentalModel>> getRental() async {
     List<RentalModel> rentals = [];
     for (var r in jsonData) {
       RentalModel rental = RentalModel(
-        r['rentalId'],
-        r['itemOwner'],
-        r['itemImage'],
-        r['itemName'],
-        r['rentalStatus'],
-        r['rentalRemarks'],
-        r['startDate'],
-      );
+          r['rentalId'],
+          r['itemOwner'],
+          r['itemImage'],
+          r['itemName'],
+          r['rentalStatus'],
+          r['rentalRemarks'],
+          r['startDate'],
+          r['status'],
+          r['itemPrice'],
+          r['itemLocation']);
       rentals.add(rental);
     }
 
@@ -117,7 +120,7 @@ class TabViewState extends State<MyListWidget> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Padding(
-                        padding: EdgeInsets.all(10.0),
+                        padding: EdgeInsets.all(2.0),
                         child: ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
@@ -130,7 +133,16 @@ class TabViewState extends State<MyListWidget> {
                                     margin:
                                         EdgeInsets.only(left: 12, right: 12.0),
                                     child: ListTile(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .push(MaterialPageRoute(
+                                                  // ignore: unnecessary_new
+                                                  builder: (context) =>
+                                                      ChatApproval(
+                                                          rental: snapshot
+                                                              .data![index])));
+                                        },
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(12.0)),
@@ -155,18 +167,31 @@ class TabViewState extends State<MyListWidget> {
                                                   fontSize: 9),
                                             ),
                                             Container(
-                                              padding: EdgeInsets.all(5.0),
+                                              margin: EdgeInsets.only(top: 3.0),
+                                              padding: EdgeInsets.all(3.0),
                                               decoration: BoxDecoration(
-                                                  color: Color.fromRGBO(
-                                                      0, 176, 236, 1),
+                                                  color: snapshot.data![index]
+                                                              .rentalStatus ==
+                                                          "For Approval"
+                                                      ? Colors.orange
+                                                      : snapshot.data![index]
+                                                                  .rentalStatus ==
+                                                              "Approved"
+                                                          ? Color.fromRGBO(
+                                                              0, 176, 236, 1)
+                                                          : Colors.grey,
                                                   borderRadius:
                                                       BorderRadius.circular(2)),
-                                              child: Text(
-                                                snapshot
-                                                    .data![index].rentalStatus,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 9),
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 10.0, right: 10.0),
+                                                child: Text(
+                                                  snapshot.data![index]
+                                                      .rentalStatus,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 9),
+                                                ),
                                               ),
                                             )
                                           ],
