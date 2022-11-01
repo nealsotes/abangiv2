@@ -46,7 +46,6 @@ Future<List<ItemModel>> getItemData() async {
     for (var i in jsonData) {
       ItemModel item = ItemModel(
         i['itemId'],
-        i['userId'],
         i['itemName'],
         i['description'],
         i['price'],
@@ -62,6 +61,7 @@ Future<List<ItemModel>> getItemData() async {
         i['Status'],
         i['rentalStatus'],
         i['rentalId'],
+        i['renterName'],
       );
       items.add(item);
     }
@@ -129,6 +129,29 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Requested by: ",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              print("CLick");
+                                            },
+                                            child: Text(
+                                              snapshot.data![index].renterName,
+                                              style: TextStyle(
+                                                  color: Color.fromRGBO(
+                                                      0, 176, 236, 1),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                       Text(
                                           '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
                                       Container(
@@ -136,7 +159,7 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                                         child: Row(
                                           children: [
                                             ElevatedButton(
-                                              onPressed: () {
+                                              onPressed: () async {
                                                 try {
                                                   var data = [
                                                     {
@@ -151,7 +174,8 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                                                           "You can now rent this item and pay the owner"
                                                     }
                                                   ];
-                                                  CallApi().patchData(data,
+                                                  await CallApi().patchData(
+                                                      data,
                                                       'api/rentals/${snapshot.data![index].rentalId}');
                                                 } catch (e) {
                                                   print(e);

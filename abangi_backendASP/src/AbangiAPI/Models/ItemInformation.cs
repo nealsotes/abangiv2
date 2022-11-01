@@ -31,6 +31,7 @@ namespace AbangiAPI.Models
         [Column("Status")]
         public string Status {get; set;}
         public int RentalId {get; set;}
+        public string RenterName {get; set;}
         public string RentalStatus {get; set;}
         [DataType(DataType.Date)]
         public DateTime DateCreated {get; set;}

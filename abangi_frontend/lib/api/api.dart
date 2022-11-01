@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class CallApi {
-  final String _url = 'http://172.25.240.1:5000/';
+  final String _url = 'http://172.21.16.1:5000/';
 
   postData(data, apiUrl) async {
     var fullUrl = _url + apiUrl + await _getToken();

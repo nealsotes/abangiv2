@@ -61,7 +61,6 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
-        i['userId'],
         i['itemId'],
         i['itemName'],
         i['description'],
@@ -75,9 +74,10 @@ Future<List<ItemModel>> getItemData() async {
         i['endDate'],
         i['abangiVerified'],
         i['dateCreated'],
-        i['status'],
-        i['rentaStatus'],
+        i['Status'],
+        i['rentalStatus'],
         i['rentalId'],
+        i['renterName'],
       );
       items.add(item);
     }
@@ -148,7 +148,10 @@ class ElectronicsState extends State<ElectronicsScreen> {
                                     fontWeight: FontWeight.w500,
                                   )),
                             ),
-                            Text(snapshot.data![index].owner),
+                            InkWell(
+                              onTap: () {},
+                              child: Text(snapshot.data![index].owner),
+                            )
                           ],
                         ),
                       ],

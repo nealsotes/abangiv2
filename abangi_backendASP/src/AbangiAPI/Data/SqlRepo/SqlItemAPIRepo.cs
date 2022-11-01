@@ -140,6 +140,7 @@ namespace AbangiAPI.Data.SqlRepo
                                 RentalMethod = r.RentalMethodName,
                                 RentalStatus = rt.RentalStatus,
                                 RentalId = rt.RentalId,
+                                RenterName = rt.User.FullName,
                                 Location = i.ItemLocation,
                                 Image = i.ItemImage,
                                 DateCreated = i.DateCreated,

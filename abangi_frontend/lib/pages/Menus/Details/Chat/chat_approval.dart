@@ -33,6 +33,8 @@ class ChatApproval extends StatefulWidget {
 var updateStatus;
 
 class ChatApprovalScreen extends State<ChatApproval> {
+  late final CancelAction _cancelAction;
+  bool isCancelled = false;
   var scrollController = ScrollController();
   SignalRHelper signalRHelper = SignalRHelper();
   receiveMessageHandler(args) {
@@ -42,7 +44,12 @@ class ChatApprovalScreen extends State<ChatApproval> {
     setState(() {});
   }
 
-  var transactionMessage = 'Transaction Cancelled';
+  void _toggleCancel() {
+    setState(() {
+      isCancelled = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -168,11 +175,21 @@ class ChatApprovalScreen extends State<ChatApproval> {
                         ),
                       ],
                     ),
-                    widget.rental.rentalStatus == 'Cancelled'
+                    super.widget.rental.rentalStatus == 'Cancelled' ||
+                            isCancelled ||
+                            widget.rental.rentalStatus == 'Approved'
                         ? Center(
-                            child: Text(widget.rental.rentalRemarks,
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.redAccent)),
+                            child: isCancelled == true
+                                ? Text(
+                                    'Cancelled',
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.redAccent),
+                                  )
+                                : Text(
+                                    widget.rental.rentalRemarks,
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.redAccent),
+                                  ),
                           )
                         : RefreshIndicator(
                             onRefresh: onRefresh,
@@ -191,7 +208,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                   margin:
                                       EdgeInsets.only(top: 5.0, bottom: 5.0),
                                   child: ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         try {
                                           var data = [
                                             {
@@ -205,7 +222,8 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                               "value": "Transaction Cancelled."
                                             }
                                           ];
-                                          CallApi().patchData(data,
+                                          _toggleCancel();
+                                          await CallApi().patchData(data,
                                               'api/rentals/${widget.rental.rentalId}');
                                         } catch (e) {
                                           print(e);
@@ -220,6 +238,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                               ],
                             ),
                           )
+                    // ignore: unrelated_type_equality_checks
                   ],
                 ),
                 trailing: Image.file(File(widget.rental.image),
@@ -283,6 +302,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
   @override
   void initState() {
     super.initState();
+    _cancelAction = CancelAction();
     signalRHelper.connect(receiveMessageHandler);
   }
 
@@ -298,4 +318,27 @@ class ChatApprovalScreen extends State<ChatApproval> {
     await Future.delayed(Duration(seconds: 2));
     setState(() {});
   }
+}
+
+class CancelAction extends Action<MyIntent> {
+  @override
+  void addActionListener(ActionListenerCallback listener) {
+    super.addActionListener(listener);
+    debugPrint('addActionListener');
+  }
+
+  @override
+  void removeActionListener(ActionListenerCallback listener) {
+    super.removeActionListener(listener);
+    debugPrint('Action Listener was removed');
+  }
+
+  @override
+  Object? invoke(covariant MyIntent intent) {
+    notifyActionListeners();
+  }
+}
+
+class MyIntent extends Intent {
+  const MyIntent();
 }

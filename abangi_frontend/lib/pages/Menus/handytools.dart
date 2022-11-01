@@ -59,7 +59,6 @@ Future<List<ItemModel>> getItemData() async {
     List<ItemModel> items = [];
     for (var i in jsonData) {
       ItemModel item = ItemModel(
-        i['userId'],
         i['itemId'],
         i['itemName'],
         i['description'],
@@ -73,9 +72,10 @@ Future<List<ItemModel>> getItemData() async {
         i['endDate'],
         i['abangiVerified'],
         i['dateCreated'],
-        i['status'],
-        i['rentaStatus'],
+        i['Status'],
+        i['rentalStatus'],
         i['rentalId'],
+        i['renterName'],
       );
       items.add(item);
     }
@@ -126,6 +126,7 @@ class _MyStatefulWidgetState extends State<HandyToolsScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(snapshot.data![index].renterName),
                         Text('₱${snapshot.data![index].price}/ day',
                             style: TextStyle(
                                 color: Color.fromRGBO(0, 176, 236, 1),

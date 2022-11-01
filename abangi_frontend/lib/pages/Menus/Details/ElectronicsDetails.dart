@@ -23,6 +23,7 @@ class ElectronicsDetails extends StatelessWidget {
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
+
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is PickerDateRange) {
       final dynamic date = args.value;
@@ -157,13 +158,18 @@ class ElectronicsDetails extends StatelessWidget {
                                 color: Color.fromRGBO(0, 176, 236, 1)),
                             onPressed: () {},
                           ),
-                          Text(
-                            itemModel.owner,
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          InkWell(
+                            onTap: () {
+                              print("tapped");
+                            },
+                            child: Text(
+                              itemModel.owner,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          )
                         ],
                       ),
                     ),
