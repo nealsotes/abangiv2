@@ -9,7 +9,7 @@ class User {
   late String role;
   late String phone;
   late String location;
-  late String image;
+  String? profileImage;
   late String isAbangiVerified;
   late String userStatus;
 
@@ -20,7 +20,7 @@ class User {
     this.role,
     this.phone,
     this.location,
-    this.image,
+    this.profileImage,
     this.isAbangiVerified,
     this.userStatus,
   );
@@ -34,6 +34,7 @@ class User {
     role = json['role'];
     isAbangiVerified = json["isAbangiVerified"];
     userStatus = json["Status"];
+    profileImage = json['userImage'];
   }
 
   Map<String, dynamic> toJson() => {
@@ -43,7 +44,7 @@ class User {
         'contact': phone,
         'address': location,
         'role': role,
-        'image': image,
+        'userImage': profileImage,
         'isAbangiVerified': isAbangiVerified,
         'Status': userStatus,
       };

@@ -113,39 +113,31 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         );
 
                       default:
-                        return Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              Center(
-                                child: Text(
-                                  'let\'s Rent,' + ' ' + currentUserSession,
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(0, 176, 236, 1),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20),
-                                ),
-                              )
-                            ],
+                        return Container(
+                          margin: EdgeInsets.only(top: 40.0, bottom: 30.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // ignore: prefer_const_literals_to_create_immutables
+                              children: [
+                                Center(
+                                  child: Text(
+                                    'let\'s Rent,' + ' ' + currentUserSession,
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(0, 176, 236, 1),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         );
                     }
                   },
                 )),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: searchController,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(),
-                  labelText: 'Search',
-                ),
-              ),
-            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -153,7 +145,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 25),
+                      margin: EdgeInsets.only(top: 22.0),
                       child: SizedBox(
                         width: 60,
                         height: 60,

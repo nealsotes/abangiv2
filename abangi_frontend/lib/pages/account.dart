@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:abangi_v1/pages/account_settings.dart';
 import 'package:abangi_v1/pages/login.dart';
@@ -58,12 +59,24 @@ class _MyAppState extends State<AccountScreen> {
                       Padding(
                         padding: EdgeInsets.only(left: 10),
                         child: CircleAvatar(
+                            onBackgroundImageError: (exception, stackTrace) {
+                              print('Error loading image');
+                            },
+                            backgroundImage: Image.file(
+                              File(snapshot.data!.profileImage != null
+                                  ? snapshot.data!.profileImage!
+                                  : ''),
+                            ).image,
                             radius: 40,
                             backgroundColor: Colors.white,
-                            child: Text(snapshot.data!.name.substring(0, 1),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 35))),
+                            // ignore: unnecessary_null_comparison
+                            child: snapshot.data!.profileImage == null
+                                ? Text(snapshot.data!.name.substring(0, 1),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Color.fromRGBO(0, 176, 236, 1),
+                                        fontSize: 35))
+                                : null),
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 10, top: 20),
@@ -74,10 +87,10 @@ class _MyAppState extends State<AccountScreen> {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 25)),
+                                    fontSize: 23)),
                             Text(snapshot.data!.email,
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 15)),
+                                    color: Colors.white, fontSize: 13.0)),
                             Container(
                               margin: EdgeInsets.only(top: 5),
                               child: FlatButton(
@@ -117,7 +130,7 @@ class _MyAppState extends State<AccountScreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 90, left: 50),
+                        margin: EdgeInsets.only(bottom: 90, left: 100),
                         child: IconButton(
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true)

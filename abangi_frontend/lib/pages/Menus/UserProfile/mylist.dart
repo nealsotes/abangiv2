@@ -95,7 +95,8 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                 itemBuilder: (context, index) {
                   return snapshot.data![index].rentalStatus == 'Approved' ||
                           snapshot.data![index].rentalStatus == 'Disapproved' ||
-                          snapshot.data![index].rentalStatus == 'Cancelled'
+                          snapshot.data![index].rentalStatus == 'Cancelled' ||
+                          snapshot.data![index].rentalStatus == ''
                       ? Visibility(visible: false, child: Text(''))
                       : RefreshIndicator(
                           onRefresh: refreshList,

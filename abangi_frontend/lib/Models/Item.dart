@@ -18,6 +18,7 @@ class ItemModel {
   late String rentalStatus;
   late int rentalId;
   late String renterName;
+
   ItemModel(
     this.itemId,
     this.itemName,

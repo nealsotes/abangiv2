@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 // ignore: depend_on_referenced_packages
+import 'package:abangi_v1/api/Account/view_profile.dart';
 import 'package:abangi_v1/pages/welcome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:abangi_v1/api/api.dart';
@@ -84,7 +85,13 @@ class _MyStatefulWidgetState extends State<AccountSettingsScreen> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios))
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true)
+                          .push(MaterialPageRoute(
+                              // ignore: unnecessary_new
+                              builder: (context) => ViewProfile()));
+                    },
+                    icon: const Icon(Icons.arrow_forward_ios))
               ],
             ),
             Container(

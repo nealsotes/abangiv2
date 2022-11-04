@@ -113,6 +113,7 @@ namespace AbangiAPI.Services
                             Email = u.Email,
                             Contact = u.Contact,
                             Address = u.Address,
+                            UserImage = u.UserImage,
                             Role = r.RoleName,
                             IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
                             
