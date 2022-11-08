@@ -109,7 +109,7 @@ namespace AbangiAPI.Data.SqlRepo
 
         public void  SavePostImageAsync(ItemCreateDto itemCreateDto)
         {
-            var item = new ItemReadDto();
+            var item = new Item();
             var uniqueFileName = FileHelper.GetUniqueFileName(itemCreateDto.Image.FileName);
             var uploads = Path.Combine(environment.WebRootPath, "Images","Items", item.ItemId.ToString());
             var filePath = Path.Combine(uploads, uniqueFileName);
@@ -127,8 +127,8 @@ namespace AbangiAPI.Data.SqlRepo
                            join u in _context.Users on i.UserId equals u.UserId
                            join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId
                            join rt in _context.Rentals on i.ItemId equals rt.ItemId
-                        
-                           where i.UserId == id
+                           
+                            where i.UserId == id
                            select new ItemInformation
                            {
                                 ItemId = i.ItemId,
@@ -151,6 +151,32 @@ namespace AbangiAPI.Data.SqlRepo
             return userItems;
             
         
+        }
+
+        public async Task<IEnumerable<ItemInformation>> GetUserItemListings(int id)
+        {
+            var items = (from i in _context.Items
+                      
+                           join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
+                           join u in _context.Users on i.UserId equals u.UserId 
+                           join rt in _context.Rentals on i.ItemId equals rt.ItemId      
+                           where i.UserId == id
+                           select new ItemInformation
+                           {
+                                ItemId = i.ItemId,
+                                ItemName = i.ItemName,
+                                Description = i.ItemDescription,
+                                Price = i.ItemPrice,
+                                Category = ic.ItemCategoryName,
+                                RentalStatus = rt.RentalStatus,
+                                Location = i.ItemLocation,
+                                Image = i.ItemImage,
+                                DateCreated = i.DateCreated,
+                                StartDate = i.StartDate,
+                                EndDate = i.EndDate
+                                
+                            }).ToListAsync();
+            return await items;
         }
     }
 }

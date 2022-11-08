@@ -6,7 +6,7 @@ import 'package:signalr_netcore/signalr_client.dart';
 import 'models/chatmessage.dart';
 
 class SignalRHelper {
-  final url = 'http://172.21.16.1:5000/chatHub';
+  final url = 'http://172.31.240.1:5000/chatHub';
   late HubConnection hubConnection;
   var messageList = [];
   String textMessage = '';

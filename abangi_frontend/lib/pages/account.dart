@@ -130,7 +130,7 @@ class _MyAppState extends State<AccountScreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 90, left: 100),
+                        margin: EdgeInsets.only(bottom: 90, left: 40),
                         child: IconButton(
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true)
@@ -162,7 +162,7 @@ class _MyAppState extends State<AccountScreen> {
                     unselectedLabelColor: Colors.grey,
                     tabs: [
                       Tab(
-                        text: 'My Listings',
+                        text: 'My Inquiries',
                       ),
                       Tab(
                         text: 'Payments',

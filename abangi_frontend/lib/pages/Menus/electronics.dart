@@ -147,56 +147,60 @@ class ElectronicsState extends State<ElectronicsScreen> {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ElectronicsDetails(
-                                itemModel: snapshot.data![index],
+                      return snapshot.data![index].rentalStatus != "Approved"
+                          ? ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ElectronicsDetails(
+                                      itemModel: snapshot.data![index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              leading: Image.file(
+                                File(snapshot.data![index].image),
+                                width: 90,
                               ),
-                            ),
-                          );
-                        },
-                        leading: Image.file(
-                          File(snapshot.data![index].image),
-                          width: 90,
-                        ),
-                        title: Text(snapshot.data![index].itemName),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('₱${snapshot.data![index].price}/ day',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(0, 176, 236, 1),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15)),
-                            Text(
-                              snapshot.data![index].location,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(right: 5),
-                                  child: Text(
-                                      snapshot.data![index].owner
-                                          .substring(0, 1),
+                              title: Text(snapshot.data![index].itemName),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('P${snapshot.data![index].price}/ day',
                                       style: TextStyle(
-                                        color: Color.fromRGBO(0, 176, 236, 1),
-                                        fontWeight: FontWeight.w500,
-                                      )),
-                                ),
-                                InkWell(
-                                  hoverColor: Colors.lightBlue[200],
-                                  onTap: () {},
-                                  child: Text(snapshot.data![index].owner),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
+                                          color: Color.fromRGBO(0, 176, 236, 1),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  Text(
+                                    snapshot.data![index].location,
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Text(
+                                            snapshot.data![index].owner
+                                                .substring(0, 1),
+                                            style: TextStyle(
+                                              color: Color.fromRGBO(
+                                                  0, 176, 236, 1),
+                                              fontWeight: FontWeight.w500,
+                                            )),
+                                      ),
+                                      InkWell(
+                                        hoverColor: Colors.lightBlue[200],
+                                        onTap: () {},
+                                        child:
+                                            Text(snapshot.data![index].owner),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container();
                     },
                   );
                 }

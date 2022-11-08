@@ -298,10 +298,10 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         height: 60,
                         child: IconButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => Others()),
-                            // );
+                            Navigator.of(context, rootNavigator: true)
+                                .push(MaterialPageRoute(
+                                    // ignore: unnecessary_new
+                                    builder: (context) => Others()));
                           },
                           icon: Icon(Icons.device_unknown,
                               color: Color.fromRGBO(0, 176, 236, 1), size: 40),

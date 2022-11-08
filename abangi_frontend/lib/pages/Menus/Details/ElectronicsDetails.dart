@@ -93,7 +93,7 @@ class ElectronicsDetails extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: Text(
-                        "₱${itemModel.price}/ day",
+                        "P${itemModel.price}/ day",
                         style: TextStyle(
                             color: Color.fromRGBO(0, 176, 236, 1),
                             fontSize: 21,
@@ -282,6 +282,8 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
     currentUser = prefs.getString('user');
   }
 
+  bool _isVisibility = false;
+
   @override
   Widget build(BuildContext context) {
     getCurrentUser();
@@ -326,14 +328,133 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
         ),
         Container(
           margin: EdgeInsets.only(top: 20),
+          padding: EdgeInsets.all(5.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
           ),
-          child: Text(
-            "How to book",
-            style: TextStyle(
-                color: Colors.black, fontSize: 21, fontWeight: FontWeight.w600),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "How to book",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    "How to reserve this listing",
+                    style: TextStyle(color: Colors.black, fontSize: 13),
+                  ),
+                  Visibility(
+                      visible: _isVisibility,
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "1. ",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'Tap "Chat now "or "Ask for reservation".',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "2. ",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'Choose your preferred date and submit request reserve.',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "3. ",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'Once accepted by the owner, pay within the \napp to confirm your reservation.',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "4. ",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'After you use/rent the product or service,Top \n"Complete Transaction".',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "5. ",
+                                  style: TextStyle(
+                                      color: Colors.redAccent,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                Text(
+                                  'Leave you review and rating for the owner.',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 11),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ))
+                ],
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isVisibility = !_isVisibility;
+                  });
+                },
+                icon: Icon(
+                  Icons.arrow_forward_ios,
+                ),
+              )
+            ],
           ),
         ),
         Container(
@@ -343,24 +464,24 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
             color: Colors.white,
           ),
         ),
-        Container(
-            height: 50,
-            width: 400,
-            margin: const EdgeInsets.only(top: 15),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: OutlinedButton(
-              child: const Text('Chat Now'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Chat(
-                            name: currentUser,
-                            itemModel: widget.itemModel,
-                          )),
-                );
-              },
-            )),
+        // Container(
+        //     height: 50,
+        //     width: 400,
+        //     margin: const EdgeInsets.only(top: 15),
+        //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //     child: OutlinedButton(
+        //       child: const Text('Chat Now'),
+        //       onPressed: () {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (context) => Chat(
+        //                     name: currentUser,
+        //                     itemModel: widget.itemModel,
+        //                   )),
+        //         );
+        //       },
+        //     )),
         Container(
             height: 50,
             width: 400,

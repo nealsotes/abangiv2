@@ -163,7 +163,7 @@ class _MyStatefulWidgetState extends State<HandyToolsScreen> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('₱${snapshot.data![index].price}/ day',
+                            Text('P${snapshot.data![index].price}/ day',
                                 style: TextStyle(
                                     color: Color.fromRGBO(0, 176, 236, 1),
                                     fontWeight: FontWeight.bold,

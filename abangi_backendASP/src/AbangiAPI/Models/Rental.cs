@@ -20,7 +20,7 @@ namespace AbangiAPI.Models
         public String RentalStatus { get; set; }
         public DateTime DateCreated { get; set; }
         public string RentalRemarks { get; set; }
-        public ICollection<Item> Items { get; set; }
+      
         
     }
 }

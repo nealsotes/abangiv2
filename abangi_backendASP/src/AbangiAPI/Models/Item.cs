@@ -43,8 +43,10 @@ namespace AbangiAPI.Models
         [Required]
         public double ItemPrice {get; set;}
         public string ItemLocation {get; set;}
+        
         [Required]  
         [MaxLength(150)]
         public string ItemDescription {get; set;}
+       
     }
 }

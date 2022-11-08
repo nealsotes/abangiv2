@@ -35,11 +35,8 @@ Future<List<ItemModel>> getItemData() async {
   SharedPreferences localStorage = await SharedPreferences.getInstance();
   var currentId = localStorage.getString('userid');
   try {
-    // var category = await CallApi().getData('api/itemcategories');
-    // var jsonData2 = jsonDecode(category.body);
-    // print(jsonData2[3]['items']);
     var response =
-        await CallApi().getData('api/items/GetItemByUser/$currentId');
+        await CallApi().getData('api/items/GetUserItemListings/$currentId');
     var jsonData = jsonDecode(response.body);
 
     List<ItemModel> items = [];
@@ -93,21 +90,46 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {},
-                    leading: Image.file(
-                      File(snapshot.data![index].image),
-                      width: 80,
-                      height: 70,
-                    ),
-                    title: Text(snapshot.data![index].itemName),
-                    subtitle: Row(
-                      children: [
-                        SizedBox(
-                          child: Text(
-                              '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
-                        ),
-                      ],
+                  return Container(
+                    color: Colors.grey[200],
+                    child: ListTile(
+                      onTap: () {},
+                      leading: Image.file(
+                        File(snapshot.data![index].image),
+                        width: 80,
+                        height: 70,
+                      ),
+                      title: Text(snapshot.data![index].itemName),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            child: Text(
+                              'P${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}',
+                              style: TextStyle(fontSize: 10.0),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 110.0),
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(0, 176, 236, 1),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                snapshot.data![index].rentalStatus == 'Approved'
+                                    ? "Mark as rented"
+                                    : "Available",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

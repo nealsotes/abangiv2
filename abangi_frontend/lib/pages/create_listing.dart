@@ -265,7 +265,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     ),
                                   )
                                 : Center(
-                                    child: Text("No Image"),
+                                    child: Text(" "),
                                   ),
                             Container(
                               padding: const EdgeInsets.all(10),
@@ -437,7 +437,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                         ],
                                         decoration: const InputDecoration(
                                           border: OutlineInputBorder(),
-                                          labelText: '₱0.00',
+                                          labelText: 'P0.00',
                                         ),
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -777,7 +777,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     width: 100,
                                   ),
                                 )
-                              : Text("No Image"),
+                              : Text(" "),
                           Container(
                               height: 50,
                               margin: const EdgeInsets.only(top: 10),
@@ -822,7 +822,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
             itemBarLocationController.text +
             ' ' +
             itemCityLocationController.text,
-        "ItemImage": _image!.path,
+        "ItemImage": _image!.path.toString(),
         "RentalMethodId": _radioRentalValue as int,
         "StartDate": _startDate,
         "EndDate": _endDate,

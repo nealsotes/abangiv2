@@ -88,7 +88,7 @@ class TabViewState extends State<MyListWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 20, left: 30),
+            padding: EdgeInsets.only(top: 40, left: 30),
             child: Text(
               "Inbox",
               style: TextStyle(
@@ -125,98 +125,82 @@ class TabViewState extends State<MyListWidget> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               return Container(
-                                height: 70,
-                                margin: EdgeInsets.only(bottom: 10),
-                                child: Container(
-                                  height: 70,
-                                  child: Container(
-                                    margin:
-                                        EdgeInsets.only(left: 12, right: 12.0),
-                                    child: ListTile(
-                                        onTap: () {
-                                          Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .push(MaterialPageRoute(
-                                                  // ignore: unnecessary_new
-                                                  builder: (context) =>
-                                                      ChatApproval(
-                                                          rental: snapshot
-                                                              .data![index])));
-                                        },
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12.0)),
-                                        leading: Icon(Icons.message,
-                                            color:
-                                                Color.fromRGBO(0, 176, 236, 1)),
-                                        title: Text(
-                                          snapshot.data![index].owner,
+                                color: Colors.grey[200],
+                                child: ListTile(
+                                    onTap: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .push(MaterialPageRoute(
+                                              // ignore: unnecessary_new
+                                              builder: (context) =>
+                                                  ChatApproval(
+                                                      rental: snapshot
+                                                          .data![index])));
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.0)),
+                                    leading: Icon(Icons.message,
+                                        color: Color.fromRGBO(0, 176, 236, 1)),
+                                    title: Text(
+                                      snapshot.data![index].owner,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 14),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          snapshot.data![index].rentalRemarks,
                                           style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 14),
+                                              color: Colors.black, fontSize: 9),
                                         ),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
+                                        Container(
+                                          margin: EdgeInsets.only(top: 3.0),
+                                          padding: EdgeInsets.all(3.0),
+                                          decoration: BoxDecoration(
+                                              color: snapshot.data![index]
+                                                          .rentalStatus ==
+                                                      "For Approval"
+                                                  ? Colors.orange
+                                                  : snapshot.data![index]
+                                                              .rentalStatus ==
+                                                          "Approved"
+                                                      ? Color.fromRGBO(
+                                                          0, 176, 236, 1)
+                                                      : Colors.grey,
+                                              borderRadius:
+                                                  BorderRadius.circular(2)),
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                                left: 10.0, right: 10.0),
+                                            child: Text(
                                               snapshot
-                                                  .data![index].rentalRemarks,
+                                                  .data![index].rentalStatus,
                                               style: TextStyle(
-                                                  color: Colors.black,
+                                                  color: Colors.white,
                                                   fontSize: 9),
                                             ),
-                                            Container(
-                                              margin: EdgeInsets.only(top: 3.0),
-                                              padding: EdgeInsets.all(3.0),
-                                              decoration: BoxDecoration(
-                                                  color: snapshot.data![index]
-                                                              .rentalStatus ==
-                                                          "For Approval"
-                                                      ? Colors.orange
-                                                      : snapshot.data![index]
-                                                                  .rentalStatus ==
-                                                              "Approved"
-                                                          ? Color.fromRGBO(
-                                                              0, 176, 236, 1)
-                                                          : Colors.grey,
-                                                  borderRadius:
-                                                      BorderRadius.circular(2)),
-                                              child: Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 10.0, right: 10.0),
-                                                child: Text(
-                                                  snapshot.data![index]
-                                                      .rentalStatus,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 9),
-                                                ),
-                                              ),
-                                            )
-                                          ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    trailing: Column(
+                                      children: [
+                                        Text(
+                                          DateFormat.yMMMMd().format(
+                                              DateTime.parse(snapshot
+                                                  .data![index].requestDate)),
+                                          style: TextStyle(
+                                              color: Colors.black, fontSize: 8),
                                         ),
-                                        trailing: Column(
-                                          children: [
-                                            Text(
-                                              DateFormat.yMMMMd().format(
-                                                  DateTime.parse(snapshot
-                                                      .data![index]
-                                                      .requestDate)),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 8),
-                                            ),
-                                            Image.file(
-                                              io.File(
-                                                  snapshot.data![index].image),
-                                              width: 50,
-                                              height: 35,
-                                            ),
-                                          ],
-                                        )),
-                                  ),
-                                ),
+                                        Image.file(
+                                          io.File(snapshot.data![index].image),
+                                          width: 50,
+                                          height: 35,
+                                        ),
+                                      ],
+                                    )),
                               );
                             }),
                       );

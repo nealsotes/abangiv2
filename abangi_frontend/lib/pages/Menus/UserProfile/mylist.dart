@@ -84,7 +84,7 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(20),
       child: SizedBox(
         child: FutureBuilder<List<ItemModel>>(
           future: itemModel,
@@ -95,126 +95,94 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                 itemBuilder: (context, index) {
                   return snapshot.data![index].rentalStatus == 'Approved' ||
                           snapshot.data![index].rentalStatus == 'Disapproved' ||
-                          snapshot.data![index].rentalStatus == 'Cancelled' ||
-                          snapshot.data![index].rentalStatus == ''
+                          snapshot.data![index].rentalStatus == 'Cancelled'
                       ? Visibility(visible: false, child: Text(''))
                       : RefreshIndicator(
                           onRefresh: refreshList,
-                          child: ListTile(
-                            onTap: () {},
-                            leading: Image.file(
-                              File(snapshot.data![index].image),
-                              width: 80,
-                              height: 70,
-                            ),
-                            title: Row(
-                              children: [
-                                Text(snapshot.data![index].itemName),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.only(left: 5, top: 5),
-                                  child: Text(
-                                    snapshot.data![index].rentalStatus,
+                          child: Container(
+                            color: Colors.grey[200],
+                            child: ListTile(
+                              onTap: () {},
+                              leading: Image.file(
+                                File(snapshot.data![index].image),
+                                width: 80,
+                                height: 70,
+                              ),
+                              title: Row(
+                                children: [
+                                  Text(
+                                    snapshot.data![index].itemName,
                                     style: TextStyle(
-                                        color: Color.fromRGBO(0, 176, 236, 1),
-                                        fontSize: 12,
+                                        fontSize: 15.0,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                )
-                              ],
-                            ),
-                            subtitle: Row(
-                              children: [
-                                SizedBox(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Requested by: ",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              print("CLick");
-                                            },
-                                            child: Text(
-                                              snapshot.data![index].renterName,
-                                              style: TextStyle(
-                                                  color: Color.fromRGBO(
-                                                      0, 176, 236, 1),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                          '₱${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}'),
-                                      Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        child: Row(
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.only(left: 5, top: 5),
+                                    child: Text(
+                                      snapshot.data![index].rentalStatus,
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(0, 176, 236, 1),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  SizedBox(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
                                           children: [
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                try {
-                                                  var data = [
-                                                    {
-                                                      "op": "replace",
-                                                      "path": "rentalStatus",
-                                                      "value": "Approved"
-                                                    },
-                                                    {
-                                                      "op": "replace",
-                                                      "path": "rentalRemarks",
-                                                      "value":
-                                                          "You can now rent this item and pay the owner"
-                                                    }
-                                                  ];
-                                                  await CallApi().patchData(
-                                                      data,
-                                                      'api/rentals/${snapshot.data![index].rentalId}');
-                                                } catch (e) {
-                                                  print(e);
-                                                }
-                                                refreshList();
+                                            Text(
+                                              "Requested by: ",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                print("CLick");
                                               },
                                               child: Text(
-                                                snapshot.data![index]
-                                                    .rentalStatus = 'Approved',
+                                                snapshot
+                                                    .data![index].renterName,
                                                 style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 11),
-                                              ),
-                                              style: ElevatedButton.styleFrom(
-                                                primary: Color.fromRGBO(
-                                                    0, 176, 236, 1),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                ),
+                                                    color: Color.fromRGBO(
+                                                        0, 176, 236, 1),
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
                                             ),
-                                            Container(
-                                              margin: EdgeInsets.only(left: 10),
-                                              child: ElevatedButton(
+                                          ],
+                                        ),
+                                        Text(
+                                          'P${snapshot.data![index].price} . ${snapshot.data![index].category}. Listed on ${snapshot.data![index].startDate.substring(5, 10)}',
+                                          style: TextStyle(fontSize: 9.0),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.all(5.0),
+                                          child: Row(
+                                            children: [
+                                              ElevatedButton(
                                                 onPressed: () async {
                                                   try {
                                                     var data = [
                                                       {
                                                         "op": "replace",
                                                         "path": "rentalStatus",
-                                                        "value": "Disapproved"
+                                                        "value": "Approved"
                                                       },
                                                       {
                                                         "op": "replace",
                                                         "path": "rentalRemarks",
                                                         "value":
-                                                            "Your request to rent this item has been disapproved"
+                                                            "You can now rent this item and pay the owner"
                                                       }
                                                     ];
                                                     await CallApi().patchData(
@@ -225,11 +193,10 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                                                   }
                                                   refreshList();
                                                 },
-                                                // ignore: sort_child_properties_last
                                                 child: Text(
                                                   snapshot.data![index]
                                                           .rentalStatus =
-                                                      "Disapproved",
+                                                      'Approved',
                                                   style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 11),
@@ -244,14 +211,65 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
+                                              Container(
+                                                margin:
+                                                    EdgeInsets.only(left: 10),
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    try {
+                                                      var data = [
+                                                        {
+                                                          "op": "replace",
+                                                          "path":
+                                                              "rentalStatus",
+                                                          "value": "Disapproved"
+                                                        },
+                                                        {
+                                                          "op": "replace",
+                                                          "path":
+                                                              "rentalRemarks",
+                                                          "value":
+                                                              "Your request to rent this item has been disapproved"
+                                                        }
+                                                      ];
+                                                      await CallApi().patchData(
+                                                          data,
+                                                          'api/rentals/${snapshot.data![index].rentalId}');
+                                                    } catch (e) {
+                                                      print(e);
+                                                    }
+                                                    refreshList();
+                                                  },
+                                                  // ignore: sort_child_properties_last
+                                                  child: Text(
+                                                    snapshot.data![index]
+                                                            .rentalStatus =
+                                                        "Disapproved",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 11),
+                                                  ),
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    primary: Color.fromRGBO(
+                                                        0, 176, 236, 1),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ));
                 },

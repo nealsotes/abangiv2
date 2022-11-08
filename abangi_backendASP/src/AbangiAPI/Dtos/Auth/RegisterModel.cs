@@ -17,7 +17,7 @@ namespace AbangiAPI.Dtos
         
         public IFormFile UserImageFile {get; set;}
         public string UserImage {get; set;}
-        [Required]
+        
         public string UserGovertId {get; set;}
         public string Status  {get; set;}
         public IFormFile UserGovernmentIdFile {get; set;}

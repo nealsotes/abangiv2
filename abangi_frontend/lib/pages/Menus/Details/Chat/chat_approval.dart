@@ -71,10 +71,10 @@ class ChatApprovalScreen extends State<ChatApproval> {
                       color: Color.fromRGBO(0, 176, 236, 1),
                     )),
                 Container(
-                  padding: EdgeInsets.only(left: 10, right: 10),
+                  padding: EdgeInsets.only(left: 10, right: 20),
                   color: Colors.grey.shade100,
-                  width: 300,
-                  height: 45,
+                  width: 290,
+                  height: 55,
                   child: TextField(
                     controller: widget.messageController,
                     keyboardType: TextInputType.text,
@@ -167,11 +167,11 @@ class ChatApprovalScreen extends State<ChatApproval> {
                       children: [
                         Text(
                           widget.rental.rentalPrice.toString() + '/ day ',
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 10),
                         ),
                         Text(
                           widget.rental.location,
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 10),
                         ),
                       ],
                     ),
@@ -185,12 +185,86 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                     style: TextStyle(
                                         fontSize: 12, color: Colors.redAccent),
                                   )
-                                : Text(
-                                    widget.rental.rentalRemarks,
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.redAccent),
-                                  ),
-                          )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        widget.rental.rentalRemarks,
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.redAccent),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(5.0),
+                                        width: 170,
+                                        height: 33,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        child: Text(
+                                          "Amount Due: P${widget.rental.rentalPrice}",
+                                          style: TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                              height: 40,
+                                              margin: EdgeInsets.only(
+                                                  top: 5.0, left: 17.0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Colors.grey.shade200,
+                                                  onPrimary: Colors.black,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  _toggleCancel();
+                                                },
+                                                child: Text('Cancel'),
+                                              )),
+                                          Container(
+                                              width: 150,
+                                              height: 40,
+                                              margin: EdgeInsets.only(
+                                                  left: 10.0, top: 5.0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Color.fromRGBO(
+                                                      0, 176, 236, 1),
+                                                  onPrimary: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  print("Payments");
+                                                },
+                                                child: Text('Pay Now'),
+                                              )),
+                                        ],
+                                      )
+                                    ],
+                                  ))
                         : RefreshIndicator(
                             onRefresh: onRefresh,
                             child: Column(

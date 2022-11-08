@@ -70,7 +70,7 @@ class OthersDetails extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: Text(
-                        "₱${itemModel.price}/ day",
+                        "P${itemModel.price}/ day",
                         style: TextStyle(
                             color: Color.fromRGBO(0, 176, 236, 1),
                             fontSize: 21,

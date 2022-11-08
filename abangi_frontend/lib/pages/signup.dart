@@ -81,7 +81,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   child: TextFormField(
                     // ignore: prefer_const_constructors
                     style: TextStyle(fontSize: 14.0),
-                    keyboardType: TextInputType.phone,
+
                     controller: nameController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -143,6 +143,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                   child: TextFormField(
+                    keyboardType: TextInputType.number,
                     controller: mobileNumberController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -259,7 +260,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       'email': emailController.text,
       'address': addressController.text,
       'password': passwordController.text,
-      'contact': mobileNumberController.text,
+      'contact': mobileNumberController.text.toString(),
       'fullname': nameController.text,
     };
     var res = await CallApi().postData(data, 'users/register');

@@ -91,7 +91,7 @@ class ClothesDetails extends StatelessWidget {
                         color: Colors.white,
                       ),
                       child: Text(
-                        "₱${itemModel.price}/ day",
+                        "P${itemModel.price}/ day",
                         style: TextStyle(
                             color: Color.fromRGBO(0, 176, 236, 1),
                             fontSize: 21,
@@ -327,23 +327,23 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
             color: Colors.white,
           ),
         ),
-        Container(
-            height: 50,
-            width: 400,
-            margin: const EdgeInsets.only(top: 15),
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            child: OutlinedButton(
-              child: const Text('Chat Now'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Chat(
-                            itemModel: widget.itemModel,
-                          )),
-                );
-              },
-            )),
+        // Container(
+        //     height: 50,
+        //     width: 400,
+        //     margin: const EdgeInsets.only(top: 15),
+        //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        //     child: OutlinedButton(
+        //       child: const Text('Chat Now'),
+        //       onPressed: () {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //               builder: (context) => Chat(
+        //                     itemModel: widget.itemModel,
+        //                   )),
+        //         );
+        //       },
+        //     )),
         Container(
             height: 50,
             width: 400,

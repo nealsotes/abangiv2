@@ -110,5 +110,13 @@ namespace AbangiAPI.Controllers
             _repository.SaveChanges();
             return NoContent();
         }
+        [HttpGet("{id}", Name = "GetUserItemListings"), Route("GetUserItemListings/{id}")]
+        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetUserItemListings(int id)
+        {
+            var items =  await _repository.GetUserItemListings(id);
+            
+            return Ok(items);
+                
+        }
     }
 }

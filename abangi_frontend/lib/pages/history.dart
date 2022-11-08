@@ -52,7 +52,7 @@ class TabViewState extends State<MyListWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.only(top: 20, left: 30),
+            padding: EdgeInsets.only(top: 40, left: 30),
             child: Text(
               "History",
               style: TextStyle(
@@ -68,7 +68,7 @@ class TabViewState extends State<MyListWidget> {
               unselectedLabelColor: Colors.grey,
               tabs: [
                 Tab(
-                  text: 'My Inquiries',
+                  text: 'My Listings',
                 ),
                 Tab(
                   text: '',
