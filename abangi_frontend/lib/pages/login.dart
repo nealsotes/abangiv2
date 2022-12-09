@@ -1,5 +1,6 @@
 // ignore_for_file: unused_local_variable
 import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
+import 'package:abangi_v1/pages/forgot_password.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'dart:convert';
@@ -48,6 +49,14 @@ class _LoginState extends State<login> {
   // ignore: prefer_final_fields
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   // ignore: unused_element
+  //toggle show hide password
+
+  bool _obscureText = true;
+  void _toggle() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,18 +103,31 @@ class _LoginState extends State<login> {
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextFormField(
-                    obscureText: true,
+                  child: //toggle show/hide password
+                      TextFormField(
                     controller: passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                    obscureText: _obscureText,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
                       labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                        onPressed: _toggle,
+                      ),
                     ),
                     validator: (String? val) {
                       if (val!.isEmpty) {
-                        return 'Please enter password';
+                        return "Please enter password";
+                      } else if (val.length < 6) {
+                        return "Password must be at least 6 characters";
+                      } else {
+                        return null;
                       }
-                      return null;
                     },
                   ),
                 ),
@@ -113,7 +135,11 @@ class _LoginState extends State<login> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      //forgot password screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ForgotPassword()),
+                      );
                     },
                     child: const Text(
                       'Forgot Password',

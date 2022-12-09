@@ -7,12 +7,14 @@ import 'package:abangi_v1/pages/Menus/electronics.dart';
 import 'package:abangi_v1/pages/Menus/clothes.dart';
 import 'package:abangi_v1/pages/Menus/handytools.dart';
 import 'package:abangi_v1/pages/Menus/others.dart';
+import 'package:abangi_v1/pages/notification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'login.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 // ignore: use_key_in_widget_constructors
 class Home extends StatelessWidget {
@@ -39,6 +41,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   TextEditingController searchController = TextEditingController();
+
   ParseUser? currentUser;
   Future<ParseUser?> getData() async {
     currentUser = await ParseUser.currentUser() as ParseUser?;
@@ -54,6 +57,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     userid = localStorage.getString('userid');
   }
 
+  String? token;
   @override
   void initState() {
     super.initState();
@@ -72,6 +76,8 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     await CallApi().patchData(data, 'users/$userid');
   }
 
+  void getToken() async {}
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
@@ -87,6 +93,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     handleCurrentUser();
+    getToken();
     return Padding(
         padding: const EdgeInsets.all(10),
         child: ListView(
@@ -94,8 +101,10 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             Container(
                 alignment: Alignment.topRight,
                 // ignore: unnecessary_new
-                child: new IconButton(
-                    onPressed: () {}, icon: Icon(Icons.notifications))),
+                child: //add notification popup
+                    new IconButton(
+                        icon: const Icon(Icons.notifications),
+                        onPressed: () {})),
             Container(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
                 child: FutureBuilder<ParseUser?>(
@@ -284,7 +293,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     Container(
                       padding: EdgeInsets.only(top: 5),
                       child: const Text(
-                        'Clothes',
+                        'Clothing',
                       ),
                     )
                   ],
@@ -311,7 +320,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     Container(
                       padding: EdgeInsets.only(top: 5),
                       child: const Text(
-                        'Others',
+                        'Misc.',
                       ),
                     )
                   ],

@@ -54,5 +54,17 @@ namespace AbangiAPI.Controllers
             _repository.SaveChanges();
             return NoContent();
         }
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateUserRole(int id, UserRole userRole)
+        {
+            var userRoleFromRepo = await _repository.GetUserRoleById(id);
+            if(userRoleFromRepo == null)
+            {
+                return NotFound();
+            }
+            _repository.UpdateUserRole(userRoleFromRepo);
+            _repository.SaveChanges();
+            return NoContent();
+        }
     }
 }

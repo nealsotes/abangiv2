@@ -48,6 +48,7 @@ class ItemModel {
     owner = json['owner'];
     rentalMethod = json['rentalMethod'];
     location = json['location'];
+    //convert image to base64
     image = json['image'];
     startDate = json['startDate'];
     endDate = json['endDate'];
@@ -56,6 +57,5 @@ class ItemModel {
     userStatus = json['status'];
     rentalStatus = json['rentalStatus'];
     rentalId = json['rentalId'];
-    renterName = json['renterName'];
   }
 }

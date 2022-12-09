@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/api/api.dart';
+import 'package:abangi_v1/pages/Menus/Details/OthersDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +22,7 @@ class Others extends StatelessWidget {
           elevation: 0,
           backgroundColor: false ? Colors.white : Colors.white,
           title: Text(
-            'Others',
+            'Miscellaneous',
             style: TextStyle(
                 color: false ? Colors.black : Colors.grey,
                 fontWeight: FontWeight.w500),
@@ -52,12 +53,14 @@ Future<List<ItemModel>> getItemData() async {
   try {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     currentUser = localStorage.getString('userid');
-    var response = await CallApi().getData(
-        'api/itemcategories/getitembycategory/handy tools/$currentUser');
+    var response = await CallApi()
+        .getData('api/itemcategories/getitembycategory/others/$currentUser');
     var jsonData = jsonDecode(response.body);
 
     List<ItemModel> items = [];
     for (var i in jsonData) {
+      //convert base64 to image
+
       ItemModel item = ItemModel(
         i['itemId'],
         i['itemName'],
@@ -78,6 +81,8 @@ Future<List<ItemModel>> getItemData() async {
         i['renterName'],
       );
       items.add(item);
+      //convert base64 to image
+
     }
     return items;
   } catch (e) {
@@ -149,15 +154,24 @@ class _MyStatefulWidgetState extends State<OthersScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => HandyToolsDetails(
+                              builder: (context) => OthersDetails(
                                 itemModel: snapshot.data![index],
+                                //pass the image to the next page
                               ),
                             ),
                           );
                         },
-                        leading: Image.file(
-                          File(snapshot.data![index].image),
-                          width: 90,
+                        leading: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            image: DecorationImage(
+                              image: MemoryImage(
+                                  base64Decode(snapshot.data![index].image)),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         title: Text(snapshot.data![index].itemName),
                         subtitle: Column(

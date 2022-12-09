@@ -16,7 +16,7 @@ import 'Menus/UserProfile/my_inquiries.dart';
 import 'Menus/UserProfile/mylist.dart';
 
 // ignore: use_key_in_widget_constructors
-class HistoryScreen extends StatelessWidget {
+class MyListingsScreen extends StatelessWidget {
   var currentUserSession;
   var currentEmailSession;
   var isVerified;
@@ -54,7 +54,7 @@ class TabViewState extends State<MyListWidget> {
           Container(
             padding: EdgeInsets.only(top: 40, left: 30),
             child: Text(
-              "History",
+              "Listings",
               style: TextStyle(
                   color: Color.fromRGBO(0, 176, 236, 1),
                   fontWeight: FontWeight.w600,

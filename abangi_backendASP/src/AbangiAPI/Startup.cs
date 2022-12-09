@@ -17,10 +17,16 @@ using AbangiAPI.Services;
 using AbangiAPI.Data;
 using AbangiAPI.Data.SqlRepo;
 using Microsoft.AspNetCore.Http;
-
+using Stripe;
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using AbangiAPI.Hubs;
+using AbangiAPI.Models;
+using AbangiAPI.Data.StripeServices;
+using AbangiAPI.Models.Notification;
+using AbangiAPI.Data.NotificationServices;
+using CorePush.Google;
+using CorePush.Apple;
 
 namespace AbangiAPI
 {
@@ -39,11 +45,12 @@ namespace AbangiAPI
         
         public void ConfigureServices(IServiceCollection services)
         {
+     
           
             services.AddCors();
             services.AddRazorPages();
-           
-         
+            services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
+          
             services.AddDbContext<DataContext>();
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -51,6 +58,9 @@ namespace AbangiAPI
             });
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //configure DI for application repo
+            services.AddScoped<TokenService>();
+            services.AddScoped<CustomerService>();
+            services.AddScoped<ChargeService>();
             services.AddScoped<IUserAPIRepo, SqlUserAPIRepo>();
             services.AddScoped<IItemAPIRepo, SqlItemAPIRepo>();
             services.AddScoped<IRentalMethodAPIRepo, SqlRentaMethodAPIREpo>();
@@ -58,8 +68,18 @@ namespace AbangiAPI
             services.AddScoped<IRoleAPIRepo, SqlRoleAPIRepo>();
             services.AddScoped<IUserRoleAPIRepo, SqlUserRoleAPIRepo>();
             services.AddScoped<IRentalAPIRepo, SqlRentalAPIRepo>();
+            services.AddScoped<IStripeService,StripeService>();
+            services.AddScoped<IFeedbackAPIRepos,SqlFeedbackAPIRepo>();
+            services.AddScoped<ITransactionHistories,SqlTransactionHistoryAPIRepo>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-         
+            services.AddTransient<IMailService, MailService>();
+            // Configure strongly typed settings objects
+            var appSettingsSectionFcm = _configuration.GetSection("FcmNotification");
+            services.Configure<FcmNotificationSetting>(appSettingsSectionFcm);
+            StripeConfiguration.ApiKey = services.BuildServiceProvider().GetService<IConfiguration>().GetSection("StripeOptions")["SecretKey"];
+            services.AddTransient<INotificationService, NotificationService>();
+            services.AddHttpClient<FcmSender>();
+            services.AddHttpClient<ApnSender>();
             services.AddControllersWithViews();
             services.AddCoreAdmin();
             services.AddSignalR(options => {
@@ -146,6 +166,7 @@ namespace AbangiAPI
             app.UseSignalR(routes =>
             {
                routes.MapHub<ChatHub>("/chatHub");
+               routes.MapHub<UserVerifyNotification> ("/userVerifyNotification");
             });
              
         }

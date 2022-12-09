@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using System.IO;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
@@ -11,6 +12,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using AbangiAPI.Models;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using System.Security.Policy;
 
 namespace AbangiAPI.Services
 {
@@ -19,6 +24,8 @@ namespace AbangiAPI.Services
         Task<User> Authenticate(String email, string password);
        Task<IEnumerable<UserModel>> GetAll();
         Task<UserModel> GetById(int id);
+        
+        Task<User> GetById2(string email);
         Task<User> GetByIdPatch(int id);
         Task<User> Create(User user, string password);
         void Update(User user, string password = null);
@@ -26,21 +33,24 @@ namespace AbangiAPI.Services
         void DeleteUser(User user);
         void SaveChanges();
         void SavePostUserImageAsync(RegisterModel userModel);
-
+        Task<User> GetByEmail(string email);
+    
         void SavePostUserGovermentIdAsync(RegisterModel userModel);
+       
         
     }   
 
 
     public class SqlUserAPIRepo : IUserAPIRepo
     {
-
+        private readonly MailSettings _mailSettings;
         private readonly DataContext _context;
         private readonly IWebHostEnvironment _environment;
-        public SqlUserAPIRepo(DataContext context, IWebHostEnvironment environment)
+        public SqlUserAPIRepo(DataContext context, IWebHostEnvironment environment, IOptions<MailSettings> mailSettings)
         {
             _context = context;
             _environment = environment;
+            _mailSettings = mailSettings.Value;
         }
 
         public async Task<User> Authenticate(string email, string password)
@@ -52,7 +62,8 @@ namespace AbangiAPI.Services
             
            
         
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == email );
+           
             // check  if email is exists
             if(user == null)
             {
@@ -63,6 +74,11 @@ namespace AbangiAPI.Services
             {
                 return null;
             }
+
+            
+           
+
+            // authentication successful
             return user;
            
         }
@@ -79,13 +95,60 @@ namespace AbangiAPI.Services
             }
             if(_context.Users.Any(x => x.Email == user.Email))
             {
-                throw new AppException($"Email {user.Email} is already taken");
+                throw new AppException($"Email is already taken");
             }
+         
+
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
             
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+            //email service
+            var code = user.EmailConfirmationToken;
+            var mail = new MimeMessage();
+            mail.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            mail.To.Add(MailboxAddress.Parse(user.Email));
+            mail.Subject = "Email Confirmation";
+            var builder = new BodyBuilder();
+          //  builder.HtmlBody = $"<h1>Hi {user.FullName} ";
+            //add the emailMessage html file
+            var pathToFile = _environment.WebRootPath
+                + Path.DirectorySeparatorChar.ToString()
+                + "Templates"
+                + Path.DirectorySeparatorChar.ToString()
+                + "emailMessage.html";
+           // var subject = "Email Confirmation";
+            var message = File.ReadAllText(pathToFile);
+
+            //pass name and display it in the emailMessage html file
+     
+            message = message.Replace("{{UserName}}", user.FullName);
+            message = message.Replace("{{UserEmail}}", user.Email);
+            message = message.Replace("{{code}}", code);
+            message = message.Replace("{{localhost}}", Environment.Localhost);
+            builder.HtmlBody = message;
+        
+            // mail.Body = builder.ToMessageBody();
+            //confirm email message body
+        
+    
+            
+
+            
+            // builder.HtmlBody = builder.HtmlBody.Replace("#URL#", "http://192.168.254.104:5000/users/confirm-email/" + user.Email + "/" + code);
+            
+            mail.Body = builder.ToMessageBody();
+            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+            {
+                smtp.ServerCertificateValidationCallback = (s, c, h, e) => true;
+                await smtp.ConnectAsync(_mailSettings.Host, _mailSettings.Port, true);
+                await smtp.AuthenticateAsync(_mailSettings.Mail, _mailSettings.Password);
+                await smtp.SendAsync(mail);
+                await smtp.DisconnectAsync(true);
+            }
+        
+            
            await _context.Users.AddAsync(user);
             _context.SaveChanges();
 
@@ -220,7 +283,10 @@ namespace AbangiAPI.Services
                             Contact = u.Contact,
                             Address = u.Address,
                             Role = r.RoleName,
+                            
+                            isMailConfirmed = u.isMailConfirmed,
                             UserImage = u.UserImage,
+                            EmailConfirmationToken = u.EmailConfirmationToken,
                             Status = u.Status,
                             IsAbangiVerified = i.AbangiVerified == true ? "Abangi Verified" : "Not Abangi Verified",
 
@@ -261,8 +327,34 @@ namespace AbangiAPI.Services
             userModel.UserGovertId = filePath;
             return;
         }
-    }
 
-    
+        public Task<User> GetUserByEmail(string email)
+        {
+           return _context.Users.FirstOrDefaultAsync(i => i.Email == email);
+        }
+
+        public Task<User> GetByEmail(string email)
+        {
+            return _context.Users.FirstOrDefaultAsync(i => i.Email == email);
+        }
+
+        public Task<User> GetById2(string email)
+        {
+            return _context.Users.FirstOrDefaultAsync(i => i.Email == email);   
+        }
+
+
+
+        // public async Task<User> ConfirmEmail(string email)
+        // {
+        //     var user = await _context.Users.FirstOrDefaultAsync(i => i.Email == email);
+        //     user.isMailConfirmed = true;
+        //     _context.Users.Update(user);
+        //     _context.SaveChanges();
+        //     return user;
+
+        // }
+    }
+  
    
 }

@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using AbangiAPI.Data;
+
 namespace AbangiAPI.Controllers
 {  
     //[Authorize]
@@ -28,7 +30,8 @@ namespace AbangiAPI.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        
+        private readonly IMailService _mailService;
+       
         private readonly IUserAPIRepo _repository;
         private IMapper _mapper;
         private readonly AppSettings _appsettings;
@@ -47,8 +50,13 @@ namespace AbangiAPI.Controllers
             var user = await _repository.Authenticate(model.Email, model.Password);
             if(user == null)
             {
-                return BadRequest(new {message = "Email or password is incorrect!"});
+                return BadRequest(new {message = "Email or password is incorrect"});
             }
+            if(user.isMailConfirmed == false)
+            {
+                return BadRequest(new {message = "Email not confirmed. Please check your email and confirm your email address"});
+            }
+           
           
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -94,7 +102,7 @@ namespace AbangiAPI.Controllers
 
                 //create user
                  var user = _mapper.Map<User>(model);
-              await  _repository.Create(user, model.Password);
+                 await  _repository.Create(user, model.Password);
                
                 return Ok();
             }
@@ -119,25 +127,7 @@ namespace AbangiAPI.Controllers
             var model = _mapper.Map<UserModel>(user);
             return Ok(model);
         }
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UpdateModel model)
-        {
-            //map model to entity and set id
-            var user = _mapper.Map<User>(model);
-            user.UserId = id;
-            
-            try
-            {   
-                //update user
-                _repository.Update(user, model.Password);
-                return Ok();
-            }
-            catch(AppException ex)
-            {
-                //return error message if there was an exception
-                return BadRequest(new {message = ex.Message});
-            }
-        }
+     
      
 
         [HttpGet]
@@ -167,5 +157,48 @@ namespace AbangiAPI.Controllers
             _repository.SaveChanges();
             return NoContent();
        }
+        [HttpGet("confirm-email/{email}/{token}")]
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
+        {
+           
+            var user = await _repository.GetById2(email);
+           
+            if(user.EmailConfirmationToken != token)
+            {
+                return BadRequest(new {message = "Invalid token"});
+            }
+            if(user.EmailConfirmationTokenExpiryDate < DateTime.UtcNow)
+            {
+                return BadRequest(new {message = "Token expired"});
+            }
+          
+            if(user == null)
+            {
+                return NotFound();
+            }
+            if(user.isMailConfirmed == true)
+            {
+                return BadRequest("Email already confirmed");
+            }
+           
+            user.isMailConfirmed = true;
+            _repository.Update(user, null);
+            _repository.SaveChanges();
+            //return html welcome page for
+            return Ok(
+                new
+                {
+                    message = "Email confirmed"
+                    
+                }
+            
+            );
+
+          
+        }
+        
     }
+       
+         
+    
 }

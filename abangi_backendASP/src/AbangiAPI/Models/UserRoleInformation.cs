@@ -17,5 +17,6 @@ namespace AbangiAPI.Models
         public bool IsActive {get; set;}
         [Column("AbangiVerified")]
         public bool AbangiVerified {get; set;}
+        public string GovernmentId {get; set;}
     }
 }

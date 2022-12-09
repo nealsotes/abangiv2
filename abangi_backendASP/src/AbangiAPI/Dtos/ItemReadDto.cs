@@ -18,7 +18,7 @@ namespace AbangiAPI.Dtos
         public int UserId { get; set; }
         public int rentalMethodId { get; set; }
         public string ItemLocation { get; set; }
-       
+        public string DeviceId { get; set; }
         public DateTime DateCreated {get; set;}
         public DateTime StartDate {get; set;}
         public DateTime EndDate {get; set;}

@@ -1,16 +1,16 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors
 import 'dart:convert';
-
 import 'dart:io';
 
 import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/api/api.dart';
-import 'package:abangi_v1/pages/Menus/Details/Chat/chat.dart';
+import 'package:abangi_v1/pages/Menus/Details/ElectronicsDetails.dart';
+import 'package:abangi_v1/pages/Menus/Details/OthersDetails.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Details/ElectronicsDetails.dart';
+import 'Details/BooksDetails.dart';
+import 'Details/HandyToolsDetails.dart';
 
 // ignore: use_key_in_widget_constructors
 class Electronics extends StatelessWidget {
@@ -46,7 +46,7 @@ class ElectronicsScreen extends StatefulWidget {
   ElectronicsScreen({Key? key}) : super(key: key);
 
   @override
-  State<ElectronicsScreen> createState() => ElectronicsState();
+  State<ElectronicsScreen> createState() => _MyStatefulWidgetState();
 }
 
 var currentUser;
@@ -60,6 +60,8 @@ Future<List<ItemModel>> getItemData() async {
 
     List<ItemModel> items = [];
     for (var i in jsonData) {
+      //convert base64 to image
+
       ItemModel item = ItemModel(
         i['itemId'],
         i['itemName'],
@@ -80,6 +82,8 @@ Future<List<ItemModel>> getItemData() async {
         i['renterName'],
       );
       items.add(item);
+      //convert base64 to image
+
     }
     return items;
   } catch (e) {
@@ -88,10 +92,9 @@ Future<List<ItemModel>> getItemData() async {
   }
 }
 
-class ElectronicsState extends State<ElectronicsScreen> {
+class _MyStatefulWidgetState extends State<ElectronicsScreen> {
   late Future<List<ItemModel>> itemModel;
   TextEditingController searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -147,60 +150,65 @@ class ElectronicsState extends State<ElectronicsScreen> {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      return snapshot.data![index].rentalStatus != "Approved"
-                          ? ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ElectronicsDetails(
-                                      itemModel: snapshot.data![index],
-                                    ),
-                                  ),
-                                );
-                              },
-                              leading: Image.file(
-                                File(snapshot.data![index].image),
-                                width: 90,
+                      return ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ElectronicsDetails(
+                                itemModel: snapshot.data![index],
+                                //pass the image to the next page
                               ),
-                              title: Text(snapshot.data![index].itemName),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('P${snapshot.data![index].price}/ day',
+                            ),
+                          );
+                        },
+                        leading: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            image: DecorationImage(
+                              image: MemoryImage(
+                                  base64Decode(snapshot.data![index].image)),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        title: Text(snapshot.data![index].itemName),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('P${snapshot.data![index].price}/ day',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(0, 176, 236, 1),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15)),
+                            Text(
+                              snapshot.data![index].location,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Text(
+                                      snapshot.data![index].owner
+                                          .substring(0, 1),
                                       style: TextStyle(
-                                          color: Color.fromRGBO(0, 176, 236, 1),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15)),
-                                  Text(
-                                    snapshot.data![index].location,
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(right: 5),
-                                        child: Text(
-                                            snapshot.data![index].owner
-                                                .substring(0, 1),
-                                            style: TextStyle(
-                                              color: Color.fromRGBO(
-                                                  0, 176, 236, 1),
-                                              fontWeight: FontWeight.w500,
-                                            )),
-                                      ),
-                                      InkWell(
-                                        hoverColor: Colors.lightBlue[200],
-                                        onTap: () {},
-                                        child:
-                                            Text(snapshot.data![index].owner),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Container();
+                                        color: Color.fromRGBO(0, 176, 236, 1),
+                                        fontWeight: FontWeight.w500,
+                                      )),
+                                ),
+                                InkWell(
+                                  hoverColor: Colors.lightBlue[200],
+                                  onTap: () {},
+                                  child: Text(snapshot.data![index].owner),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   );
                 }

@@ -9,7 +9,6 @@ import 'package:angles/angles.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'dart:math';
 import 'dart:core';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,15 +79,19 @@ class _MyStatefulWidgetState extends State<ViewProfileState> {
 
   //image upload
 
-  XFile? _image;
-
-  final ImagePicker _picker = ImagePicker();
+  File? _image;
+  //PickedFile? _pickedFile;
+  final _picker = ImagePicker();
+  String _uploadedFileURL = '';
   //we can use this to get the image from the gallery
-  Future getImageFromGallery(ImageSource media) async {
-    var img = await _picker.pickImage(source: media);
+  //get image from database and display it
+
+  Future<void> getImageFromGallery(ImageSource media) async {
+    var _pickedImage = await ImagePicker().pickImage(source: media);
     setState(() {
-      _image = img;
+      _image = File(_pickedImage!.path);
     });
+    _uploadedFileURL = base64Encode(_image!.readAsBytesSync());
   }
 
   @override
@@ -141,7 +144,7 @@ class _MyStatefulWidgetState extends State<ViewProfileState> {
                             children: [
                               Text("Name: "),
                               Container(
-                                width: 295,
+                                width: 270,
                                 child: TextFormField(
                                   style: TextStyle(
                                     fontSize: 12,
@@ -171,7 +174,7 @@ class _MyStatefulWidgetState extends State<ViewProfileState> {
                             children: [
                               Text("Phone: "),
                               Container(
-                                width: 295,
+                                width: 270,
                                 child: TextFormField(
                                   style: TextStyle(
                                     fontSize: 12,
@@ -201,7 +204,7 @@ class _MyStatefulWidgetState extends State<ViewProfileState> {
                             children: [
                               Text("Email: "),
                               Container(
-                                width: 295,
+                                width: 270,
                                 child: TextFormField(
                                   style: TextStyle(
                                     fontSize: 12,
@@ -231,7 +234,7 @@ class _MyStatefulWidgetState extends State<ViewProfileState> {
                             children: [
                               Text("Location: "),
                               Container(
-                                width: 295,
+                                width: 260,
                                 child: TextFormField(
                                   style: TextStyle(
                                     fontSize: 12,
@@ -315,7 +318,7 @@ class _MyStatefulWidgetState extends State<ViewProfileState> {
         {"op": "replace", "path": "email", "value": _emailController.text},
         {"op": "replace", "path": "phone", "value": _phoneController.text},
         {"op": "replace", "path": "address", "value": _addressController.text},
-        {"op": "replace", "path": "userImage", "value": _image!.path},
+        {"op": "replace", "path": "userImage", "value": _uploadedFileURL},
       ];
 
       await CallApi().patchData(data, 'users/$currentId');

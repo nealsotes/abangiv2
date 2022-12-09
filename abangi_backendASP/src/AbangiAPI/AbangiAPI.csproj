@@ -9,6 +9,8 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="CoreAdmin" Version="1.0.0" />
+    <PackageReference Include="CorePush" Version="3.1.1" />
+    <PackageReference Include="MailKit" Version="3.4.2" />
 
 
     
@@ -22,8 +24,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets> 
     </PackageReference>
+    <PackageReference Include="MimeKit" Version="3.4.2" />
     <PackageReference Include="Npgsql" Version="4.1.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.0" />
+    <PackageReference Include="Stripe.net" Version="41.1.0" />
   
     
     

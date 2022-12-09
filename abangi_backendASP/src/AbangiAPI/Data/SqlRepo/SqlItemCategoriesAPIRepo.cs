@@ -48,7 +48,8 @@ namespace AbangiAPI.Data.SqlRepo
                         join u in _context.Users on i.UserId equals u.UserId
                         join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId 
                         join c in _context.UserRoles on u.UserId equals c.UserId 
-                        where ic.ItemCategoryName.ToLower() == name && c.UserId != id
+                        
+                        where ic.ItemCategoryName.ToLower() == name && c.UserId != id 
                         select new ItemInformation
                         {
                             ItemId = i.ItemId,
@@ -57,12 +58,14 @@ namespace AbangiAPI.Data.SqlRepo
                             Price = i.ItemPrice,
                             Category = ic.ItemCategoryName,
                             Owner = u.FullName,
+                           
                             RentalMethod = r.RentalMethodName,
                             Location = i.ItemLocation,
                             Image = i.ItemImage,
                             AbangiVerified = c.AbangiVerified,
                             DateCreated = i.DateCreated,
                             StartDate = i.StartDate,
+                           
                             EndDate = i.EndDate,
                             Status = u.Status
                         }).ToListAsync();

@@ -34,9 +34,18 @@ namespace AbangiAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("DeviceId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("EmailConfirmationToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("EmailConfirmationTokenExpiryDate")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -58,9 +67,43 @@ namespace AbangiAPI.Migrations
                     b.Property<string>("UserImage")
                         .HasColumnType("text");
 
+                    b.Property<bool>("isMailConfirmed")
+                        .HasColumnType("boolean");
+
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("AbangiAPI.Models.Feedback", b =>
+                {
+                    b.Property<int>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Date_Rated")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Ratings")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Feedbacks");
                 });
 
             modelBuilder.Entity("AbangiAPI.Models.Item", b =>
@@ -169,7 +212,8 @@ namespace AbangiAPI.Migrations
 
                     b.HasKey("RentalId");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("ItemId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -216,6 +260,57 @@ namespace AbangiAPI.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("AbangiAPI.Models.TransactionHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("AmountPaid")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("DateRented")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateReturned")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ItemCategory")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ItemLocation")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ItemPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ItemRented")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Owner")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentStatus")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Renter")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("TransactionStatus")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionHistories");
+                });
+
             modelBuilder.Entity("AbangiAPI.Models.UserRole", b =>
                 {
                     b.Property<int>("UserRoleId")
@@ -245,6 +340,21 @@ namespace AbangiAPI.Migrations
                     b.ToTable("UserRoles");
                 });
 
+            modelBuilder.Entity("AbangiAPI.Models.Feedback", b =>
+                {
+                    b.HasOne("AbangiAPI.Models.Item", "Item")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AbangiAPI.Entities.User", "User")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AbangiAPI.Models.Item", b =>
                 {
                     b.HasOne("AbangiAPI.Models.ItemCategory", "ItemCategory")
@@ -253,7 +363,7 @@ namespace AbangiAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AbangiAPI.Entities.User", null)
+                    b.HasOne("AbangiAPI.Entities.User", "User")
                         .WithMany("Items")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -263,8 +373,8 @@ namespace AbangiAPI.Migrations
             modelBuilder.Entity("AbangiAPI.Models.Rental", b =>
                 {
                     b.HasOne("AbangiAPI.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
+                        .WithOne("Rental")
+                        .HasForeignKey("AbangiAPI.Models.Rental", "ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

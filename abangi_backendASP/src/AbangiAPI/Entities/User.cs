@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,7 +32,19 @@ namespace AbangiAPI.Entities
         public byte[] PasswordSalt { get; set; }
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
-    
-    
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
+         public string DeviceId {get; set;}
+        public bool isMailConfirmed { get; set; }
+        public string  EmailConfirmationToken { get; set; }
+  
+      
+        public DateTime EmailConfirmationTokenExpiryDate {get; set;}
+        public User()
+        {
+           EmailConfirmationToken = System.Guid.NewGuid().ToString();
+           EmailConfirmationTokenExpiryDate = DateTime.Now.AddMinutes(30);
+          
+
+        }
     }
 }

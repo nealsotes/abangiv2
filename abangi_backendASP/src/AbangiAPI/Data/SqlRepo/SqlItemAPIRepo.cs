@@ -108,16 +108,20 @@ namespace AbangiAPI.Data.SqlRepo
         }
 
         public void  SavePostImageAsync(ItemCreateDto itemCreateDto)
-        {
-            var item = new Item();
-            var uniqueFileName = FileHelper.GetUniqueFileName(itemCreateDto.Image.FileName);
-            var uploads = Path.Combine(environment.WebRootPath, "Images","Items", item.ItemId.ToString());
-            var filePath = Path.Combine(uploads, uniqueFileName);
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            itemCreateDto.Image.CopyToAsync(new FileStream(filePath, FileMode.Create));
-            itemCreateDto.ItemImage = filePath;
-            return;
-        
+        { 
+            //save image to wwwroot/image
+            string wwwRootPath = environment.WebRootPath;
+            string fileName = Path.GetFileNameWithoutExtension(itemCreateDto.Image.FileName);
+            string extension = Path.GetExtension(itemCreateDto.Image.FileName);
+            itemCreateDto.ItemImage = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+            string path = Path.Combine(wwwRootPath + "/image/", fileName);
+
+            using (var fileStream = new FileStream(path
+                , FileMode.Create))
+            {
+                itemCreateDto.Image.CopyTo(fileStream);
+            }
+            SaveChanges();
         }
 
         public async Task<IEnumerable<ItemInformation>> GetAllItemsByUser(int id)
@@ -142,6 +146,7 @@ namespace AbangiAPI.Data.SqlRepo
                                 RentalId = rt.RentalId,
                                 RenterName = rt.User.FullName,
                                 Location = i.ItemLocation,
+                               
                                 Image = i.ItemImage,
                                 DateCreated = i.DateCreated,
                                 StartDate = i.StartDate,

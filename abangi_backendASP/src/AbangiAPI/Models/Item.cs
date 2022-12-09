@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System;
@@ -43,10 +44,12 @@ namespace AbangiAPI.Models
         [Required]
         public double ItemPrice {get; set;}
         public string ItemLocation {get; set;}
-        
+        public virtual Rental Rental {get; set;}
         [Required]  
         [MaxLength(150)]
         public string ItemDescription {get; set;}
+        public virtual Collection<Feedback> Feedbacks {get; set;}
+       
        
     }
 }

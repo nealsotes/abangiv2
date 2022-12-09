@@ -96,6 +96,17 @@ namespace AbangiAPI.Controllers
                 _repository.SaveChanges();
                 return NoContent();
             }
-           
+           [HttpDelete("{id}")]
+              public async Task<ActionResult> DeleteRental(int id)
+              {
+                var rentalModelFromRepo = await _repository.GetIdPatch(id);
+                if(rentalModelFromRepo == null)
+                {
+                     return NotFound();
+                }
+                _repository.DeleteRental(rentalModelFromRepo);
+                _repository.SaveChanges();
+                return NoContent();
+              }
     }
 }

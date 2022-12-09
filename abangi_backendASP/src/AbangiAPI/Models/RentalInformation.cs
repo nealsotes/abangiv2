@@ -15,12 +15,16 @@ namespace AbangiAPI.Models
         public string ItemCategory {get; set;}
         public string ItemLocation {get; set;}
         public string ItemOwner {get; set;}
+        public int ItemId {get; set;}
         public string ItemRentalMethod {get; set;}
         public bool AbangiVerified {get; set;}
+
+     
         public string RentalStatus {get; set;}
         public string RentalRemarks {get; set;}
         public string Status {get; set;}
         public double ItemPrice {get; set;}
+        //public string DeviceId {get; set;}
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         

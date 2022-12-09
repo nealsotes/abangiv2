@@ -22,24 +22,28 @@ class Reservation extends StatefulWidget {
 /// State for Reservation
 class MyAppState extends State<Reservation> {
   final _formKey = GlobalKey<FormState>();
+  var _dateRangePickerController;
   bool _isLoading = false;
   String _selectedDateFormated = " ";
   String _selectedDate = " ";
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
+  String _startDate = '';
+  String _endDate = '';
 
   /// The method for [DateRangePickerSelectionChanged] callback, which will be
   /// called whenever a selection changed on the date picker widget.
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       if (args.value is PickerDateRange) {
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
+        _range = '${intl.DateFormat.yMMMEd().format(args.value.startDate)} -'
             // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
+            ' ${intl.DateFormat.yMMMEd().format(args.value.endDate ?? args.value.startDate)}';
+        _startDate = intl.DateFormat.yMMMEd().format(args.value.startDate);
+        _endDate = intl.DateFormat.yMMMEd().format(args.value.endDate);
+        // .format(args.value.endDate ?? args.value.startDate);
       } else if (args.value is DateTime) {
-        _selectedDateFormated += "Rent on ";
-        _selectedDateFormated += DateFormat.yMMMMd().format(args.value);
         _selectedDate = args.value.toString();
       } else if (args.value is List<DateTime>) {
         _dateCount = args.value.length.toString();
@@ -98,33 +102,65 @@ class MyAppState extends State<Reservation> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     child: SfDateRangePicker(
+                      controller: _dateRangePickerController,
                       onSelectionChanged: _onSelectionChanged,
-                      enablePastDates: false,
-                      selectionMode: DateRangePickerSelectionMode.single,
+                      selectionMode: DateRangePickerSelectionMode.range,
                       initialSelectedRange: PickerDateRange(
                           DateTime.now().add(const Duration(days: 0)),
-                          DateTime.now().add(const Duration(days: 30))),
+                          DateTime.now().add(const Duration(days: 0))),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Column(
                       children: [
+                        //add button to clear the selected date
+
                         Container(
-                          padding: EdgeInsets.only(left: 20),
-                          // ignore: prefer_const_constructors
-                          child: Text(
-                            _selectedDateFormated,
+                            padding: EdgeInsets.only(left: 15),
                             // ignore: prefer_const_constructors
-                            style: TextStyle(
-                                color: Color.fromRGBO(0, 176, 236, 1),
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ),
+                            child: // error if selected date is more than 1
+                                _range == " "
+                                    ? Text(
+                                        'Please select a date',
+                                        // ignore: prefer_const_constructors
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w400),
+                                      )
+                                    : Row(
+                                        children: [
+                                          //add x button to clear the selected date
+                                          Text(
+                                            _range,
+                                            // ignore: prefer_const_constructors
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                _range = " ";
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      )
+
+                            // ignore: prefer_const_constructors
+                            ),
                       ],
                     ),
                   ),
+                  //add clear button to remove selected date
+
                   Container(
                     padding: EdgeInsets.only(left: 12, top: 20, right: 12),
                     // ignore: prefer_const_constructors
@@ -174,7 +210,8 @@ class MyAppState extends State<Reservation> {
       var data = {
         "Userid": int.parse(userid!),
         "Itemid": widget.itemModel.itemId,
-        "StartDate": _selectedDate,
+        "StartDate": _startDate,
+        "EndDate": _endDate,
         "RentalStatus": "For Approval",
         "RentalRemarks": "Waiting for merchant to accept reservation"
       };

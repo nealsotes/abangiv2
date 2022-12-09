@@ -100,32 +100,6 @@ class _MyStatefulWidgetState extends State<welcome> {
                     );
                   },
                 )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  child: Row(
-                    children: [
-                      TextButton(
-                        child: const Text(
-                          'Continue as Guest',
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        onPressed: () {
-                          //guest screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
           ],
         ));
   }

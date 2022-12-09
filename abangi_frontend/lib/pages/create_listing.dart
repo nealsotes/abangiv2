@@ -112,15 +112,20 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
   var textInputFontSize = 14.00;
   final _formKey = GlobalKey<FormState>();
   //Image upload
-  XFile? _image;
 
-  final ImagePicker _picker = ImagePicker();
+  File? _image;
+  //PickedFile? _pickedFile;
+  final _picker = ImagePicker();
+  String _uploadedFileURL = '';
   //we can use this to get the image from the gallery
-  Future getImageFromGallery(ImageSource media) async {
-    var img = await _picker.pickImage(source: media);
+  //get image from database and display it
+
+  Future<void> getImageFromGallery(ImageSource media) async {
+    var _pickedImage = await ImagePicker().pickImage(source: media);
     setState(() {
-      _image = img;
+      _image = File(_pickedImage!.path);
     });
+    _uploadedFileURL = base64Encode(_image!.readAsBytesSync());
   }
 
   dynamic _fileName = '';
@@ -170,7 +175,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
     itemCityLocationController.clear();
     _radioRentalValue = null;
     _uploadFileText = "+ Add Photo";
-    _image = null;
+    _image = File('');
   }
 
   List<DropdownMenuItem<String>> get dropdownCategories {
@@ -180,6 +185,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
       DropdownMenuItem(value: "10", child: Text("Books")),
       DropdownMenuItem(value: "11", child: Text("Handy Tools")),
       DropdownMenuItem(value: "12", child: Text("Clothes")),
+      DropdownMenuItem(value: "13", child: Text("Others")),
     ];
     return categories;
   }
@@ -257,10 +263,38 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                 ? Center(
                                     child: Container(
                                       margin: EdgeInsets.only(top: 10),
-                                      child: Image.file(
-                                        File(_image!.path),
-                                        height: 100,
-                                        width: 100,
+                                      child: //add x button to cancel image uploaded
+                                          Stack(
+                                        children: [
+                                          Container(
+                                            height: 150,
+                                            width: 150,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: FileImage(
+                                                    File(_image!.path)),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: -12,
+                                            top: -12,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _image = null;
+                                                  _uploadFileText =
+                                                      "+ Add Photo";
+                                                });
+                                              },
+                                              icon: const Icon(
+                                                Icons.cancel,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   )
@@ -588,47 +622,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                               Row(
                                                 children: [
                                                   Radio(
-                                                    value: 2,
-                                                    groupValue:
-                                                        _radioRentalValue,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _radioRentalValue =
-                                                            value!;
-                                                      });
-                                                    },
-                                                  ),
-                                                  const Text(
-                                                      'Delivery/Drop Off'),
-                                                ],
-                                              ),
-                                              Text(
-                                                'You will deliver the item to the renter',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.2),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio(
                                                     value: 3,
                                                     groupValue:
                                                         _radioRentalValue,
@@ -644,46 +637,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                               ),
                                               Text(
                                                 'The renter will pick up the item at your place',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.2),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Radio(
-                                                    value: 4,
-                                                    groupValue:
-                                                        _radioRentalValue,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        _radioRentalValue =
-                                                            value;
-                                                      });
-                                                    },
-                                                  ),
-                                                  const Text('Not Applicable'),
-                                                ],
-                                              ),
-                                              Text(
-                                                'For real-estate properties,spaces, etc.',
                                                 style: TextStyle(
                                                     color: Colors.grey),
                                               ),
@@ -743,7 +696,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                               child: Text(
                                 "You need to be verified to post listings",
                                 style:
-                                    TextStyle(fontSize: 20, color: Colors.red),
+                                    TextStyle(fontSize: 16, color: Colors.red),
                               ),
                             ),
                           ),
@@ -758,7 +711,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                     color: Color.fromRGBO(0, 176, 236, 1),
                                   )),
                               child: Text(
-                                'Please Upload Government ID',
+                                'Please upload a valid ID',
                                 style: TextStyle(
                                     color: Color.fromRGBO(0, 176, 236, 1),
                                     fontSize: 17),
@@ -769,15 +722,45 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                             ),
                           ),
                           _image != null
-                              ? Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  child: Image.file(
-                                    File(_image!.path),
-                                    height: 100,
-                                    width: 100,
+                              ? Center(
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: //add x button to cancel image uploaded
+                                        Stack(
+                                      children: [
+                                        Container(
+                                          height: 200,
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image:
+                                                  FileImage(File(_image!.path)),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: -12,
+                                          top: -12,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                _image = null as File;
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.cancel,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 )
-                              : Text(" "),
+                              : Center(
+                                  child: Text(" "),
+                                ),
                           Container(
                               height: 50,
                               margin: const EdgeInsets.only(top: 10),
@@ -822,11 +805,13 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
             itemBarLocationController.text +
             ' ' +
             itemCityLocationController.text,
-        "ItemImage": _image!.path.toString(),
+        //save image to server folder
+        "ItemImage": _uploadedFileURL,
         "RentalMethodId": _radioRentalValue as int,
         "StartDate": _startDate,
         "EndDate": _endDate,
       };
+
       var res = await CallApi().postData(data, 'api/items');
       // ignore: prefer_typing_uninitialized_variables
       var body;
@@ -851,7 +836,18 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
         // ignore: unnecessary_null_comparison
       } else {
         // ignore: use_build_context_synchronously
-        errorSnackBar(context, "Error Posting Item Try Again");
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          headerAnimationLoop: false,
+          animType: AnimType.BOTTOMSLIDE,
+          title: 'Error',
+          desc: 'Item not posted',
+          buttonsTextStyle: const TextStyle(color: Colors.white),
+          showCloseIcon: false,
+          btnOkOnPress: () {},
+        ).show();
+        print(body);
       }
     } catch (e) {
       print(e);
@@ -873,7 +869,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
         {
           "op": "replace",
           "path": "UserGovertId",
-          "value": _image!.path,
+          "value": _uploadedFileURL,
         },
       ];
       var res = await CallApi().patchData(data, 'users/$userid');

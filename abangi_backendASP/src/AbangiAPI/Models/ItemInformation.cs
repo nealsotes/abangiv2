@@ -26,12 +26,14 @@ namespace AbangiAPI.Models
         public string Location {get; set;}
         [Column("Image")]
         public string Image {get; set;}
+        public IFormFile ImageFile {get; set;}
         [Column("AbangiVerified")]
         public bool AbangiVerified {get; set;}
         [Column("Status")]
         public string Status {get; set;}
         public int RentalId {get; set;}
         public string RenterName {get; set;}
+        
         public string RentalStatus {get; set;}
         [DataType(DataType.Date)]
         public DateTime DateCreated {get; set;}

@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:abangi_v1/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 import 'models/chatmessage.dart';
 
 class SignalRHelper {
-  final url = 'http://172.31.240.1:5000/chatHub';
+  final url = '${apiUrl}chatHub';
   late HubConnection hubConnection;
   var messageList = [];
   String textMessage = '';

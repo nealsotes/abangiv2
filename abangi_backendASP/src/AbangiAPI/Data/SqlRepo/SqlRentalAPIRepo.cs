@@ -25,6 +25,11 @@ namespace AbangiAPI.Data.SqlRepo
            await _context.Rentals.AddAsync(rental);
         }
 
+        public void DeleteRental(Rental rental)
+        {
+             _context.Rentals.Remove(rental);
+        }
+
         public async Task<IEnumerable<RentalInformation>> GetAllRentals()
         {
             var rentalList = await (from r in _context.Rentals
@@ -116,6 +121,7 @@ namespace AbangiAPI.Data.SqlRepo
                                   ItemImage = i.ItemImage,
                                   ItemCategory = i.ItemCategory.ItemCategoryName,
                                   ItemOwner = i.User.FullName,
+                                  ItemId = i.ItemId,
                                   Status = i.User.Status,
                                   ItemLocation = i.ItemLocation,
                                   ItemPrice = i.ItemPrice,

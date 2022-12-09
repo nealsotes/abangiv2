@@ -37,16 +37,68 @@ class Payments extends StatelessWidget {
           body: ListView(
         children: [
           Padding(
-              padding: EdgeInsets.only(top: 40, left: 50),
+              padding: EdgeInsets.only(top: 10, left: 32),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    child: Text('Available Balance',
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 17,
-                            fontWeight: FontWeight.w600)),
+                    width: 300,
+                    height: 100,
+                    padding: EdgeInsets.only(top: 20, left: 20),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              blurRadius: 20,
+                              offset: Offset(0, 10))
+                        ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Text('Available Balance',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(0, 176, 236, 1),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                        Container(
+                          child: Text('₱ 0',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 300,
+                    height: 70,
+                    margin: EdgeInsets.only(top: 20),
+                    padding: EdgeInsets.only(top: 20, left: 20),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              blurRadius: 20,
+                              offset: Offset(0, 10))
+                        ]),
+                    child: RaisedButton(
+                      color: Colors.white,
+                      onPressed: () {},
+                      child: Text('Payout Methods',
+                          style: TextStyle(
+                              color: Color.fromRGBO(0, 176, 236, 1),
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600)),
+                    ),
                   )
                 ],
               )),

@@ -10,10 +10,11 @@ import 'package:abangi_v1/pages/Menus/Details/Reservation/reservation.dart';
 import 'package:abangi_v1/pages/Menus/UserProfile/payments.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart';
-
+import 'package:platform_device_id/platform_device_id.dart';
 import '../Models/Rental.dart';
 import '../api/api.dart';
 import 'Menus/UserProfile/my_inquiries.dart';
@@ -42,22 +43,27 @@ Future<List<RentalModel>> getRental() async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var userid = prefs.getString('userid');
+
     var response =
         await CallApi().getData('api/rentals/GetRentalByUserId/$userid');
     var jsonData = jsonDecode(response.body);
     List<RentalModel> rentals = [];
     for (var r in jsonData) {
       RentalModel rental = RentalModel(
-          r['rentalId'],
-          r['itemOwner'],
-          r['itemImage'],
-          r['itemName'],
-          r['rentalStatus'],
-          r['rentalRemarks'],
-          r['startDate'],
-          r['status'],
-          r['itemPrice'],
-          r['itemLocation']);
+        r['rentalId'],
+        r['itemOwner'],
+        r['itemImage'],
+        r['itemName'],
+        r['rentalStatus'],
+        r['rentalRemarks'],
+        r['startDate'],
+        r['status'],
+        r['itemPrice'],
+        r['itemLocation'],
+        r['itemId'],
+        r['endDate'],
+      );
+
       rentals.add(rental);
     }
 
@@ -78,6 +84,8 @@ class TabViewState extends State<MyListWidget> {
     super.initState();
     rentals = getRental();
   }
+
+//get device id
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +112,7 @@ class TabViewState extends State<MyListWidget> {
               unselectedLabelColor: Colors.grey,
               tabs: [
                 Tab(
-                  text: 'My Inquiries',
+                  text: 'Transactions',
                 ),
                 Tab(
                   text: '',
@@ -120,21 +128,44 @@ class TabViewState extends State<MyListWidget> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return Padding(
-                        padding: EdgeInsets.all(2.0),
+                        padding: EdgeInsets.all(8.0),
                         child: ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               return Container(
+                                height: 100,
+                                margin: EdgeInsets.only(bottom: 10.0),
                                 color: Colors.grey[200],
                                 child: ListTile(
                                     onTap: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .push(MaterialPageRoute(
-                                              // ignore: unnecessary_new
-                                              builder: (context) =>
-                                                  ChatApproval(
-                                                      rental: snapshot
-                                                          .data![index])));
+                                      if (snapshot.data![index].rentalStatus !=
+                                          "Cancelled") {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .push(MaterialPageRoute(
+                                                // ignore: unnecessary_new
+                                                builder: (context) =>
+                                                    ChatApproval(
+                                                        rental: snapshot
+                                                            .data![index])));
+                                      }
+                                      setState(() {
+                                        historyTransactions(
+                                          snapshot.data![index].owner,
+                                          snapshot.data![index].itemName,
+                                          snapshot.data![index].requestDate
+                                              .toString(),
+                                          "2022-12-23",
+                                          snapshot.data![index].rentalStatus,
+                                          "Online Payment",
+                                          snapshot.data![index].rentalRemarks,
+                                          snapshot.data![index].rentalPrice
+                                              .toInt(),
+                                          "Electric Fan",
+                                          snapshot.data![index].rentalPrice
+                                              .toInt(),
+                                        );
+                                      });
                                     },
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -194,10 +225,19 @@ class TabViewState extends State<MyListWidget> {
                                           style: TextStyle(
                                               color: Colors.black, fontSize: 8),
                                         ),
-                                        Image.file(
-                                          io.File(snapshot.data![index].image),
-                                          width: 50,
-                                          height: 35,
+                                        // ignore: unnecessary_null_comparison
+                                        Container(
+                                          width: 60,
+                                          height: 44,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            image: DecorationImage(
+                                              image: MemoryImage(base64Decode(
+                                                  snapshot.data![index].image)),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     )),
@@ -215,5 +255,41 @@ class TabViewState extends State<MyListWidget> {
         ],
       ),
     ));
+  }
+
+  void historyTransactions(
+      String owner,
+      String itemrented,
+      String dateRequested,
+      String datereturned,
+      String paymentStatus,
+      String paymentMethod,
+      String transactionStatus,
+      int itemPrice,
+      String itemCategory,
+      int amountPaid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var renter = prefs.getString('user');
+    var data = {
+      "renter": renter,
+      "owner": owner,
+      "itemrented": itemrented,
+      "daterented": dateRequested,
+      "dateReturned": datereturned,
+      "paymentstatus": paymentStatus,
+      "paymentmethod": paymentMethod,
+      "transactionStatus": transactionStatus,
+      "itemPrice": itemPrice,
+      "itemCategory": itemCategory,
+      "amountPage": amountPaid
+    };
+
+    var res = await CallApi().postData(data, "api/transactionhistory");
+    var body = json.decode(res.body);
+    if (res.statusCode == 200) {
+      print(body);
+    } else {
+      print(body);
+    }
   }
 }

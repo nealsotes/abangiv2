@@ -32,6 +32,7 @@ namespace AbangiAPI.Dtos
         public string ItemLocation { get; set; }
         [Required]
         public int RentalMethodId { get; set; }
+        
       
         [DataType(DataType.Date)]
         public DateTime DateCreated {get; set;}

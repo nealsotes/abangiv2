@@ -20,6 +20,10 @@ namespace AbangiAPI.Dtos
         public string Role {get; set;}
         public String IsAbangiVerified {get; set;}
         public String Status {get; set;}
+        public String DeviceId {get; set;}
         public ICollection<Item> Items {get; set;}
+        public bool isMailConfirmed {get; set;}
+        public string EmailConfirmationToken { get; set; }
+       
     }
 }

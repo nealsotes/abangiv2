@@ -46,7 +46,8 @@ namespace AbangiAPI.Data.SqlRepo
                                     Role = r.RoleName,
                                     DateCreated = i.DateCreated,
                                     IsActive = i.IsActive,
-                                    AbangiVerified = i.AbangiVerified                                    
+                                    AbangiVerified = i.AbangiVerified ,    
+                                    GovernmentId = u.UserGovertId                               
                                };
                             
 
@@ -65,7 +66,7 @@ namespace AbangiAPI.Data.SqlRepo
 
         public void UpdateUserRole(UserRole userRole)
         {
-            throw new NotImplementedException();
+           
         }
     }
 }

@@ -3,7 +3,7 @@ import 'package:abangi_v1/Models/Item.dart';
 import 'package:abangi_v1/pages/account.dart';
 import 'package:abangi_v1/pages/activity.dart';
 import 'package:abangi_v1/pages/create_listing.dart';
-import 'package:abangi_v1/pages/history.dart';
+import 'package:abangi_v1/pages/mylistings.dart';
 import 'package:abangi_v1/pages/home.dart';
 import 'package:abangi_v1/pages/messages.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ class DashState extends State<DashboardScreen> {
     Home(),
     MessagesScreen(),
     CreateListingScreen(),
-    HistoryScreen(),
+    MyListingsScreen(),
     AccountScreen(),
   ];
 
@@ -91,7 +91,7 @@ class DashState extends State<DashboardScreen> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.history, color: Colors.blue),
-                label: 'History',
+                label: 'My Listings',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.manage_accounts, color: Colors.blue),

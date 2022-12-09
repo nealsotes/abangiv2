@@ -9,5 +9,7 @@ namespace AbangiAPI.Dtos
 
         [Required]
         public string Password{get; set;}
+
+        
     }
 }

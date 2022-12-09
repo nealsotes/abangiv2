@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:abangi_v1/global_utils.dart';
 import 'package:abangi_v1/api/api.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:abangi_v1/pages/login.dart';
 
@@ -256,12 +258,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     setState(() {
       _isLoading = true;
     });
+    String? token = await FirebaseMessaging.instance.getToken();
     var data = {
       'email': emailController.text,
       'address': addressController.text,
       'password': passwordController.text,
       'contact': mobileNumberController.text.toString(),
       'fullname': nameController.text,
+      'deviceId': token
     };
     var res = await CallApi().postData(data, 'users/register');
     // ignore: prefer_typing_uninitialized_variables
@@ -273,10 +277,22 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
     if (res.statusCode == 200) {
       // ignore: use_build_context_synchronously, prefer_const_constructors
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Login()),
-      );
+      AwesomeDialog(
+        context: context,
+        dialogType: DialogType.success,
+        headerAnimationLoop: false,
+        animType: AnimType.bottomSlide,
+        title: 'Success',
+        desc: 'Please check your email to verify your account',
+        buttonsTextStyle: const TextStyle(color: Colors.white),
+        showCloseIcon: false,
+        btnOkOnPress: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Login()),
+          );
+        },
+      ).show();
     } else {
       // ignore: use_build_context_synchronously, void_checks
       errorSnackBar(context, body['message']);

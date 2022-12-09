@@ -64,10 +64,13 @@ namespace AbangiAPI.Controllers
         [AllowAnonymous]
         [HttpPost]
         public  ActionResult<ItemReadDto> CreateItem([FromBody]ItemCreateDto itemCreateDto)
+        
         {
+              //save image to wwwroot
+               
            if(ModelState.IsValid)
            {
-                 if(itemCreateDto.Image != null)
+               if(itemCreateDto.Image != null)
                 {
                     _repository.SavePostImageAsync(itemCreateDto);
                 }

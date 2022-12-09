@@ -16,5 +16,6 @@ namespace AbangiAPI.Data
         Task<IEnumerable<RentalInformation>> GetRentalByUserId(int id);
         Task<IEnumerable<RentalInformation>> GetRentalByOwnerId(int id);
         void UpdateViaPatch(Rental rental);
+        void DeleteRental(Rental rental);
     }
 }

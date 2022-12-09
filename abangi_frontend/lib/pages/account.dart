@@ -4,12 +4,15 @@ import 'dart:io';
 
 import 'package:abangi_v1/pages/account_settings.dart';
 import 'package:abangi_v1/pages/login.dart';
+import 'package:abangi_v1/pages/notification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Models/User.dart';
 import '../../api/api.dart';
+import 'Menus/UserProfile/myhistory.dart';
 import 'Menus/UserProfile/mylist.dart';
 import 'Menus/UserProfile/payments.dart';
 
@@ -62,11 +65,11 @@ class _MyAppState extends State<AccountScreen> {
                             onBackgroundImageError: (exception, stackTrace) {
                               print('Error loading image');
                             },
-                            backgroundImage: Image.file(
-                              File(snapshot.data!.profileImage != null
+                            backgroundImage: MemoryImage(
+                              base64Decode(snapshot.data!.profileImage != null
                                   ? snapshot.data!.profileImage!
                                   : ''),
-                            ).image,
+                            ),
                             radius: 40,
                             backgroundColor: Colors.white,
                             // ignore: unnecessary_null_comparison
@@ -90,7 +93,7 @@ class _MyAppState extends State<AccountScreen> {
                                     fontSize: 23)),
                             Text(snapshot.data!.email,
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 13.0)),
+                                    color: Colors.white, fontSize: 10.0)),
                             Container(
                               margin: EdgeInsets.only(top: 5),
                               child: FlatButton(
@@ -130,7 +133,7 @@ class _MyAppState extends State<AccountScreen> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: 90, left: 40),
+                        margin: EdgeInsets.only(bottom: 90, left: 32),
                         child: IconButton(
                             onPressed: () {
                               Navigator.of(context, rootNavigator: true)

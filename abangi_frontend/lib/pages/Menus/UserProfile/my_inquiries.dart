@@ -91,13 +91,21 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
                   return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
                     color: Colors.grey[200],
                     child: ListTile(
                       onTap: () {},
-                      leading: Image.file(
-                        File(snapshot.data![index].image),
-                        width: 80,
-                        height: 70,
+                      leading: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          image: DecorationImage(
+                            image: MemoryImage(
+                                base64Decode(snapshot.data![index].image)),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       title: Text(snapshot.data![index].itemName),
                       subtitle: Column(
@@ -116,9 +124,12 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(5.0),
+                              padding: const EdgeInsets.all(4.0),
                               child: Text(
-                                snapshot.data![index].rentalStatus == 'Approved'
+                                snapshot.data![index].rentalStatus ==
+                                            'Approved' ||
+                                        snapshot.data![index].rentalStatus ==
+                                            'Paid'
                                     ? "Mark as rented"
                                     : "Available",
                                 style: TextStyle(
