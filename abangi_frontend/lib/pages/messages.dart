@@ -62,6 +62,8 @@ Future<List<RentalModel>> getRental() async {
         r['itemLocation'],
         r['itemId'],
         r['endDate'],
+        r['renterName'],
+        r['itemCategory'],
       );
 
       rentals.add(rental);
@@ -89,6 +91,7 @@ class TabViewState extends State<MyListWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print(rentals);
     return Container(
         child: DefaultTabController(
       length: 2,
@@ -137,7 +140,10 @@ class TabViewState extends State<MyListWidget> {
                                 margin: EdgeInsets.only(bottom: 10.0),
                                 color: Colors.grey[200],
                                 child: ListTile(
-                                    onTap: () {
+                                    onTap: () async {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      String name = prefs.getString('user')!;
                                       if (snapshot.data![index].rentalStatus !=
                                           "Cancelled") {
                                         Navigator.of(context,
@@ -146,8 +152,10 @@ class TabViewState extends State<MyListWidget> {
                                                 // ignore: unnecessary_new
                                                 builder: (context) =>
                                                     ChatApproval(
-                                                        rental: snapshot
-                                                            .data![index])));
+                                                      name: name,
+                                                      rental:
+                                                          snapshot.data![index],
+                                                    )));
                                       }
                                       setState(() {
                                         historyTransactions(

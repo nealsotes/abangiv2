@@ -93,13 +93,14 @@ namespace AbangiAPI.Data.SqlRepo
                           select new RentalInformation
                           {
                               RentalId = r.RentalId,
-                              ItemOwner = i.User.FullName,
+                              RenterName = u.FullName,
                               ItemName = i.ItemName,
                               ItemImage = i.ItemImage,
                               ItemCategory = i.ItemCategory.ItemCategoryName,
                               ItemLocation = i.ItemLocation,
                               AbangiVerified = c.AbangiVerified,
                               RentalStatus = r.RentalStatus,
+                              ItemPrice = i.ItemPrice,
                               StartDate = r.StartDate,
                               EndDate = r.EndDate
                           }).ToListAsync();

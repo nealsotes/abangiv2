@@ -11,6 +11,8 @@ class RentalModel {
   late String location;
   late int itemId;
   late String endDate;
+  late String renterName;
+  late String itemCategory;
 
   RentalModel(
       this.rentalId,
@@ -24,7 +26,9 @@ class RentalModel {
       this.rentalPrice,
       this.location,
       this.itemId,
-      this.endDate);
+      this.endDate,
+      this.renterName,
+      this.itemCategory);
 
   RentalModel.fromJson(Map<String, dynamic> json) {
     rentalId = json['rentalId'];
@@ -39,5 +43,7 @@ class RentalModel {
     location = json['itemlocation'];
     itemId = json['itemId'];
     endDate = json['endDate'];
+    renterName = json['renterName'];
+    itemCategory = json['itemCategory'];
   }
 }

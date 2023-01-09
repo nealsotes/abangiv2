@@ -238,29 +238,29 @@ class HandyToolsDetails extends StatelessWidget {
                           ),
                         ),
 
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: Text(
-                            "Available Dates",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 21,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        SfDateRangePicker(
-                          selectionMode: DateRangePickerSelectionMode.range,
-                          enablePastDates: false,
-                          initialSelectedRange: PickerDateRange(
-                              DateTime.parse(itemModel.startDate)
-                                  .add(Duration(days: 0)),
-                              DateTime.parse(itemModel.endDate)
-                                  .add(Duration(days: 0))),
-                        ),
+                        // Container(
+                        //   margin: EdgeInsets.only(top: 20),
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(10),
+                        //     color: Colors.white,
+                        //   ),
+                        //   child: Text(
+                        //     "Available Dates",
+                        //     style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontSize: 21,
+                        //         fontWeight: FontWeight.w600),
+                        //   ),
+                        // ),
+                        // SfDateRangePicker(
+                        //   selectionMode: DateRangePickerSelectionMode.range,
+                        //   enablePastDates: false,
+                        //   initialSelectedRange: PickerDateRange(
+                        //       DateTime.parse(itemModel.startDate)
+                        //           .add(Duration(days: 0)),
+                        //       DateTime.parse(itemModel.endDate)
+                        //           .add(Duration(days: 0))),
+                        // ),
                       ],
                     ),
                   ),
@@ -478,13 +478,6 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "How to book",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 21,
-                        fontWeight: FontWeight.w600),
-                  ),
                   Text(
                     "How to reserve this listing",
                     style: TextStyle(color: Colors.black, fontSize: 13),

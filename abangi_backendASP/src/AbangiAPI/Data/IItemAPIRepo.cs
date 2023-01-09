@@ -19,6 +19,7 @@ namespace AbangiAPI.Data
         void DeleteItem(Item item);
         void SavePostImageAsync(ItemCreateDto itemCreateDto);
         Task<IEnumerable<ItemInformation>> GetUserItemListings(int id);
+        Task<Item> GetItemName(string name);
     }
     
 }

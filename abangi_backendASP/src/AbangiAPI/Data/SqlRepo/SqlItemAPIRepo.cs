@@ -21,12 +21,18 @@ namespace AbangiAPI.Data.SqlRepo
             environment = hostEnvironment;
         }
        
-        public void CreateItem(Item item)
+        public void  CreateItem(Item item)
         {
             if(item == null)
             {
                 throw new ArgumentNullException(nameof(item));
             }
+            if(_context.Items.Any(i => i.ItemName.ToLower() == item.ItemName.ToLower()))
+            {
+                throw new AppException("Item already exists");
+            }
+           
+         
             _context.Items.Add(item);
         }
 
@@ -182,6 +188,11 @@ namespace AbangiAPI.Data.SqlRepo
                                 
                             }).ToListAsync();
             return await items;
+        }
+
+        public Task<Item> GetItemName(string name)
+        {
+            return _context.Items.FirstOrDefaultAsync(p => p.ItemName == name);
         }
     }
 }

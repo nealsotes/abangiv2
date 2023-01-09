@@ -31,6 +31,18 @@ namespace AbangiAPI.Controllers
             var transactionHistory = _repository.GetTransactionHistory(id);
             return Ok(transactionHistory);
         }
+        [HttpGet("{userid}", Name = "GetTransactionHistoryByRenter"), Route("GetTransactionHistoryByRenter/{userid}")]
+        public ActionResult<TransactionHistory> GetTransactionHistoryByRenter(int userid)
+        {
+            var transactionHistory = _repository.GetAllTransactionHistoriesByRenter(userid);
+            return Ok(transactionHistory);
+        }
+        [HttpGet("{userid}", Name = "GetTransactionHistoryByOwner"), Route("GetTransactionHistoryByOwner/{userid}")]
+        public ActionResult<TransactionHistory> GetTransactionHistoryByOwner(int userid)
+        {
+            var transactionHistory = _repository.GetAllTransactionHistoriesByOwner(userid);
+            return Ok(transactionHistory);
+        }
         [HttpPost]
         public ActionResult<TransactionHistory> AddTransactionHistory(TransactionHistory transactionHistory)
         {

@@ -15,6 +15,8 @@ namespace AbangiAPI.Data
         public Task<TransactionHistory> UpdateTransactionHistory(TransactionHistory transactionHistory);
         public Task<TransactionHistory> DeleteTransactionHistory(int id);
         public Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByUser(int id);
+        public Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByOwner(int id);
+        public Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByRenter(int id);
         public void SaveChanges();
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using AbangiAPI.Helpers;
 
 namespace AbangiAPI.Controllers
 {
@@ -22,13 +23,15 @@ namespace AbangiAPI.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IWebHostEnvironment _env;
+        private readonly DataContext _context;
         private readonly IItemAPIRepo _repository;
         private readonly IMapper _mapper;
-        public ItemsController(IItemAPIRepo repository, IMapper mapper, IWebHostEnvironment env)
+        public ItemsController(IItemAPIRepo repository, IMapper mapper, IWebHostEnvironment env, DataContext context)
         {
             _repository = repository;
             _mapper = mapper;
             _env = env;
+            
         
         }
 
@@ -66,24 +69,28 @@ namespace AbangiAPI.Controllers
         public  ActionResult<ItemReadDto> CreateItem([FromBody]ItemCreateDto itemCreateDto)
         
         {
-              //save image to wwwroot
-               
-           if(ModelState.IsValid)
-           {
-               if(itemCreateDto.Image != null)
+               //validate if itemName already exists
+              
+          try
+          {
+            if(itemCreateDto.Image != null)
                 {
                     _repository.SavePostImageAsync(itemCreateDto);
                 }
-                var itemModel = _mapper.Map<Item>(itemCreateDto);
+                //validate duplicate item
+                
+                  var itemModel = _mapper.Map<Item>(itemCreateDto);
+
+
+                
                 _repository.CreateItem(itemModel);
                 _repository.SaveChanges();
                 var itemReadDto = _mapper.Map<ItemReadDto>(itemModel);
                 return CreatedAtRoute(nameof(GetItemById), new { id = itemReadDto.ItemId }, itemReadDto);
-           }
-           else
-           {
-            return BadRequest(ModelState);
-           }
+          }catch(AppException ex)
+          {
+                return BadRequest(new { message = ex.Message });
+          }
     
         }
 

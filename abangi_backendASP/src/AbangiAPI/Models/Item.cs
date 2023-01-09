@@ -38,6 +38,7 @@ namespace AbangiAPI.Models
         [DataType(DataType.Date)]
         public DateTime EndDate {get; set;}
 
+  
         [Required]
         [MaxLength(250)]
         public string ItemName {get;set;}

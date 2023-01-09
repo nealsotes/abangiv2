@@ -14,6 +14,7 @@ import 'models/chatmessage.dart';
 
 class Chat extends StatefulWidget {
   late var name;
+
   TextEditingController messageController = TextEditingController();
   late ItemModel? itemModel;
   final _formKey = GlobalKey<FormState>();
@@ -32,8 +33,15 @@ var updateStatus;
 class ChatScreen extends State<Chat> {
   var scrollController = ScrollController();
   SignalRHelper signalRHelper = SignalRHelper();
+  final List<ChatMessage> _messages = [];
+  // receiveMessageHandler(args) {
+  //   var message = ChatMessage.fromJson(jsonDecode(args[0]));
+  //   _messages.add(message);
+
+  //   setState(() {});
+  // }
   receiveMessageHandler(args) {
-    signalRHelper.messageList.add(ChatMessage(
+    _messages.add(ChatMessage(
         name: args[0], message: args[1], isMine: args[0] == widget.name));
     scrollController.jumpTo(scrollController.position.maxScrollExtent + 75);
     setState(() {});
@@ -62,7 +70,7 @@ class ChatScreen extends State<Chat> {
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   color: Colors.grey.shade100,
-                  width: 300,
+                  width: 230,
                   height: 45,
                   child: TextField(
                     controller: widget.messageController,
@@ -86,8 +94,12 @@ class ChatScreen extends State<Chat> {
                       widget.messageController.clear();
                       scrollController.jumpTo(
                           scrollController.position.maxScrollExtent + 75);
+                      scrollController.animateTo(
+                          scrollController.position.maxScrollExtent,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.send,
                       color: Color.fromRGBO(0, 176, 236, 1),
                     )),
@@ -107,105 +119,50 @@ class ChatScreen extends State<Chat> {
             },
           ),
           title: Row(
-            children: [
-              CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Color.fromRGBO(0, 176, 236, 1),
-                  child: Text(widget.itemModel!.owner.substring(0, 1),
-                      style: TextStyle(fontSize: 20, color: Colors.white))),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(left: 10, top: 6),
-                    child: Text(widget.itemModel!.owner,
-                        style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Text("(${super.widget.itemModel!.userStatus})",
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                ],
-              ),
-            ],
+            children: [],
           ),
         ),
         body: Padding(
           padding: EdgeInsets.only(left: 17, right: 17),
           child: Column(
             children: [
-              ListTile(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0)),
-                tileColor: Colors.grey.shade200,
-                title: Text(
-                  widget.itemModel!.itemName,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Row(
-                  children: [
-                    Text(
-                      widget.itemModel!.price.toString() + '/ day ',
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    Text(
-                      widget.itemModel!.location,
-                      style: TextStyle(fontSize: 12),
-                    )
-                  ],
-                ),
-                trailing: Image.file(File(widget.itemModel!.image),
-                    width: 59, height: 100, fit: BoxFit.cover),
-              ),
               SizedBox(
                 height: 10,
               ),
               Expanded(
-                child: ListView.separated(
+                child: ListView.builder(
+                  shrinkWrap: true,
                   controller: scrollController,
-                  itemCount: signalRHelper.messageList.length,
+                  itemCount: _messages.length,
                   itemBuilder: (context, i) {
                     return Align(
-                      alignment: signalRHelper.messageList[i].isMine
+                      alignment: _messages[i].isMine
                           ? Alignment.centerRight
                           : Alignment.centerLeft,
                       child: Container(
+                        height: 50,
                         constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.7),
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
-                            color: signalRHelper.messageList[i].isMine
-                                ? Color.fromRGBO(0, 176, 236, 1)
+                            color: _messages[i].isMine
+                                ? const Color.fromRGBO(0, 176, 236, 1)
                                 : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(12)),
                         child: Text(
-                          signalRHelper.messageList[i].isMine
-                              ? signalRHelper.messageList[i].message
-                              : signalRHelper.messageList[i].name +
-                                  ': ' +
-                                  signalRHelper.messageList[i].message,
-                          textAlign: signalRHelper.messageList[i].isMine
+                          _messages[i].isMine
+                              ? _messages[i].message
+                              : '${_messages[i].name}: ${_messages[i].message}',
+                          textAlign: _messages[i].isMine
                               ? TextAlign.end
                               : TextAlign.start,
                           style: TextStyle(
-                              color: signalRHelper.messageList[i].isMine
+                              color: _messages[i].isMine
                                   ? Colors.white
                                   : Colors.black),
                         ),
                       ),
-                    );
-                  },
-                  separatorBuilder: (_, i) {
-                    return Divider(
-                      thickness: 0.1,
                     );
                   },
                 ),
@@ -219,10 +176,24 @@ class ChatScreen extends State<Chat> {
     );
   }
 
+  // @override
+  // void initState() async {
+  //   super.initState();
+  //   signalRHelper.connect(receiveMessageHandler);
+  //   List<ChatMessage> messages = await signalRHelper.getMessages();
+  //   setState(() {
+  //     _messages.addAll(messages);
+  //   });
+  // }
   @override
   void initState() {
     super.initState();
     signalRHelper.connect(receiveMessageHandler);
+    //make not awia
+    List<ChatMessage> messages = [];
+    setState(() {
+      _messages.addAll(messages);
+    });
   }
 
   @override

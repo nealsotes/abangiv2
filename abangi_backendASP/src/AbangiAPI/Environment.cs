@@ -7,6 +7,6 @@ namespace AbangiAPI
 {
     public class Environment
     {
-        public const string Localhost = "http://192.168.196.171:5000";
+        public const string Localhost = "http://192.168.1.9:5000";
     }
 }

@@ -13,6 +13,7 @@ namespace AbangiAPI.Helpers
          protected readonly IConfiguration Configuration;
 
       
+
         public DataContext(IConfiguration configuration) 
         {
             Configuration = configuration;
@@ -44,5 +45,6 @@ namespace AbangiAPI.Helpers
         public DbSet<Rental> Rentals {get; set;}
         public DbSet<Feedback> Feedbacks {get; set;}
         public DbSet<TransactionHistory> TransactionHistories {get; set;}
+        public DbSet<Message> Messages {get; set;}
     }
 }

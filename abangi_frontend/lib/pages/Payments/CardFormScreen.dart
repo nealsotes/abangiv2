@@ -252,7 +252,8 @@ class _CardFormScreenState extends State<CardFormScreen> {
                 {
                   "op": "replace",
                   "path": "rentalRemarks",
-                  "value": "Please return the item on ${widget.rental.endDate}"
+                  "value":
+                      "Please return the item with the same condition as you received it"
                 }
               ];
 

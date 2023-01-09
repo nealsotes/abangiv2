@@ -42,8 +42,10 @@ namespace AbangiAPI.Data.SqlRepo
 
          public async Task<IEnumerable<ItemInformation>> GetItemByCategory(string name, int id)
         {
+            var itemRented = _context.Rentals.Select(r => r.ItemId);
+            var itemResult = _context.Items.Where(i => !itemRented.Contains(i.ItemId));
             
-            var Item = (from i in _context.Items
+            var Item = (from i in itemResult
                         join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
                         join u in _context.Users on i.UserId equals u.UserId
                         join r in _context.RentalMethods on i.RentalMethodId equals r.RentalMethodId 

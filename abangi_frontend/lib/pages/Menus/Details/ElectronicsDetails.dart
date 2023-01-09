@@ -238,29 +238,29 @@ class ElectronicsDetails extends StatelessWidget {
                           ),
                         ),
 
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: Text(
-                            "Available Dates",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 21,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        SfDateRangePicker(
-                          selectionMode: DateRangePickerSelectionMode.range,
-                          enablePastDates: false,
-                          initialSelectedRange: PickerDateRange(
-                              DateTime.parse(itemModel.startDate)
-                                  .add(Duration(days: 0)),
-                              DateTime.parse(itemModel.endDate)
-                                  .add(Duration(days: 0))),
-                        ),
+                        // Container(
+                        //   margin: EdgeInsets.only(top: 20),
+                        //   decoration: BoxDecoration(
+                        //     borderRadius: BorderRadius.circular(10),
+                        //     color: Colors.white,
+                        //   ),
+                        //   child: Text(
+                        //     "Available Dates",
+                        //     style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontSize: 21,
+                        //         fontWeight: FontWeight.w600),
+                        //   ),
+                        // ),
+                        // SfDateRangePicker(
+                        //   selectionMode: DateRangePickerSelectionMode.range,
+                        //   enablePastDates: false,
+                        //   initialSelectedRange: PickerDateRange(
+                        //       DateTime.parse(itemModel.startDate)
+                        //           .add(Duration(days: 0)),
+                        //       DateTime.parse(itemModel.endDate)
+                        //           .add(Duration(days: 0))),
+                        // ),
                       ],
                     ),
                   ),
@@ -403,7 +403,7 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
                                           ),
                                         ),
                                         Container(
-                                          margin: EdgeInsets.only(left: 10),
+                                          margin: EdgeInsets.only(left: 5),
                                           child: Text(
                                             snapshot.data![index].name,
                                             style: TextStyle(
@@ -425,7 +425,7 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
                                             direction: Axis.horizontal,
                                             allowHalfRating: true,
                                             itemCount: 5,
-                                            itemSize: 20,
+                                            itemSize: 15,
                                             itemPadding: EdgeInsets.symmetric(
                                                 horizontal: 4.0),
                                             itemBuilder: (context, _) => Icon(
@@ -478,13 +478,6 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "How to book",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 21,
-                        fontWeight: FontWeight.w600),
-                  ),
                   Text(
                     "How to reserve this listing",
                     style: TextStyle(color: Colors.black, fontSize: 13),
@@ -588,24 +581,7 @@ class ElectronicsDetailsState extends State<ButtonWidget> {
             color: Colors.white,
           ),
         ),
-        // Container(
-        //     height: 50,
-        //     width: 400,
-        //     margin: const EdgeInsets.only(top: 15),
-        //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        //     child: OutlinedButton(
-        //       child: const Text('Chat Now'),
-        //       onPressed: () {
-        //         Navigator.push(
-        //           context,
-        //           MaterialPageRoute(
-        //               builder: (context) => Chat(
-        //                     name: currentUser,
-        //                     itemModel: widget.itemModel,
-        //                   )),
-        //         );
-        //       },
-        //     )),
+     
         Container(
             height: 50,
             width: 400,

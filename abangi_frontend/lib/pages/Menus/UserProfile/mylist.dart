@@ -15,6 +15,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart';
 
+import '../../../Models/Rental.dart';
+
 void main() => runApp(MyListing());
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -43,41 +45,37 @@ class MyListingScreen extends StatefulWidget {
   State<MyListingScreen> createState() => _MyStatefulWidgetState();
 }
 
-Future<List<ItemModel>> getItemData() async {
-  SharedPreferences localStorage = await SharedPreferences.getInstance();
-  var currentId = localStorage.getString('userid');
+Future<List<RentalModel>> getRental() async {
   try {
-    // var category = await CallApi().getData('api/itemcategories');
-    // var jsonData2 = jsonDecode(category.body);
-    // print(jsonData2[3]['items']);
-    var response =
-        await CallApi().getData('api/items/GetItemByUser/$currentId');
-    var jsonData = jsonDecode(response.body);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var userid = prefs.getString('userid');
 
-    List<ItemModel> items = [];
-    for (var i in jsonData) {
-      ItemModel item = ItemModel(
-        i['itemId'],
-        i['itemName'],
-        i['description'],
-        i['price'],
-        i['category'],
-        i['owner'],
-        i['rentalMethod'],
-        i['location'],
-        i['image'],
-        i['startDate'],
-        i['endDate'],
-        i['abangiVerified'],
-        i['dateCreated'],
-        i['Status'],
-        i['rentalStatus'],
-        i['rentalId'],
-        i['renterName'],
+    var response =
+        await CallApi().getData('api/rentals/GetRentalByOwnerId/$userid');
+    var jsonData = jsonDecode(response.body);
+    List<RentalModel> rentals = [];
+    for (var r in jsonData) {
+      RentalModel rental = RentalModel(
+        r['rentalId'],
+        r['itemOwner'],
+        r['itemImage'],
+        r['itemName'],
+        r['rentalStatus'],
+        r['rentalRemarks'],
+        r['startDate'],
+        r['status'],
+        r['itemPrice'],
+        r['itemLocation'],
+        r['itemId'],
+        r['endDate'],
+        r['renterName'],
+        r['itemCategory'],
       );
-      items.add(item);
+
+      rentals.add(rental);
     }
-    return items;
+
+    return rentals;
   } catch (e) {
     print(e);
     rethrow;
@@ -85,12 +83,12 @@ Future<List<ItemModel>> getItemData() async {
 }
 
 class _MyStatefulWidgetState extends State<MyListingScreen> {
-  late Future<List<ItemModel>> itemModel;
+  late Future<List<RentalModel>> itemModel;
 
   @override
   void initState() {
     super.initState();
-    itemModel = getItemData();
+    itemModel = getRental();
     Notif.initialize(flutterLocalNotificationsPlugin);
   }
 
@@ -99,7 +97,7 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
     return Padding(
       padding: const EdgeInsets.all(13),
       child: SizedBox(
-        child: FutureBuilder<List<ItemModel>>(
+        child: FutureBuilder<List<RentalModel>>(
           future: itemModel,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -115,7 +113,18 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                             margin: EdgeInsets.only(bottom: 10),
                             color: Colors.grey[200],
                             child: ListTile(
-                              onTap: () {},
+                              onTap: () async {
+                                SharedPreferences localStorage =
+                                    await SharedPreferences.getInstance();
+                                String name = localStorage.getString('user')!;
+                                // ignore: use_build_context_synchronously
+                                Navigator.of(context, rootNavigator: true)
+                                    .push(MaterialPageRoute(
+                                        // ignore: unnecessary_new
+                                        builder: (context) => Chat(
+                                              name: name,
+                                            )));
+                              },
                               leading: Container(
                                 width: 60,
                                 height: 60,
@@ -187,8 +196,8 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                                           ],
                                         ),
                                         Text(
-                                          'P${snapshot.data![index].price} . ${snapshot.data![index].category}. Requested on ${snapshot.data![index].startDate.substring(5, 10)}',
-                                          style: TextStyle(fontSize: 9.0),
+                                          'P${snapshot.data![index].rentalPrice} . ${snapshot.data![index].itemCategory}. Requested on ${snapshot.data![index].requestDate.substring(5, 10) + " to " + snapshot.data![index].endDate.substring(5, 10)}',
+                                          style: TextStyle(fontSize: 8.0),
                                         ),
                                         Container(
                                           padding: EdgeInsets.all(5.0),
@@ -343,7 +352,7 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
   Future<void> refreshList() async {
     await Future.delayed(Duration(seconds: 0));
     setState(() {
-      itemModel = getItemData();
+      itemModel = getRental();
     });
   }
 

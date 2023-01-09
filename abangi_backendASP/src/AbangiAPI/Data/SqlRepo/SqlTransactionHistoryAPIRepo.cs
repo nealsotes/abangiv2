@@ -68,10 +68,31 @@ namespace AbangiAPI.Data.SqlRepo
            return Task.FromResult(_context.TransactionHistories.Where(p => p.Id == id) as IEnumerable<TransactionHistory>);
         }
 
-        public  Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByUser(int userId )
+        public  Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByUser(int id )
         {
             throw new NotImplementedException();
         }
+
+        public  Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByOwner(int id )
+        {
+           List<TransactionHistory> transactionHistory = null;
+            var userResult = _context.Users.FirstOrDefault(u => u.UserId == id);
+            if(userResult != null)
+                transactionHistory = _context.TransactionHistories.Where(t => t.Owner == userResult.FullName).ToList();
+
+            return Task.FromResult(transactionHistory as IEnumerable<TransactionHistory>);
+        }
+
+        public  Task<IEnumerable<TransactionHistory>> GetAllTransactionHistoriesByRenter(int id )
+        {
+           List<TransactionHistory> transactionHistory = null;
+            var userResult = _context.Users.FirstOrDefault(u => u.UserId == id);
+            if(userResult != null)
+                transactionHistory = _context.TransactionHistories.Where(t => t.Renter == userResult.FullName).ToList();
+
+            return Task.FromResult(transactionHistory as IEnumerable<TransactionHistory>);
+        }
         
+
     }
 }

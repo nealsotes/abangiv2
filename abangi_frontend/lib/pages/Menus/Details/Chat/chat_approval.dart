@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:abangi_v1/Models/Rental.dart';
 import 'package:abangi_v1/api/api.dart';
 import 'package:abangi_v1/pages/Payments/CardFormScreen.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'SignalRHelper .dart';
@@ -14,14 +15,14 @@ import 'package:intl/intl.dart' as intl;
 // ignore: must_be_immutable
 class ChatApproval extends StatefulWidget {
   late var name;
-  final RentalModel rental;
+  late RentalModel? rental;
   TextEditingController messageController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   ChatApproval({
     Key? key,
     this.name,
-    required this.rental,
+    this.rental,
   }) : super(key: key);
 
   @override
@@ -35,8 +36,9 @@ class ChatApprovalScreen extends State<ChatApproval> {
   bool isCancelled = false;
   var scrollController = ScrollController();
   SignalRHelper signalRHelper = SignalRHelper();
+  final List<ChatMessage> _messages = [];
   receiveMessageHandler(args) {
-    signalRHelper.messageList.add(ChatMessage(
+    _messages.add(ChatMessage(
         name: args[0], message: args[1], isMine: args[0] == widget.name));
     scrollController.jumpTo(scrollController.position.maxScrollExtent + 75);
     setState(() {});
@@ -122,35 +124,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
             },
           ),
           title: Row(
-            children: [
-              CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Color.fromRGBO(0, 176, 236, 1),
-                  child: Text(widget.rental.owner.substring(0, 1),
-                      style:
-                          const TextStyle(fontSize: 20, color: Colors.white))),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 10, top: 6),
-                    child: Text(widget.rental.owner,
-                        style: const TextStyle(
-                            fontSize: 17,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text("(${super.widget.rental.userStatus})",
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w500)),
-                  ),
-                ],
-              ),
-            ],
+            children: [],
           ),
         ),
         body: Padding(
@@ -162,11 +136,13 @@ class ChatApprovalScreen extends State<ChatApproval> {
                     borderRadius: BorderRadius.circular(12.0)),
                 tileColor: Colors.grey.shade200,
                 title: Text(
-                  widget.rental.itemName,
+                  widget.rental!.itemName,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: SizedBox(
                   width: 250,
+                  //add toggle button to show and hide the column
+
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -174,18 +150,20 @@ class ChatApprovalScreen extends State<ChatApproval> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${widget.rental.rentalPrice}/ day ',
+                            '${widget.rental!.rentalPrice}/ day ',
                             style: const TextStyle(fontSize: 9),
                           ),
-                          Text(widget.rental.location,
+                          Text(widget.rental!.location,
                               style: const TextStyle(fontSize: 9)),
                         ],
                       ),
 
-                      super.widget.rental.rentalStatus == 'Cancelled' ||
+                      super.widget.rental!.rentalStatus == 'Cancelled' ||
                               isCancelled ||
-                              widget.rental.rentalStatus == 'Approved' ||
-                              widget.rental.rentalStatus == 'Pending payment'
+                              widget.rental!.rentalStatus == 'Approved' ||
+                              widget.rental!.rentalStatus ==
+                                  'Pending payment' ||
+                              widget.rental!.rentalStatus == 'Completed'
                           ? Center(
                               child: isCancelled == true
                                   ? const Text(
@@ -199,7 +177,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          widget.rental.rentalRemarks,
+                                          widget.rental!.rentalRemarks,
                                           style: const TextStyle(
                                               fontSize: 9,
                                               color: Colors.redAccent),
@@ -213,7 +191,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                               borderRadius:
                                                   BorderRadius.circular(10)),
                                           child: Text(
-                                            "Amount Due: P${widget.rental.rentalPrice}",
+                                            "Amount Due: P${widget.rental!.rentalPrice}",
                                             style:
                                                 const TextStyle(fontSize: 12.0),
                                           ),
@@ -264,7 +242,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                                       _toggleCancel();
                                                       await CallApi().patchData(
                                                           data,
-                                                          'api/rentals/${widget.rental.rentalId}');
+                                                          'api/rentals/${widget.rental!.rentalId}');
                                                     } catch (e) {
                                                       print(e);
                                                     }
@@ -303,7 +281,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                                           builder: (context) =>
                                                               CardFormScreen(
                                                                 rental: widget
-                                                                    .rental,
+                                                                    .rental!,
                                                               )),
                                                     );
                                                   },
@@ -319,7 +297,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                 children: [
                                   Container(
                                     margin: const EdgeInsets.only(top: 5.0),
-                                    child: Text(widget.rental.rentalRemarks,
+                                    child: Text(widget.rental!.rentalRemarks,
                                         style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.redAccent)),
@@ -329,7 +307,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                     padding: const EdgeInsets.only(top: 2.0),
                                     margin: const EdgeInsets.only(
                                         top: 5.0, bottom: 5.0),
-                                    child: widget.rental.rentalStatus == "Paid"
+                                    child: widget.rental!.rentalStatus == "Paid"
                                         ? ElevatedButton(
                                             onPressed: () {
                                               //show Rating Dialog
@@ -391,15 +369,15 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                                           _toggleCancel();
                                                           await CallApi().patchData(
                                                               data,
-                                                              'api/rentals/${widget.rental.rentalId}');
+                                                              'api/rentals/${widget.rental!.rentalId}');
                                                           await CallApi()
                                                               .deleteData(
-                                                                  'api/rentals/${widget.rental.rentalId}');
+                                                                  'api/rentals/${widget.rental!.rentalId}');
                                                           setState(() {
-                                                            widget.rental
+                                                            widget.rental!
                                                                     .rentalStatus =
                                                                 "Completed";
-                                                            widget.rental
+                                                            widget.rental!
                                                                     .rentalRemarks =
                                                                 "Transaction Completed.";
                                                           });
@@ -430,9 +408,9 @@ class ChatApprovalScreen extends State<ChatApproval> {
                                                 ];
                                                 _toggleCancel();
                                                 await CallApi().patchData(data,
-                                                    'api/rentals/${widget.rental.rentalId}');
+                                                    'api/rentals/${widget.rental!.rentalId}');
                                                 await CallApi().deleteData(
-                                                    'api/rentals/${widget.rental.rentalId}');
+                                                    'api/rentals/${widget.rental!.rentalId}');
                                               } catch (e) {
                                                 print(e);
                                               }
@@ -456,7 +434,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
                     image: DecorationImage(
-                      image: MemoryImage(base64Decode(widget.rental.image),
+                      image: MemoryImage(base64Decode(widget.rental!.image),
                           scale: 0.5),
                     ),
                   ),
@@ -467,10 +445,10 @@ class ChatApprovalScreen extends State<ChatApproval> {
                     child: ListView.builder(
                       shrinkWrap: true,
                       controller: scrollController,
-                      itemCount: signalRHelper.messageList.length,
+                      itemCount: _messages.length,
                       itemBuilder: (context, i) {
                         return Align(
-                          alignment: signalRHelper.messageList[i].isMine
+                          alignment: _messages[i].isMine
                               ? Alignment.centerRight
                               : Alignment.centerLeft,
                           child: Container(
@@ -481,21 +459,19 @@ class ChatApprovalScreen extends State<ChatApproval> {
                             padding: const EdgeInsets.all(10),
                             margin: const EdgeInsets.symmetric(vertical: 4),
                             decoration: BoxDecoration(
-                                color: signalRHelper.messageList[i].isMine
+                                color: _messages[i].isMine
                                     ? const Color.fromRGBO(0, 176, 236, 1)
                                     : Colors.grey.shade200,
                                 borderRadius: BorderRadius.circular(12)),
                             child: Text(
-                              signalRHelper.messageList[i].isMine
-                                  ? signalRHelper.messageList[i].message
-                                  : signalRHelper.messageList[i].name +
-                                      ': ' +
-                                      signalRHelper.messageList[i].message,
-                              textAlign: signalRHelper.messageList[i].isMine
+                              _messages[i].isMine
+                                  ? _messages[i].message
+                                  : '${_messages[i].name}: ${_messages[i].message}',
+                              textAlign: _messages[i].isMine
                                   ? TextAlign.end
                                   : TextAlign.start,
                               style: TextStyle(
-                                  color: signalRHelper.messageList[i].isMine
+                                  color: _messages[i].isMine
                                       ? Colors.white
                                       : Colors.black),
                             ),
@@ -520,6 +496,11 @@ class ChatApprovalScreen extends State<ChatApproval> {
   void initState() {
     super.initState();
     signalRHelper.connect(receiveMessageHandler);
+    //make not awia
+    List<ChatMessage> messages = [];
+    setState(() {
+      _messages.addAll(messages);
+    });
   }
 
   @override
@@ -541,7 +522,7 @@ class ChatApprovalScreen extends State<ChatApproval> {
     try {
       var data = {
         "userId": int.parse(userId!),
-        "itemId": widget.rental.itemId,
+        "itemId": widget.rental!.itemId,
         "ratings": response.rating,
         "comments": response.comment,
       };

@@ -101,13 +101,13 @@ class MyAppState extends State<Reservation> {
                   ),
                   Container(
                     padding: const EdgeInsets.all(10),
+                    // only display current months and future months
                     child: SfDateRangePicker(
                       controller: _dateRangePickerController,
-                      onSelectionChanged: _onSelectionChanged,
                       selectionMode: DateRangePickerSelectionMode.range,
-                      initialSelectedRange: PickerDateRange(
-                          DateTime.now().add(const Duration(days: 0)),
-                          DateTime.now().add(const Duration(days: 0))),
+                      onSelectionChanged: _onSelectionChanged,
+                      minDate: DateTime.now(),
+                      maxDate: DateTime.now().add(const Duration(days: 365)),
                     ),
                   ),
                   Padding(

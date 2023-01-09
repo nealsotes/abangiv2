@@ -22,10 +22,18 @@ class SignalRHelper {
     });
   }
 
+  //invokde the GetMessages method in the server
+  // Future<List<ChatMessage>> getMessages() async {
+  //   var messages = await hubConnection.invoke('GetMessages');
+  //   var messageList = (messages as List)
+  //       .map((message) => ChatMessage.fromJson(message))
+  //       .toList();
+  //   return messageList;
+  // }
+
   void sendMessage(String name, String message) {
     hubConnection.invoke("SendMessage", args: [name, message]);
-    // messageList.add(ChatMessage(name: name, message: message));
-    // messageList.add(ChatMessage(name: name, message: message, isMine: true));
+    textMessage = '';
   }
 
   void disconnect() {

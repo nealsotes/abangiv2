@@ -168,7 +168,7 @@ class _MyAppState extends State<AccountScreen> {
                         text: 'My Inquiries',
                       ),
                       Tab(
-                        text: 'Payments',
+                        text: 'Transactions History',
                       ),
                     ],
                   ),
@@ -177,7 +177,7 @@ class _MyAppState extends State<AccountScreen> {
                   child: TabBarView(
                     children: [
                       MyListing(),
-                      Payments(),
+                      TransactionHistoryScreen(),
                     ],
                   ),
                 )

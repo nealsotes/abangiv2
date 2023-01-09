@@ -421,29 +421,29 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
                                 },
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Schedule Availability',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: SfDateRangePicker(
-                                controller: _dateRangePickerController,
-                                onSelectionChanged: _onSelectionChanged,
-                                selectionMode:
-                                    DateRangePickerSelectionMode.range,
-                                initialSelectedRange: PickerDateRange(
-                                    DateTime.now().add(const Duration(days: 0)),
-                                    DateTime.now()
-                                        .add(const Duration(days: 0))),
-                              ),
-                            ),
+                            // Container(
+                            //   padding: const EdgeInsets.all(10),
+                            //   child: const Text(
+                            //     'Schedule Availability',
+                            //     style: TextStyle(
+                            //         fontSize: 23,
+                            //         fontWeight: FontWeight.bold,
+                            //         color: Colors.black),
+                            //   ),
+                            // ),
+                            // Container(
+                            //   padding: const EdgeInsets.all(10),
+                            //   child: SfDateRangePicker(
+                            //     controller: _dateRangePickerController,
+                            //     onSelectionChanged: _onSelectionChanged,
+                            //     selectionMode:
+                            //         DateRangePickerSelectionMode.range,
+                            //     initialSelectedRange: PickerDateRange(
+                            //         DateTime.now().add(const Duration(days: 0)),
+                            //         DateTime.now()
+                            //             .add(const Duration(days: 0))),
+                            //   ),
+                            // ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -796,7 +796,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
       var data = {
         "ItemCategoryId": dropdownvalueCategory,
         "UserId": int.parse(userid!),
-        "ItemName": listingController.text,
+        "ItemName": listingController.text.toLowerCase(),
         "ItemPrice": double.parse(itemPriceController.text),
         "ItemDescription": itemDescriptionController.text,
         // ignore: prefer_interpolation_to_compose_strings
@@ -808,8 +808,6 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
         //save image to server folder
         "ItemImage": _uploadedFileURL,
         "RentalMethodId": _radioRentalValue as int,
-        "StartDate": _startDate,
-        "EndDate": _endDate,
       };
 
       var res = await CallApi().postData(data, 'api/items');
@@ -836,18 +834,7 @@ class _MyStatefulWidgetState extends State<CreateListingScreen> {
         // ignore: unnecessary_null_comparison
       } else {
         // ignore: use_build_context_synchronously
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.ERROR,
-          headerAnimationLoop: false,
-          animType: AnimType.BOTTOMSLIDE,
-          title: 'Error',
-          desc: 'Item not posted',
-          buttonsTextStyle: const TextStyle(color: Colors.white),
-          showCloseIcon: false,
-          btnOkOnPress: () {},
-        ).show();
-        print(body);
+        errorSnackBar(context, body['message']);
       }
     } catch (e) {
       print(e);

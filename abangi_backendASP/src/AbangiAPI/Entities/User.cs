@@ -33,6 +33,7 @@ namespace AbangiAPI.Entities
         public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
+
          public string DeviceId {get; set;}
         public bool isMailConfirmed { get; set; }
         public string  EmailConfirmationToken { get; set; }
