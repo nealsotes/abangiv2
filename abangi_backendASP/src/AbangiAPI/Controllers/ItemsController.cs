@@ -14,11 +14,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using AbangiAPI.Helpers;
+using System.Net;
+using Swashbuckle.AspNetCore.Annotations;
+
 
 namespace AbangiAPI.Controllers
 {
     
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi=true)]
     [ApiController]
     public class ItemsController : ControllerBase
     {
@@ -36,6 +40,10 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation("GetAllItems")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
+        
         public async Task<ActionResult<IEnumerable<ItemInformation>>> GetAll()
         {
             var items =  await _repository.GetAllItems();
@@ -45,6 +53,9 @@ namespace AbangiAPI.Controllers
            
         }
         [HttpGet("{id}", Name = "GetItemByUser"), Route("GetItemByUser/{id}")]
+        [SwaggerOperation("GetItemByUser")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<IEnumerable<ItemInformation>>> GetAllByUser(int id)
         {
             var items =  await _repository.GetAllItemsByUser(id);
@@ -55,6 +66,9 @@ namespace AbangiAPI.Controllers
 
 
         [HttpGet("{id}", Name = "GetItemById")]
+        [SwaggerOperation("GetItemById")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<ItemInformation>> GetItemById(int id)
         {
             var item = await _repository.GetItemById(id);
@@ -66,6 +80,9 @@ namespace AbangiAPI.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
+        [SwaggerOperation("CreateItem")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
         public  ActionResult<ItemReadDto> CreateItem([FromBody]ItemCreateDto itemCreateDto)
         
         {
@@ -95,6 +112,9 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [SwaggerOperation("UpdateItem")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
         public ActionResult UpdateItem(int id, ItemUpdateDto itemUpdateDto)
         {
             var itemModelFromRepo = _repository.GetItemById(id);
@@ -109,6 +129,10 @@ namespace AbangiAPI.Controllers
         }
       
         [HttpDelete("{id}")]
+        [SwaggerOperation("DeleteItem")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
+
         public ActionResult DeleteItem(int id)
         {   
             var itemModelFromRepo = _repository.GetItemById2(id);
@@ -121,9 +145,13 @@ namespace AbangiAPI.Controllers
             return NoContent();
         }
         [HttpGet("{id}", Name = "GetUserItemListings"), Route("GetUserItemListings/{id}")]
-        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetUserItemListings(int id)
+        [SwaggerOperation("GetUserItemListings")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
+
+        public async Task<ActionResult<IEnumerable<ItemInformation>>> GetUserItemListings(int id,string rentalStatus="")
         {
-            var items =  await _repository.GetUserItemListings(id);
+            var items =  await _repository.GetUserItemListings(id,rentalStatus);
             
             return Ok(items);
                 

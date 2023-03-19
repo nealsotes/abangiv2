@@ -1,2 +1,2 @@
 //generate api url
-String apiUrl = "http://192.168.1.9:5000/";
+String apiUrl = "http://172.17.64.1:5000/";

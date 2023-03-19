@@ -10,10 +10,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace AbangiAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi=true)]
     public class RentalMethodsController : ControllerBase
     {
         private readonly IRentalMethodAPIRepo _repository;
@@ -25,6 +29,9 @@ namespace AbangiAPI.Controllers
         }
            
         [HttpGet]
+        [SwaggerOperation("GetAllRentalMethods")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<IEnumerable<RentalMethod>>> GetAll()
         {
             var rentalMethods = await _repository.GetAllRentalMethods();
@@ -32,6 +39,10 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpPost]
+        [SwaggerOperation("CreateRentalMethod")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
+
         public ActionResult<RentalMethod> CreateRentalMethod(RentalMethod rentalMethod)
         {
             _repository.CreateRentalMethod(rentalMethod);
@@ -39,6 +50,9 @@ namespace AbangiAPI.Controllers
             return Ok(rentalMethod);
         }
         [HttpDelete("{id}")]
+        [SwaggerOperation("DeleteRentalMethod")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<RentalMethod>> DeleteRentalMethod(int id)
         {
             var rentalMethod = await _repository.GetRentalMethodById(id);
@@ -51,6 +65,9 @@ namespace AbangiAPI.Controllers
             return Ok(rentalMethod);
         }
         [HttpPut("{id}")]
+        [SwaggerOperation("UpdateRentalMethod")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public ActionResult UpdateRentalMethod(int id, RentalMethodUpdateDto rentalMethod )
         {
             var rentalMethodModel = _repository.GetRentalMethodById(id);

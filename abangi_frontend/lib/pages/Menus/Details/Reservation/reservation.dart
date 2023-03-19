@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:intl/intl.dart' as intl;
 
+import '../../../home.dart';
+
 /// My app class to display the date range picker
 class Reservation extends StatefulWidget {
   final ItemModel itemModel;
@@ -228,7 +230,12 @@ class MyAppState extends State<Reservation> {
           desc: 'Please wait for the merchant to accept your request',
           buttonsTextStyle: const TextStyle(color: Colors.white),
           showCloseIcon: false,
-          btnOkOnPress: () {},
+          btnOkOnPress: () {
+            Navigator.of(context).pop();
+            MaterialPageRoute(builder: ((context) {
+              return Home();
+            }));
+          },
         ).show();
       } else {
         // ignore: use_build_context_synchronously, avoid_single_cascade_in_expression_statements

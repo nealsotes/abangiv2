@@ -18,7 +18,7 @@ namespace AbangiAPI.Data
         void UpdateItem(Item item);
         void DeleteItem(Item item);
         void SavePostImageAsync(ItemCreateDto itemCreateDto);
-        Task<IEnumerable<ItemInformation>> GetUserItemListings(int id);
+        Task<IEnumerable<ItemInformation>> GetUserItemListings(int id,string rentalStatus = "");
         Task<Item> GetItemName(string name);
     }
     

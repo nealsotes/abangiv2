@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using AbangiAPI.Data;
 using AbangiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 
 namespace AbangiAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi=true)]
     public class MailController : ControllerBase
     {
         private readonly IMailService _mailService;
@@ -18,6 +21,9 @@ namespace AbangiAPI.Controllers
             _mailService = mailService;
         }
         [HttpPost("send")]
+        [SwaggerOperation("SendEmail")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> SendEmail([FromForm] MailRequest mailRequest)
         {
            try

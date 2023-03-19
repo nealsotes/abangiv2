@@ -19,7 +19,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
-
+using System.Net;
+using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using AbangiAPI.Data;
 
@@ -27,6 +28,7 @@ namespace AbangiAPI.Controllers
 {  
     //[Authorize]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi=true)]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
@@ -44,6 +46,9 @@ namespace AbangiAPI.Controllers
         }
         [AllowAnonymous]
         [HttpPost("login")]
+        [SwaggerOperation("Authenticate")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Authenticate([FromBody]AuthenticateModel model)
         {
             
@@ -83,6 +88,9 @@ namespace AbangiAPI.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
+        [SwaggerOperation("Register")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             //map model to entity
@@ -114,6 +122,9 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpGet("logout")]
+        [SwaggerOperation("Logout")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Logout()
         {   
             await HttpContext.SignOutAsync();
@@ -121,6 +132,9 @@ namespace AbangiAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation("GetById")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> GetById(int id)
         {
             var user = await _repository.GetById(id);
@@ -131,6 +145,9 @@ namespace AbangiAPI.Controllers
      
 
         [HttpGet]
+        [SwaggerOperation("GetAllUsers")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
         {
             var users = await _repository.GetAll();
@@ -139,6 +156,9 @@ namespace AbangiAPI.Controllers
         }
      
        [HttpPatch("{id}")]
+       [SwaggerOperation("PartialUserUpdate")]
+       [SwaggerResponse((int)HttpStatusCode.OK)]
+       [SwaggerResponse((int)HttpStatusCode.NotFound)]
        public async Task<ActionResult> PartialUserUpdate(int id, [FromBody] JsonPatchDocument<UpdateModel> patchDoc)
        {
             var userModelRepo = await _repository.GetByIdPatch(id);
@@ -158,6 +178,9 @@ namespace AbangiAPI.Controllers
             return NoContent();
        }
         [HttpGet("confirm-email/{email}/{token}")]
+        [SwaggerOperation("ConfirmEmail")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
            

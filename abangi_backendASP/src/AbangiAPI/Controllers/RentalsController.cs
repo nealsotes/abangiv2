@@ -9,10 +9,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
+
+
 namespace AbangiAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi=true)]
     public class RentalsController : ControllerBase
     {
         private readonly IRentalAPIRepo _repository;
@@ -23,12 +28,20 @@ namespace AbangiAPI.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+        [AllowAnonymous]
+        [SwaggerOperation("GetAllRentals")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<IEnumerable<RentalInformation>>> GetAllRentals()
         {
             var rentals = await _repository.GetAllRentals();
             return Ok(rentals);
         }
         [HttpGet("{id}" , Name = "GetRentalById")]
+        [AllowAnonymous]
+        [SwaggerOperation("GetRentalById")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<RentalInformation>> GetRentalById(int id)
         {
             var rental = await _repository.GetRentalById(id);
@@ -40,7 +53,11 @@ namespace AbangiAPI.Controllers
         }
 
        [HttpPost]
-       [AllowAnonymous]
+       [SwaggerOperation("CreateRental")]
+       [SwaggerResponse((int)HttpStatusCode.OK)]
+       [SwaggerResponse((int)HttpStatusCode.NotFound)]
+
+
          public  ActionResult<RentalReadDto> CreateRental([FromBody] RentalCreateDto rentalCreateDto)
          {
              if(ModelState.IsValid)
@@ -57,6 +74,10 @@ namespace AbangiAPI.Controllers
              }
          }
             [HttpGet("GetRentalByUserId/{id}")]
+            [AllowAnonymous]
+            [SwaggerOperation("GetRentalByUserId")]
+            [SwaggerResponse((int)HttpStatusCode.OK)]
+            [SwaggerResponse((int)HttpStatusCode.NotFound)]
             public async Task<ActionResult<IEnumerable<RentalInformation>>> GetRentalByUserId(int id)
             {
                 var rental = await _repository.GetRentalByUserId(id);
@@ -68,6 +89,9 @@ namespace AbangiAPI.Controllers
             }
 
             [HttpGet("GetRentalByOwnerId/{id}")]
+            [SwaggerOperation("GetRentalByOwnerId")]
+            [SwaggerResponse((int)HttpStatusCode.OK)]
+            [SwaggerResponse((int)HttpStatusCode.NotFound)]
             public async Task<ActionResult<IEnumerable<RentalInformation>>> GetRentalByOwnerId(int id)
             {
                 var rental = await _repository.GetRentalByOwnerId(id);
@@ -78,6 +102,9 @@ namespace AbangiAPI.Controllers
                 return Ok(rental);
             }
             [HttpPatch("{id}")]
+            [SwaggerOperation("UpdateRental")]
+            [SwaggerResponse((int)HttpStatusCode.OK)]
+            [SwaggerResponse((int)HttpStatusCode.NotFound)]
             public async Task<ActionResult> UpdateRental(int id, [FromBody] JsonPatchDocument<RentalUpdateDto> patchDoc)
             {
                 var rentalModelFromRepo = await _repository.GetIdPatch(id);
@@ -96,7 +123,10 @@ namespace AbangiAPI.Controllers
                 _repository.SaveChanges();
                 return NoContent();
             }
-           [HttpDelete("{id}")]
+            [HttpDelete("{id}")]
+            [SwaggerOperation("DeleteRental")]
+            [SwaggerResponse((int)HttpStatusCode.OK)]
+            [SwaggerResponse((int)HttpStatusCode.NotFound)]
               public async Task<ActionResult> DeleteRental(int id)
               {
                 var rentalModelFromRepo = await _repository.GetIdPatch(id);

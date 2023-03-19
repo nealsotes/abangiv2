@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using AbangiAPI.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.Net;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace AbangiAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi=true)]
     public class UserNotificationController : ControllerBase
     {
         private IHubContext<UserVerifyNotification,IUserVerifyNotification> _hubContext;
@@ -19,6 +22,10 @@ namespace AbangiAPI.Controllers
         }
         [HttpPost]
         [Route("SendVerifyMessage")]
+        [SwaggerOperation("SendVerifyMessage")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerResponse((int)HttpStatusCode.BadRequest)]
+
         //Send notification to user
         public string Get()
         {

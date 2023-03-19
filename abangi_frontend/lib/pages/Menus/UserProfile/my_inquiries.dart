@@ -126,10 +126,7 @@ class _MyStatefulWidgetState extends State<MyListingScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Text(
-                                snapshot.data![index].rentalStatus ==
-                                            'Approved' ||
-                                        snapshot.data![index].rentalStatus ==
-                                            'Paid'
+                                snapshot.data![index].rentalStatus == 'Paid'
                                     ? "Mark as rented"
                                     : "Available",
                                 style: TextStyle(

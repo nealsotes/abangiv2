@@ -164,31 +164,59 @@ namespace AbangiAPI.Data.SqlRepo
         
         }
 
-        public async Task<IEnumerable<ItemInformation>> GetUserItemListings(int id)
-        {
-            var items = (from i in _context.Items
+        // public async Task<IEnumerable<ItemInformation>> GetUserItemListings(int id)
+        // {
+        //     var items = (from i in _context.Items
                       
-                           join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
-                           join u in _context.Users on i.UserId equals u.UserId 
-                           join rt in _context.Rentals on i.ItemId equals rt.ItemId      
-                           where i.UserId == id
-                           select new ItemInformation
-                           {
-                                ItemId = i.ItemId,
-                                ItemName = i.ItemName,
-                                Description = i.ItemDescription,
-                                Price = i.ItemPrice,
-                                Category = ic.ItemCategoryName,
-                                RentalStatus = rt.RentalStatus,
-                                Location = i.ItemLocation,
-                                Image = i.ItemImage,
-                                DateCreated = i.DateCreated,
-                                StartDate = i.StartDate,
-                                EndDate = i.EndDate
+        //                    join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
+        //                    join u in _context.Users on i.UserId equals u.UserId 
+        //                    join rt in _context.Rentals on i.ItemId equals rt.ItemId      
+        //                    where i.UserId == id
+        //                    select new ItemInformation
+        //                    {
+        //                         ItemId = i.ItemId,
+        //                         ItemName = i.ItemName,
+        //                         Description = i.ItemDescription,
+        //                         Price = i.ItemPrice,
+        //                         Category = ic.ItemCategoryName,
+        //                         RentalStatus = rt.RentalStatus,
+        //                         Location = i.ItemLocation,
+        //                         Image = i.ItemImage,
+        //                         DateCreated = i.DateCreated,
+        //                         StartDate = i.StartDate,
+        //                         EndDate = i.EndDate
                                 
-                            }).ToListAsync();
-            return await items;
-        }
+        //                     }).ToListAsync();
+        //     return await items;
+        // }
+        public async Task<IEnumerable<ItemInformation>> GetUserItemListings(int id, string rentalStatus = "")
+{
+    var items = await (from i in _context.Items
+                       join ic in _context.ItemCategories on i.ItemCategoryId equals ic.ItemCategoryId
+                       join u in _context.Users on i.UserId equals u.UserId 
+                       join rt in _context.Rentals on i.ItemId equals rt.ItemId      
+                       where i.UserId == id
+                       select new ItemInformation
+                       {
+                            ItemId = i.ItemId,
+                            ItemName = i.ItemName,
+                            Description = i.ItemDescription,
+                            Price = i.ItemPrice,
+                            Category = ic.ItemCategoryName,
+                            RentalStatus = rt.RentalStatus,
+                            Location = i.ItemLocation,
+                            Image = i.ItemImage,
+                            DateCreated = i.DateCreated,
+                            StartDate = i.StartDate,
+                            EndDate = i.EndDate
+                       }).ToListAsync();
+    if (!string.IsNullOrEmpty(rentalStatus))
+    {
+        items = items.Where(i => i.RentalStatus == rentalStatus).ToList();
+    }
+    return items;
+}
+
 
         public Task<Item> GetItemName(string name)
         {

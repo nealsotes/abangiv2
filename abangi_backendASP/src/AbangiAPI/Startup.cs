@@ -27,6 +27,7 @@ using AbangiAPI.Models.Notification;
 using AbangiAPI.Data.NotificationServices;
 using CorePush.Google;
 using CorePush.Apple;
+using Microsoft.OpenApi.Models;
 
 namespace AbangiAPI
 {
@@ -50,12 +51,20 @@ namespace AbangiAPI
             services.AddCors();
             services.AddRazorPages();
             services.Configure<MailSettings>(_configuration.GetSection("MailSettings"));
-          
+            //register the Swagger generator, defining 1 or more Swagger documents
+           
+
+            
             services.AddDbContext<DataContext>();
             services.AddControllers().AddNewtonsoftJson(s => {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 s.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+             services.AddSwaggerGen(
+                c => {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Abangi API", Version = "v1" });
+                });
+              
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //configure DI for application repo
             services.AddScoped<TokenService>();
@@ -137,14 +146,19 @@ namespace AbangiAPI
         {
             //migrate any database changes on startup(includes initial db creation)
             dataContext.Database.Migrate();
-
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
                
             }
 
-         
+             
 
             app.UseRouting();
             //global cors policy 
